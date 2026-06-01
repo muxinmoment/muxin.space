@@ -1,0 +1,88 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "muxin.space | 木昕时刻",
+  description = "记录学习、项目与真实成长的个人空间。",
+} = Astro.props;
+
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/notes", label: "Notes" },
+  { href: "/projects", label: "Projects" },
+  { href: "/about", label: "About" },
+];
+
+const currentPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const isActive = (href: string) =>
+  href === "/" ? currentPath === "/" : currentPath.startsWith(href);
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body class="font-sans text-zinc-900">
+    <div
+      aria-hidden="true"
+      class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(139,92,246,0.08),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(244,114,182,0.06),_transparent_24%)]"
+    ></div>
+
+    <header class="border-b border-zinc-100/90 bg-white/90 backdrop-blur-xl">
+      <div class="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8 lg:flex-row lg:items-center lg:justify-between">
+        <a href="/" class="inline-flex items-center gap-2 self-start font-serif text-2xl tracking-tight text-zinc-900">
+          <span>muxin</span>
+          <span class="text-violet-500">✦</span>
+          <span>space</span>
+        </a>
+
+        <nav aria-label="主导航" class="self-start lg:self-auto">
+          <ul class="flex flex-wrap items-center gap-2 text-sm font-medium text-zinc-500">
+            {
+              navLinks.map((link) => (
+                <li>
+                  <a
+                    href={link.href}
+                    aria-current={isActive(link.href) ? "page" : undefined}
+                    class:list={[
+                      "rounded-full px-3 py-2 transition-colors duration-200 hover:text-violet-600",
+                      {
+                        "text-violet-600": isActive(link.href),
+                        "bg-violet-50 text-violet-600": isActive(link.href),
+                      },
+                    ]}
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+      <slot />
+    </main>
+
+    <footer class="border-t border-zinc-100 bg-white">
+      <div class="mx-auto flex w-full max-w-6xl flex-col gap-2 px-4 py-6 text-sm text-zinc-500 sm:px-6 lg:px-8 md:flex-row md:items-center md:justify-between">
+        <p>Built with Astro + Tailwind CSS</p>
+        <p>{new Date().getFullYear()} muxin.space</p>
+      </div>
+    </footer>
+  </body>
+</html>

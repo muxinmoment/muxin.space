@@ -1,0 +1,60 @@
+﻿---
+interface Props {
+  src?: string;
+  alt?: string;
+  sizeClass?: string;
+  badge?: string;
+  compact?: boolean;
+  class?: string;
+}
+
+const {
+  src = "/avatar-placeholder.svg",
+  alt = "Muxin avatar",
+  sizeClass = "h-32 w-32",
+  badge = "摄影中",
+  compact = false,
+  class: className = "",
+} = Astro.props;
+---
+
+<div class:list={["group relative shrink-0", sizeClass, className]}>
+  <div
+    aria-hidden="true"
+    class="absolute -inset-3 -z-20 rounded-[2.5rem] bg-[radial-gradient(circle_at_25%_20%,rgba(251,207,232,0.6),transparent_42%),radial-gradient(circle_at_80%_76%,rgba(196,181,253,0.65),transparent_44%)] opacity-90 blur-2xl transition duration-500 group-hover:opacity-100"
+  ></div>
+  <div
+    aria-hidden="true"
+    class="absolute -inset-px -z-10 rounded-[2.1rem] bg-gradient-to-br from-rose-200 via-fuchsia-200 to-violet-200 opacity-70"
+  ></div>
+
+  <div class="relative h-full w-full overflow-hidden rounded-[2rem] border border-zinc-100 bg-white p-1.5 shadow-[0_20px_50px_rgba(139,92,246,0.18)]">
+    <div class="relative h-full w-full overflow-hidden rounded-[1.55rem]">
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+      />
+      <div
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_24%_18%,rgba(255,255,255,0.7),transparent_34%),radial-gradient(circle_at_78%_72%,rgba(255,255,255,0.22),transparent_30%)]"
+      ></div>
+    </div>
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute right-3 top-3 inline-flex h-6 w-6 items-center justify-center rounded-full border border-white/70 bg-white/70 text-[10px] text-violet-500 shadow-sm backdrop-blur"
+    >
+      ✦
+    </div>
+  </div>
+
+  <div class="absolute -bottom-2 -right-2 flex items-center gap-2 rounded-full border border-violet-100 bg-white px-3 py-1 text-[11px] font-medium text-violet-600 shadow-lg shadow-violet-100">
+    <span class="relative flex h-2.5 w-2.5 items-center justify-center">
+      <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-70"></span>
+      <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+    </span>
+    {!compact && <span>{badge}</span>}
+  </div>
+</div>
