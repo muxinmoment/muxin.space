@@ -9,11 +9,14 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
+    "preview": "npm run build && wrangler dev",
     "check": "astro check",
-    "astro": "astro"
+    "astro": "astro",
+    "generate-types": "wrangler types",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^13.6.0",
     "@fontsource/noto-sans-sc": "^5.2.9",
     "@fontsource/noto-serif-sc": "^5.2.8",
     "astro": "^6.4.2"
@@ -23,6 +26,10 @@
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.3.0",
     "tailwindcss": "^4.3.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "^4.95.0"
+  },
+  "overrides": {
+    "vite": "^7"
   }
 }
