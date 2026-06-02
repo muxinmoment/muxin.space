@@ -72,6 +72,16 @@ tags:
 - Build output directory: `dist`
 - Node version: `20` 或 `22`
 
+仓库根目录现在包含 `wrangler.jsonc`，用于给 `Wrangler` 一个稳定的 Pages 配置入口。
+
+如果你想本地手动发布到 Cloudflare Pages，可以执行：
+
+```bash
+npm run deploy:pages
+```
+
+当前项目是纯静态内容站，不需要额外配置 `KV`。如果以后真的要接入会话、边缘存储或数据库，再按功能需要补 `KV` / `D1` / `R2` 绑定。
+
 ## 当前视觉方向
 
 - 白底、留白充足、紫色点缀
