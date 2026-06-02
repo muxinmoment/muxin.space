@@ -11,8 +11,6 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "deploy:pages": "astro build && wrangler pages deploy dist --project-name muxin-space",
-    "deploy:pages:ci": "wrangler pages deploy dist --project-name muxin-space",
     "astro": "astro"
   },
   "dependencies": {
@@ -25,7 +23,6 @@
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.3.0",
     "tailwindcss": "^4.3.0",
-    "typescript": "^6.0.3",
-    "wrangler": "^4.95.0"
+    "typescript": "^6.0.3"
   }
 }

@@ -22,13 +22,7 @@
 
 - 当前项目不需要 `KV`
 - 当前项目不需要手动添加 `SESSION` 绑定
-- 当前项目只需要一个稳定的 `wrangler.jsonc`，告诉 Wrangler 输出目录是 `dist`
-
-因此仓库里补上的配置是：
-
-- 根目录 `wrangler.jsonc`
-- `pages_build_output_dir: "dist"`
-- `deploy:pages` 脚本
+- 当前项目最稳的方式是直接使用 `Pages + Git` 自动部署
 
 ## 为什么没有直接加 KV 配置
 
@@ -47,32 +41,14 @@
 2. 以后如果真要上登录态、会话、Cloudflare Sessions 或其他边缘存储
 3. 再根据真实功能补 `KV` / `D1` / `R2` 绑定
 
-## 当前推荐配置
-
-`wrangler.jsonc`
-
-```jsonc
-{
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "muxin-space",
-  "compatibility_date": "2026-06-02",
-  "pages_build_output_dir": "dist"
-}
-```
-
 ## 现在怎么用
-
-本地手动部署：
-
-```bash
-npm run deploy:pages
-```
 
 Cloudflare Dashboard 配置：
 
 - Framework preset: `Astro`
 - Build command: `npm run build`
 - Build output directory: `dist`
+- 不额外填写 `wrangler deploy` 之类的 Worker 风格部署命令
 
 不要把 deploy command 配成：
 
@@ -82,25 +58,12 @@ npx wrangler deploy
 
 因为这条命令是给 `Cloudflare Workers` 用的，不是给 `Cloudflare Pages` 静态站用的。
 
-如果你的项目是 `Pages`，有两种正确方式：
+如果你的项目是 `Pages`，最推荐的方式就是直接使用 Cloudflare Pages 的 Git 集成：
 
-1. 用 Cloudflare Pages 的 Git 集成  
-只配置：
-   - Build command: `npm run build`
-   - Build output directory: `dist`
-
-2. 用命令行手动发布  
-执行：
-
-```bash
-npm run deploy:pages
-```
-
-它内部会调用：
-
-```bash
-wrangler pages deploy dist
-```
+1. 连接 GitHub 仓库
+2. 配置 `Build command: npm run build`
+3. 配置 `Build output directory: dist`
+4. 后续通过 `git push` 自动触发部署
 
 ## 这次新报错是什么意思
 
@@ -124,7 +87,7 @@ wrangler pages deploy dist
 那时再做下面这些：
 
 1. 在 Cloudflare 后台创建或复用 KV namespace
-2. 把 namespace ID 填到 `wrangler.jsonc`
+2. 再决定是否需要引入 `wrangler` 配置
 3. 在代码里真正读取对应 binding
 4. 再重新部署
 
