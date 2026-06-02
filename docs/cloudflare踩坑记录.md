@@ -56,8 +56,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "muxin-space",
   "compatibility_date": "2026-06-02",
-  "pages_build_output_dir": "dist",
-  "telemetry": false
+  "pages_build_output_dir": "dist"
 }
 ```
 
@@ -74,6 +73,51 @@ Cloudflare Dashboard 配置：
 - Framework preset: `Astro`
 - Build command: `npm run build`
 - Build output directory: `dist`
+
+不要把 deploy command 配成：
+
+```bash
+npx wrangler deploy
+```
+
+因为这条命令是给 `Cloudflare Workers` 用的，不是给 `Cloudflare Pages` 静态站用的。
+
+如果你的项目是 `Pages`，有两种正确方式：
+
+1. 用 Cloudflare Pages 的 Git 集成  
+只配置：
+   - Build command: `npm run build`
+   - Build output directory: `dist`
+
+2. 用命令行手动发布  
+执行：
+
+```bash
+npm run deploy:pages
+```
+
+它内部会调用：
+
+```bash
+wrangler pages deploy dist
+```
+
+## 这次新报错是什么意思
+
+你这次的新日志里，真正关键的是这两句：
+
+- `It seems that you have run wrangler deploy on a Pages project`
+- `Missing entry-point to Worker script or to assets directory`
+
+意思是：
+
+- Cloudflare 发现这是个 `Pages` 项目
+- 但你却让它执行了 `wrangler deploy`
+- `wrangler deploy` 期待的是一个 Worker 脚本入口，比如 `src/index.ts`
+- 而你的项目是静态站，没有 Worker 入口
+- 所以它就报了 “Missing entry-point”
+
+这个错误不是你代码有问题，而是 Cloudflare 后台的发布命令配错了。
 
 ## 如果以后真的要用 KV
 

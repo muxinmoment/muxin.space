@@ -11,7 +11,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "deploy:pages": "astro build && wrangler pages deploy dist",
+    "deploy:pages": "astro build && wrangler pages deploy dist --project-name muxin-space",
+    "deploy:pages:ci": "wrangler pages deploy dist --project-name muxin-space",
     "astro": "astro"
   },
   "dependencies": {
