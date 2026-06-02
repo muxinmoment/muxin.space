@@ -1,6 +1,6 @@
 # muxin.space
 
-一个基于 `Astro + Tailwind CSS` 的个人网站，定位是学习笔记、项目分享和二次元摄影风格的个人主页。
+一个基于 `Astro + Tailwind CSS` 的个人知识分享站，定位是公开整理 AI 工程、前端实践、项目复盘与个人表达。
 
 ## 现在的技术栈
 
@@ -13,8 +13,8 @@
 ## 主要页面
 
 - 首页 `/`
-- 笔记 `/notes`
-- 笔记详情 `/notes/[slug]`
+- 分享归档 `/notes`
+- 分享详情 `/notes/[slug]`
 - 项目 `/projects`
 - 关于 `/about`
 - 404 `/404`
@@ -42,7 +42,15 @@ npm run preview
 
 ## 内容写法
 
-笔记放在 `src/content/notes/`，使用 Markdown 编写。
+公开分享内容放在 `src/content/notes/`，使用 Markdown 编写。
+
+结构化静态数据拆分在 `src/data/` 目录下，例如：
+
+- `profile.ts`
+- `projects.ts`
+- `timeline.ts`
+- `principles.ts`
+- `recommendations.ts`
 
 frontmatter 示例:
 
@@ -71,4 +79,4 @@ tags:
 - 主页带一点二次元摄影感
 - Markdown 文章使用 typography 排版
 
-如果你想继续扩展，我建议下一步做标签页、RSS 和站内搜索。
+如果你想继续扩展，我建议下一步做标签页、RSS、站内搜索，以及和 B 站 / 小红书联动的内容工作流。

@@ -146,5 +146,5 @@ export const projects: Project[] = [
     summary: "为摄影师做的 Moodboard 生成器，作为未来副业方向持续储备。",
     stack: ["React", "API 聚合", "图版排版"],
     highlights: ["图文排版", "灵感板", "轻量生成"],
-  },
+  }, 
 ];

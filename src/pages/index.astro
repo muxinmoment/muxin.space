@@ -9,7 +9,7 @@ import {
   profile,
   projects,
   sitePrinciples,
-} from "../data/site";
+} from "../data";
 
 const notes = (await getCollection("notes", ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
@@ -17,8 +17,8 @@ const notes = (await getCollection("notes", ({ data }) => !data.draft))
 ---
 
 <BaseLayout
-  title="muxin.space | 学习笔记与项目分享"
-  description="记录 AI 工程、前端练习、项目复盘和二次元摄影灵感的个人站。"
+  title="muxin.space | 知识分享与项目公开记录"
+  description="分享 AI 工程、前端实践、项目复盘和带点个人风格的长期内容。"
 >
   <section class="mx-auto max-w-4xl animate-fade-in-up motion-reduce:animate-none">
     <div class="flex flex-col items-center gap-8 text-center lg:flex-row lg:items-center lg:text-left">
@@ -37,7 +37,7 @@ const notes = (await getCollection("notes", ({ data }) => !data.draft))
 
         <h1 class="mt-6 max-w-3xl font-serif text-5xl leading-tight tracking-tight text-zinc-900 sm:text-6xl">
           Hi，我是 Muxin。
-          <span class="block text-violet-600">代码、影像、二次元，都想认真做。</span>
+          <span class="block text-violet-600">把项目经验、知识整理和个人表达，做成公开分享。</span>
         </h1>
 
         <p class="mt-5 max-w-2xl text-base leading-8 text-zinc-500 sm:text-lg">
@@ -49,7 +49,7 @@ const notes = (await getCollection("notes", ({ data }) => !data.draft))
             href="/notes/"
             class="inline-flex items-center rounded-full bg-zinc-900 px-6 py-3 text-sm font-medium text-white shadow-lg shadow-zinc-200 transition duration-200 hover:-translate-y-0.5 hover:bg-violet-600"
           >
-            阅读笔记
+            阅读分享
             <span class="ml-2">→</span>
           </a>
           <a
@@ -108,7 +108,7 @@ const notes = (await getCollection("notes", ({ data }) => !data.draft))
     <article class="rounded-[2rem] border border-zinc-100 bg-white p-7 shadow-[0_1px_0_rgba(24,24,27,0.02)]">
       <div class="flex items-center gap-2 text-sm font-medium text-violet-600">
         <span>✦</span>
-        <span>项目片段</span>
+        <span>公开项目</span>
       </div>
       <div class="mt-5 space-y-4">
         {projects.slice(0, 2).map((project) => (
@@ -131,11 +131,11 @@ const notes = (await getCollection("notes", ({ data }) => !data.draft))
   <section class="mt-20 animate-fade-in-up motion-reduce:animate-none [animation-delay:240ms]">
     <div class="mx-auto flex max-w-4xl items-end justify-between gap-4">
       <div>
-        <p class="text-sm font-medium text-violet-600">最近的笔记</p>
-        <h2 class="mt-2 font-serif text-3xl tracking-tight text-zinc-900">把思考留成可检索的记录</h2>
+        <p class="text-sm font-medium text-violet-600">最新分享</p>
+        <h2 class="mt-2 font-serif text-3xl tracking-tight text-zinc-900">把经验、踩坑和方法论整理成可检索内容</h2>
       </div>
       <a href="/notes/" class="text-sm font-medium text-zinc-500 transition hover:text-violet-600">
-        全部 →
+        查看全部 →
       </a>
     </div>
 
