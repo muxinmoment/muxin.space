@@ -13,12 +13,12 @@ export const timeline: TimelineItem[] = [
   },
   {
     period: "2024 - 2025",
-    title: "后端与前端并进",
-    description: "FastAPI、Go、React、Cloudflare 等工具栈持续积累，也逐步开始公开分享过程。",
+    title: "AI 工程与全栈实现并进",
+    description: "FastAPI、Go、React、Cloudflare 等工具栈持续积累，也逐步把模型理解和工程落地结合起来。",
   },
   {
     period: "2024",
     title: "OPPO / CosyVoice 基础积累",
-    description: "模型轻量化与语音流式交互，让工程实践开始具备更完整的可分享价值。",
+    description: "模型轻量化与语音流式交互，让工程实践开始具备更完整的技术战绩和可分享价值。",
   },
 ];

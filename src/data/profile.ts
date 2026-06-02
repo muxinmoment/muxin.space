@@ -1,10 +1,10 @@
 import type { Profile } from "./types";
 
 export const profile: Profile = {
-  badge: "知识分享 · Frontend Dev",
+  badge: "AI 工程 · 全栈实践",
   name: "Muxin",
   avatar: "/avatar-placeholder.svg",
-  headline: "Hi，我是 Muxin。把项目、知识和生活感都整理成可分享的内容。",
+  headline: "Hi，我是 Muxin。把 AI 工程、项目实践和个人表达整理成可分享的内容。",
   description:
-    "前端工程师，二次元摄影师。这里不是单纯的私人笔记仓库，而是我对 AI 工程、前端实践、项目复盘与个人表达的公开分享站。",
+    "AI 专业本科生，偏产品和工程落地的全栈开发者，也是二次元摄影师。这里不是模板化技术博客，而是我公开整理 AI 工程、项目复盘、学习方法和真实生活感的分享站。",
 };
