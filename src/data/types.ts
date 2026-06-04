@@ -19,12 +19,6 @@ export type Project = {
   highlights: string[];
 };
 
-export type AnimePick = {
-  title: string;
-  category: string;
-  note: string;
-};
-
 export type SkillGroup = {
   title: string;
   items: string[];

@@ -4,7 +4,6 @@ import NoteCard from "../components/NoteCard.astro";
 import ProfileAvatar from "../components/ProfileAvatar.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import {
-  animeRecommendations,
   currentFocus,
   profile,
   projects,
@@ -63,24 +62,7 @@ const notes = (await getCollection("notes", ({ data }) => !data.draft))
     </div>
   </section>
 
-  <section class="mx-auto mt-16 max-w-4xl animate-fade-in-up motion-reduce:animate-none [animation-delay:120ms] rounded-[2rem] border border-zinc-100 bg-gradient-to-br from-white via-white to-violet-50/50 p-6 shadow-[0_18px_50px_rgba(24,24,27,0.04)] sm:p-8">
-    <div class="flex items-center gap-2 text-sm font-medium text-violet-600">
-      <span>✿</span>
-      <span>最近在看 / 推荐</span>
-    </div>
-
-    <div class="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-      {animeRecommendations.map((item) => (
-        <article class="rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md">
-          <h3 class="font-serif text-lg tracking-tight text-zinc-900">{item.title}</h3>
-          <p class="mt-1 text-xs font-medium text-violet-600">{item.category}</p>
-          <p class="mt-2 text-sm leading-6 text-zinc-500">{item.note}</p>
-        </article>
-      ))}
-    </div>
-  </section>
-
-  <section class="mx-auto mt-20 grid max-w-4xl animate-fade-in-up motion-reduce:animate-none [animation-delay:180ms] gap-8 lg:grid-cols-2">
+  <section class="mx-auto mt-16 grid max-w-4xl animate-fade-in-up motion-reduce:animate-none [animation-delay:120ms] gap-8 lg:grid-cols-2">
     <article class="rounded-[2rem] border border-zinc-100 bg-white p-7 shadow-[0_1px_0_rgba(24,24,27,0.02)]">
       <div class="flex items-center gap-2 text-sm font-medium text-violet-600">
         <span>✦</span>
@@ -128,7 +110,7 @@ const notes = (await getCollection("notes", ({ data }) => !data.draft))
     </article>
   </section>
 
-  <section class="mt-20 animate-fade-in-up motion-reduce:animate-none [animation-delay:240ms]">
+  <section class="mt-20 animate-fade-in-up motion-reduce:animate-none [animation-delay:180ms]">
     <div class="mx-auto flex max-w-4xl items-end justify-between gap-4">
       <div>
         <p class="text-sm font-medium text-violet-600">最新分享</p>
