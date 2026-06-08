@@ -50,6 +50,30 @@
     mask-image: radial-gradient(circle at center, black 32%, transparent 88%);
     pointer-events: none;
   }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: -30;
+    height: min(48vh, 560px);
+    background-image:
+      linear-gradient(
+        180deg,
+        rgba(252, 251, 255, 0) 0%,
+        rgba(252, 251, 255, 0.22) 18%,
+        rgba(252, 251, 255, 0.58) 58%,
+        rgba(252, 251, 255, 0.88) 100%
+      ),
+      url("/background-ambient-1.jpg");
+    background-position: center 62%;
+    background-repeat: no-repeat;
+    background-size: 118% auto;
+    opacity: 0.2;
+    filter: saturate(0.9) contrast(0.95) blur(1.2px);
+    mask-image: linear-gradient(to top, black 48%, transparent 100%);
+    pointer-events: none;
+  }
 }
 
 @layer components {
