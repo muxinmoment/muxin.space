@@ -31,11 +31,24 @@
   }
 
   body {
-    @apply bg-white text-zinc-900 antialiased;
+    @apply bg-[#fcfbff] text-zinc-900 antialiased;
   }
 
   ::selection {
     @apply bg-violet-200 text-violet-950;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -20;
+    background-image:
+      linear-gradient(rgba(139, 92, 246, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139, 92, 246, 0.035) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: radial-gradient(circle at center, black 32%, transparent 88%);
+    pointer-events: none;
   }
 }
 
@@ -86,5 +99,26 @@
   .article-prose pre::-webkit-scrollbar-track {
     background: rgba(228, 228, 231, 0.8);
     border-radius: 999px;
+  }
+
+  .article-prose blockquote {
+    @apply rounded-[1.6rem] border border-violet-100 bg-violet-50/55 px-6 py-5 text-zinc-600 shadow-[0_10px_30px_rgba(139,92,246,0.06)];
+  }
+
+  .article-prose blockquote p {
+    @apply text-[1.02rem] leading-8 text-zinc-600;
+  }
+
+  .article-prose h2 {
+    @apply text-[2rem] leading-tight xl:text-[2.2rem];
+  }
+
+  .article-prose h3 {
+    @apply text-[1.45rem] leading-tight xl:text-[1.58rem];
+  }
+
+  .article-prose p,
+  .article-prose li {
+    @apply leading-9;
   }
 }

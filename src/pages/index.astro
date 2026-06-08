@@ -28,8 +28,8 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
   description="分享 AI 工程、全栈实践、项目复盘和带点个人风格的长期内容。"
 >
   <div class="grid gap-10 lg:grid-cols-12 lg:gap-12 xl:gap-16 2xl:gap-20">
-    <aside class="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24 lg:self-start">
-      <div class="rounded-[2rem] border border-zinc-100 bg-white/90 p-6 shadow-[0_20px_70px_rgba(24,24,27,0.05)] backdrop-blur">
+    <aside class="lg:col-span-4 2xl:col-span-3 lg:sticky lg:top-24 lg:self-start">
+      <div class="rounded-[2.2rem] border border-zinc-100 bg-white/90 p-6 shadow-[0_24px_70px_rgba(24,24,27,0.05)] backdrop-blur sm:p-7">
         <div class="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-4 py-2 text-sm font-medium text-zinc-700 shadow-sm">
           <span class="text-violet-500">✦</span>
           <span>{profile.badge}</span>
@@ -101,7 +101,7 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
         </div>
       </div>
 
-      <div class="mt-4 rounded-[2rem] border border-zinc-100 bg-white/80 p-6 shadow-[0_10px_40px_rgba(24,24,27,0.03)]">
+      <div class="mt-5 rounded-[2.2rem] border border-zinc-100 bg-white/80 p-6 shadow-[0_16px_46px_rgba(24,24,27,0.03)] sm:p-7">
         <div class="flex items-center gap-2 text-sm font-medium text-violet-600">
           <span>✦</span>
           <span>站点原则</span>
@@ -117,52 +117,54 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
       </div>
     </aside>
 
-    <div class="min-w-0 space-y-8 animate-fade-in-up motion-reduce:animate-none lg:col-span-8 xl:col-span-9">
-      <section class="overflow-hidden rounded-[2.5rem] border border-zinc-100 bg-white/95 p-8 shadow-[0_30px_80px_rgba(24,24,27,0.06)] sm:p-10 xl:p-12 2xl:p-14">
-        <div class="max-w-[72rem]">
-          <div class="inline-flex items-center gap-2 rounded-full border border-violet-100 bg-violet-50/70 px-4 py-2 text-sm font-medium text-violet-700">
-            <span>✦</span>
-            <span>公开更新中的知识分享主站</span>
+    <div class="min-w-0 space-y-8 animate-fade-in-up motion-reduce:animate-none lg:col-span-8 2xl:col-span-9">
+      <section class="overflow-hidden rounded-[2.7rem] border border-zinc-100 bg-white/95 p-8 shadow-[0_30px_80px_rgba(24,24,27,0.06)] sm:p-10 xl:p-12 2xl:p-14">
+        <div class="grid gap-6 2xl:grid-cols-12 2xl:gap-8">
+          <div class="2xl:col-span-8">
+            <div class="inline-flex items-center gap-2 rounded-full border border-violet-100 bg-violet-50/70 px-4 py-2 text-sm font-medium text-violet-700">
+              <span>✦</span>
+              <span>公开更新中的知识分享主站</span>
+            </div>
+
+            <h2 class="mt-6 font-serif text-5xl leading-[1.04] tracking-tight text-zinc-900 sm:text-6xl xl:text-7xl 2xl:max-w-[15ch]">
+              Hi，我是 Muxin。
+              <span class="mt-2 block text-violet-600">
+                把 AI 工程、项目实践和个人表达，整理成能长期沉淀的公开内容。
+              </span>
+            </h2>
+
+            <p class="mt-6 max-w-4xl text-base leading-8 text-zinc-500 sm:text-lg 2xl:max-w-[54rem]">
+              这里不是模板化技术博客，而是我把 AI 工程、项目复盘、学习方法，以及和 B 站 /
+              小红书联动的内容整理成统一公开工作台的地方。
+            </p>
           </div>
 
-          <h2 class="mt-6 font-serif text-5xl leading-[1.05] tracking-tight text-zinc-900 sm:text-6xl xl:text-7xl 2xl:max-w-[16ch]">
-            Hi，我是 Muxin。
-            <span class="mt-2 block text-violet-600">
-              把 AI 工程、项目实践和个人表达，整理成能长期沉淀的公开内容。
-            </span>
-          </h2>
-
-          <p class="mt-6 max-w-4xl text-base leading-8 text-zinc-500 sm:text-lg 2xl:max-w-[58rem]">
-            这里不是模板化技术博客，而是我把 AI 工程、项目复盘、学习方法，以及和 B 站 /
-            小红书联动的内容整理成统一公开工作台的地方。
-          </p>
-        </div>
-
-        <div class="mt-10 grid gap-4 md:grid-cols-3 2xl:gap-5">
-          <article class="rounded-[1.6rem] border border-zinc-100 bg-zinc-50/80 p-5">
-            <p class="text-sm font-medium text-violet-600">站点定位</p>
-            <p class="mt-3 text-sm leading-7 text-zinc-600">
-              以知识分享、项目复盘和长期可检索内容为主，不做一次性展示页。
-            </p>
-          </article>
-          <article class="rounded-[1.6rem] border border-zinc-100 bg-zinc-50/80 p-5">
-            <p class="text-sm font-medium text-violet-600">当前主线</p>
-            <p class="mt-3 text-sm leading-7 text-zinc-600">
-              围绕 Aido、自研 Agent Loop、流式交互和内容工作流持续展开公开记录。
-            </p>
-          </article>
-          <article class="rounded-[1.6rem] border border-zinc-100 bg-zinc-50/80 p-5">
-            <p class="text-sm font-medium text-violet-600">更新方式</p>
-            <p class="mt-3 text-sm leading-7 text-zinc-600">
-              一边做项目，一边把经验拆成文章、清单、踩坑记录和可复用方法论。
-            </p>
-          </article>
+          <div class="grid gap-4 md:grid-cols-3 2xl:col-span-4 2xl:grid-cols-1 2xl:content-start 2xl:gap-4">
+            <article class="rounded-[1.8rem] border border-zinc-100 bg-zinc-50/80 p-5">
+              <p class="text-sm font-medium text-violet-600">站点定位</p>
+              <p class="mt-3 text-sm leading-7 text-zinc-600">
+                以知识分享、项目复盘和长期可检索内容为主，不做一次性展示页。
+              </p>
+            </article>
+            <article class="rounded-[1.8rem] border border-zinc-100 bg-zinc-50/80 p-5">
+              <p class="text-sm font-medium text-violet-600">当前主线</p>
+              <p class="mt-3 text-sm leading-7 text-zinc-600">
+                围绕 Aido、自研 Agent Loop、流式交互和内容工作流持续展开公开记录。
+              </p>
+            </article>
+            <article class="rounded-[1.8rem] border border-zinc-100 bg-zinc-50/80 p-5">
+              <p class="text-sm font-medium text-violet-600">更新方式</p>
+              <p class="mt-3 text-sm leading-7 text-zinc-600">
+                一边做项目，一边把经验拆成文章、清单、踩坑记录和可复用方法论。
+              </p>
+            </article>
+          </div>
         </div>
       </section>
 
       <section class="grid gap-8 2xl:grid-cols-12">
         {featuredNote && (
-          <article class="rounded-[2.2rem] border border-zinc-100 bg-white p-7 shadow-[0_16px_50px_rgba(24,24,27,0.04)] sm:p-8 2xl:col-span-7">
+          <article class="rounded-[2.4rem] border border-zinc-100 bg-white p-7 shadow-[0_16px_50px_rgba(24,24,27,0.04)] sm:p-8 2xl:col-span-8 2xl:p-10">
             <div class="flex items-center justify-between gap-4">
               <div class="flex items-center gap-2 text-sm font-medium text-violet-600">
                 <span>✦</span>
@@ -205,7 +207,7 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
           </article>
         )}
 
-        <article class="rounded-[2.2rem] border border-zinc-100 bg-white p-7 shadow-[0_16px_50px_rgba(24,24,27,0.04)] sm:p-8 2xl:col-span-5">
+        <article class="rounded-[2.4rem] border border-zinc-100 bg-white p-7 shadow-[0_16px_50px_rgba(24,24,27,0.04)] sm:p-8 2xl:col-span-4 2xl:p-9">
           <div class="flex items-center gap-2 text-sm font-medium text-violet-600">
             <span>✦</span>
             <span>当前关注点</span>
@@ -223,7 +225,7 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
       </section>
 
       {recentNotes.length > 0 && (
-        <section class="grid gap-4 md:grid-cols-2 2xl:grid-cols-3 2xl:gap-5">
+        <section class="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3 2xl:gap-5">
           {recentNotes.map((note) => (
             <article class="rounded-[2rem] border border-zinc-100 bg-white p-6 shadow-[0_12px_40px_rgba(24,24,27,0.03)] transition duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-violet-100/40">
               <div class="flex items-center justify-between gap-3">
