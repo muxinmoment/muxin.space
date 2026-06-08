@@ -4,6 +4,7 @@ interface Props {
   alt?: string;
   sizeClass?: string;
   badge?: string;
+  showBadge?: boolean;
   compact?: boolean;
   class?: string;
 }
@@ -13,6 +14,7 @@ const {
   alt = "Muxin avatar",
   sizeClass = "h-32 w-32",
   badge = "摄影中",
+  showBadge = true,
   compact = false,
   class: className = "",
 } = Astro.props;
@@ -50,11 +52,13 @@ const {
     </div>
   </div>
 
-  <div class="absolute -bottom-2 -right-2 flex items-center gap-2 rounded-full border border-violet-100 bg-white px-3 py-1 text-[11px] font-medium text-violet-600 shadow-lg shadow-violet-100">
-    <span class="relative flex h-2.5 w-2.5 items-center justify-center">
-      <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-70"></span>
-      <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
-    </span>
-    {!compact && <span>{badge}</span>}
-  </div>
+  {showBadge && (
+    <div class="absolute -bottom-2 -right-2 flex items-center gap-2 rounded-full border border-violet-100 bg-white px-3 py-1 text-[11px] font-medium text-violet-600 shadow-lg shadow-violet-100">
+      <span class="relative flex h-2.5 w-2.5 items-center justify-center">
+        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-70"></span>
+        <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+      </span>
+      {!compact && <span>{badge}</span>}
+    </div>
+  )}
 </div>
