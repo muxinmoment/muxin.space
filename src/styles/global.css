@@ -66,10 +66,10 @@
         rgba(252, 251, 255, 0.88) 100%
       ),
       url("/background-ambient-1.jpg");
-    background-position: center 62%;
+    background-position: center 30%;
     background-repeat: no-repeat;
     background-size: 118% auto;
-    opacity: 0.2;
+    opacity: 0.18;
     filter: saturate(0.9) contrast(0.95) blur(1.2px);
     mask-image: linear-gradient(to top, black 48%, transparent 100%);
     pointer-events: none;
