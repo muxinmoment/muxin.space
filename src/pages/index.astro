@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
-import NoteCard from "../components/NoteCard.astro";
 import ProfileAvatar from "../components/ProfileAvatar.astro";
+import ProjectCard from "../components/ProjectCard.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import {
   currentFocus,
@@ -13,116 +13,269 @@ import {
 const notes = (await getCollection("notes", ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
   .slice(0, 3);
+
+const [featuredNote, ...recentNotes] = notes;
+
+const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
 ---
 
 <BaseLayout
   title="muxin.space | 知识分享与项目公开记录"
   description="分享 AI 工程、全栈实践、项目复盘和带点个人风格的长期内容。"
 >
-  <section class="mx-auto max-w-4xl animate-fade-in-up motion-reduce:animate-none">
-    <div class="flex flex-col items-center gap-8 text-center lg:flex-row lg:items-center lg:text-left">
-      <ProfileAvatar
-        src={profile.avatar}
-        alt={`${profile.name} 的头像`}
-        sizeClass="h-32 w-32 sm:h-36 sm:w-36"
-        badge="摄影在线"
-      />
-
-      <div class="min-w-0 flex-1">
-        <div class="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 shadow-sm">
+  <div class="grid gap-10 lg:grid-cols-12 xl:gap-14">
+    <aside class="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24 lg:self-start">
+      <div class="rounded-[2rem] border border-zinc-100 bg-white/90 p-6 shadow-[0_20px_70px_rgba(24,24,27,0.05)] backdrop-blur">
+        <div class="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-4 py-2 text-sm font-medium text-zinc-700 shadow-sm">
           <span class="text-violet-500">✦</span>
           <span>{profile.badge}</span>
         </div>
 
-        <h1 class="mt-6 max-w-3xl font-serif text-5xl leading-tight tracking-tight text-zinc-900 sm:text-6xl">
-          Hi，我是 Muxin。
-          <span class="block text-violet-600">把 AI 工程、产品实现和个人表达，做成公开分享。</span>
-        </h1>
+        <div class="mt-6">
+          <ProfileAvatar
+            src={profile.avatar}
+            alt={`${profile.name} 的头像`}
+            sizeClass="h-36 w-36 sm:h-40 sm:w-40"
+            badge="摄影在线"
+          />
+        </div>
 
-        <p class="mt-5 max-w-2xl text-base leading-8 text-zinc-500 sm:text-lg">
-          {profile.description}
-        </p>
+        <div class="mt-6">
+          <p class="text-sm font-medium uppercase tracking-[0.28em] text-zinc-400">Identity</p>
+          <h1 class="mt-3 font-serif text-4xl tracking-tight text-zinc-900">
+            {profile.name}
+          </h1>
+          <p class="mt-4 text-sm leading-7 text-zinc-600">
+            {profile.description}
+          </p>
+        </div>
 
-        <div class="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
+        <div class="mt-6 flex flex-wrap gap-2">
+          <span class="rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-medium text-zinc-600">
+            知识分享站
+          </span>
+          <span class="rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-medium text-zinc-600">
+            公开更新中
+          </span>
+          <span class="rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-medium text-zinc-600">
+            内容长期沉淀
+          </span>
+        </div>
+
+        <div class="mt-8 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+          <div class="rounded-2xl border border-zinc-100 bg-zinc-50/80 px-4 py-3">
+            <p class="text-xs font-medium uppercase tracking-[0.24em] text-zinc-400">Sharing</p>
+            <p class="mt-2 font-serif text-2xl text-zinc-900">{notes.length}</p>
+            <p class="mt-1 text-xs leading-6 text-zinc-500">当前展示的最新公开文章</p>
+          </div>
+          <div class="rounded-2xl border border-zinc-100 bg-zinc-50/80 px-4 py-3">
+            <p class="text-xs font-medium uppercase tracking-[0.24em] text-zinc-400">Projects</p>
+            <p class="mt-2 font-serif text-2xl text-zinc-900">{projects.length}</p>
+            <p class="mt-1 text-xs leading-6 text-zinc-500">对外公开记录的主线项目</p>
+          </div>
+          <div class="rounded-2xl border border-zinc-100 bg-zinc-50/80 px-4 py-3">
+            <p class="text-xs font-medium uppercase tracking-[0.24em] text-zinc-400">Mode</p>
+            <p class="mt-2 font-serif text-2xl text-zinc-900">Now</p>
+            <p class="mt-1 text-xs leading-6 text-zinc-500">工程实践、分享写作、内容整理同步推进</p>
+          </div>
+        </div>
+
+        <div class="mt-8 flex flex-wrap gap-3">
           <a
             href="/notes/"
-            class="inline-flex items-center rounded-full bg-zinc-900 px-6 py-3 text-sm font-medium text-white shadow-lg shadow-zinc-200 transition duration-200 hover:-translate-y-0.5 hover:bg-violet-600"
+            class="inline-flex items-center rounded-full bg-zinc-900 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-zinc-200 transition duration-200 hover:-translate-y-0.5 hover:bg-violet-600"
           >
             阅读分享
             <span class="ml-2">→</span>
           </a>
           <a
             href="/about/"
-            class="inline-flex items-center rounded-full border border-zinc-200 bg-white px-6 py-3 text-sm font-medium text-zinc-700 transition duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:text-violet-600"
+            class="inline-flex items-center rounded-full border border-zinc-200 bg-white px-5 py-3 text-sm font-medium text-zinc-700 transition duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:text-violet-600"
           >
             关于我
           </a>
         </div>
       </div>
-    </div>
-  </section>
 
-  <section class="mx-auto mt-16 grid max-w-4xl animate-fade-in-up motion-reduce:animate-none [animation-delay:120ms] gap-8 lg:grid-cols-2">
-    <article class="rounded-[2rem] border border-zinc-100 bg-white p-7 shadow-[0_1px_0_rgba(24,24,27,0.02)]">
-      <div class="flex items-center gap-2 text-sm font-medium text-violet-600">
-        <span>✦</span>
-        <span>当前关注点</span>
+      <div class="mt-4 rounded-[2rem] border border-zinc-100 bg-white/80 p-6 shadow-[0_10px_40px_rgba(24,24,27,0.03)]">
+        <div class="flex items-center gap-2 text-sm font-medium text-violet-600">
+          <span>✦</span>
+          <span>站点原则</span>
+        </div>
+        <div class="mt-5 space-y-4">
+          {sitePrinciples.map((item) => (
+            <article class="rounded-2xl border border-zinc-100 bg-zinc-50/70 p-4">
+              <h2 class="text-sm font-medium text-zinc-900">{item.title}</h2>
+              <p class="mt-2 text-sm leading-7 text-zinc-500">{item.description}</p>
+            </article>
+          ))}
+        </div>
       </div>
+    </aside>
 
-      <ul class="mt-5 space-y-4">
-        {currentFocus.map((item) => (
-          <li class="flex gap-3 text-sm leading-7 text-zinc-600">
-            <span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-violet-400"></span>
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-
-      <div class="mt-6 flex flex-wrap gap-2">
-        {sitePrinciples.map((item) => (
-          <span class="rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs text-zinc-600">
-            {item.title}
-          </span>
-        ))}
-      </div>
-    </article>
-
-    <article class="rounded-[2rem] border border-zinc-100 bg-white p-7 shadow-[0_1px_0_rgba(24,24,27,0.02)]">
-      <div class="flex items-center gap-2 text-sm font-medium text-violet-600">
-        <span>✦</span>
-        <span>公开项目</span>
-      </div>
-      <div class="mt-5 space-y-4">
-        {projects.slice(0, 2).map((project) => (
-          <div class="rounded-2xl border border-zinc-100 bg-zinc-50/80 p-4">
-            <div class="flex items-start justify-between gap-4">
-              <div>
-                <h3 class="font-serif text-xl tracking-tight text-zinc-900">{project.name}</h3>
-                <p class="mt-2 text-sm leading-6 text-zinc-500">{project.summary}</p>
-              </div>
-              <span class="rounded-full bg-white px-3 py-1 text-xs font-medium text-violet-600">
-                {project.status}
-              </span>
-            </div>
+    <div class="min-w-0 space-y-8 animate-fade-in-up motion-reduce:animate-none lg:col-span-8 xl:col-span-9">
+      <section class="overflow-hidden rounded-[2.5rem] border border-zinc-100 bg-white/95 p-8 shadow-[0_30px_80px_rgba(24,24,27,0.06)] sm:p-10 xl:p-12">
+        <div class="max-w-4xl">
+          <div class="inline-flex items-center gap-2 rounded-full border border-violet-100 bg-violet-50/70 px-4 py-2 text-sm font-medium text-violet-700">
+            <span>✦</span>
+            <span>公开更新中的知识分享主站</span>
           </div>
-        ))}
-      </div>
-    </article>
-  </section>
 
-  <section class="mt-20 animate-fade-in-up motion-reduce:animate-none [animation-delay:180ms]">
-    <div class="mx-auto flex max-w-4xl items-end justify-between gap-4">
-      <div>
-        <p class="text-sm font-medium text-violet-600">最新分享</p>
-        <h2 class="mt-2 font-serif text-3xl tracking-tight text-zinc-900">把经验、踩坑和方法论整理成可检索内容</h2>
-      </div>
-      <a href="/notes/" class="text-sm font-medium text-zinc-500 transition hover:text-violet-600">
-        查看全部 →
-      </a>
-    </div>
+          <h2 class="mt-6 font-serif text-5xl leading-[1.05] tracking-tight text-zinc-900 sm:text-6xl xl:text-7xl">
+            Hi，我是 Muxin。
+            <span class="mt-2 block text-violet-600">
+              把 AI 工程、项目实践和个人表达，整理成能长期沉淀的公开内容。
+            </span>
+          </h2>
 
-    <div class="mx-auto mt-8 max-w-4xl space-y-4">
-      {notes.map((note) => <NoteCard note={note} />)}
+          <p class="mt-6 max-w-3xl text-base leading-8 text-zinc-500 sm:text-lg">
+            这里不是模板化技术博客，而是我把 AI 工程、项目复盘、学习方法，以及和 B 站 /
+            小红书联动的内容整理成统一公开工作台的地方。
+          </p>
+        </div>
+
+        <div class="mt-10 grid gap-4 md:grid-cols-3">
+          <article class="rounded-[1.6rem] border border-zinc-100 bg-zinc-50/80 p-5">
+            <p class="text-sm font-medium text-violet-600">站点定位</p>
+            <p class="mt-3 text-sm leading-7 text-zinc-600">
+              以知识分享、项目复盘和长期可检索内容为主，不做一次性展示页。
+            </p>
+          </article>
+          <article class="rounded-[1.6rem] border border-zinc-100 bg-zinc-50/80 p-5">
+            <p class="text-sm font-medium text-violet-600">当前主线</p>
+            <p class="mt-3 text-sm leading-7 text-zinc-600">
+              围绕 Aido、自研 Agent Loop、流式交互和内容工作流持续展开公开记录。
+            </p>
+          </article>
+          <article class="rounded-[1.6rem] border border-zinc-100 bg-zinc-50/80 p-5">
+            <p class="text-sm font-medium text-violet-600">更新方式</p>
+            <p class="mt-3 text-sm leading-7 text-zinc-600">
+              一边做项目，一边把经验拆成文章、清单、踩坑记录和可复用方法论。
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="grid gap-8 xl:grid-cols-5">
+        {featuredNote && (
+          <article class="rounded-[2.2rem] border border-zinc-100 bg-white p-7 shadow-[0_16px_50px_rgba(24,24,27,0.04)] sm:p-8 xl:col-span-3">
+            <div class="flex items-center justify-between gap-4">
+              <div class="flex items-center gap-2 text-sm font-medium text-violet-600">
+                <span>✦</span>
+                <span>最新分享</span>
+              </div>
+              <time
+                class="text-sm text-zinc-400"
+                datetime={featuredNote.data.pubDate.toISOString()}
+              >
+                {dateFormatter.format(featuredNote.data.pubDate)}
+              </time>
+            </div>
+
+            <a href={`/notes/${featuredNote.id}/`} class="group mt-6 block">
+              <h2 class="max-w-3xl font-serif text-3xl leading-tight tracking-tight text-zinc-900 transition-colors group-hover:text-violet-600 sm:text-[2.15rem]">
+                {featuredNote.data.title}
+              </h2>
+              <p class="mt-4 max-w-3xl text-base leading-8 text-zinc-500">
+                {featuredNote.data.description}
+              </p>
+            </a>
+
+            <div class="mt-6 flex flex-wrap gap-2">
+              {featuredNote.data.tags.map((tag) => (
+                <span class="rounded-full bg-violet-50 px-3 py-1 text-xs font-medium text-violet-600">
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            <div class="mt-8">
+              <a
+                href={`/notes/${featuredNote.id}/`}
+                class="inline-flex items-center text-sm font-medium text-zinc-700 transition hover:text-violet-600"
+              >
+                继续阅读
+                <span class="ml-2">→</span>
+              </a>
+            </div>
+          </article>
+        )}
+
+        <article class="rounded-[2.2rem] border border-zinc-100 bg-white p-7 shadow-[0_16px_50px_rgba(24,24,27,0.04)] sm:p-8 xl:col-span-2">
+          <div class="flex items-center gap-2 text-sm font-medium text-violet-600">
+            <span>✦</span>
+            <span>当前关注点</span>
+          </div>
+
+          <ul class="mt-5 space-y-4">
+            {currentFocus.map((item) => (
+              <li class="flex gap-3 text-sm leading-7 text-zinc-600">
+                <span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-violet-400"></span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </article>
+      </section>
+
+      {recentNotes.length > 0 && (
+        <section class="grid gap-4 md:grid-cols-2">
+          {recentNotes.map((note) => (
+            <article class="rounded-[2rem] border border-zinc-100 bg-white p-6 shadow-[0_12px_40px_rgba(24,24,27,0.03)] transition duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-violet-100/40">
+              <div class="flex items-center justify-between gap-3">
+                <p class="text-sm font-medium text-violet-600">更多分享</p>
+                <time class="text-sm text-zinc-400" datetime={note.data.pubDate.toISOString()}>
+                  {dateFormatter.format(note.data.pubDate)}
+                </time>
+              </div>
+
+              <a href={`/notes/${note.id}/`} class="group mt-5 block">
+                <h2 class="font-serif text-2xl tracking-tight text-zinc-900 transition-colors group-hover:text-violet-600">
+                  {note.data.title}
+                </h2>
+                <p class="mt-3 text-sm leading-7 text-zinc-500">
+                  {note.data.description}
+                </p>
+              </a>
+
+              <div class="mt-5 flex flex-wrap gap-2">
+                {note.data.tags.map((tag) => (
+                  <span class="rounded-full bg-zinc-50 px-3 py-1 text-xs font-medium text-zinc-600">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </article>
+          ))}
+        </section>
+      )}
+
+      <section class="rounded-[2.2rem] border border-zinc-100 bg-white p-7 shadow-[0_16px_50px_rgba(24,24,27,0.04)] sm:p-8">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="text-sm font-medium text-violet-600">公开项目</p>
+            <h2 class="mt-2 font-serif text-3xl tracking-tight text-zinc-900">
+              不是只放结果，而是把过程也拆出来
+            </h2>
+          </div>
+          <a
+            href="/projects/"
+            class="text-sm font-medium text-zinc-500 transition hover:text-violet-600"
+          >
+            查看全部 →
+          </a>
+        </div>
+
+        <div class="mt-8 grid gap-5 xl:grid-cols-2">
+          {projects.slice(0, 2).map((project) => (
+            <ProjectCard project={project} />
+          ))}
+        </div>
+      </section>
     </div>
-  </section>
+  </div>
 </BaseLayout>
