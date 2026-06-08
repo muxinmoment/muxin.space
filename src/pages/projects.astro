@@ -1,32 +1,256 @@
 ---
+import { getCollection } from "astro:content";
 import ProjectCard from "../components/ProjectCard.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { projects, sitePrinciples } from "../data";
+
+const notes = (await getCollection("notes", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+const stackCount = new Set(projects.flatMap((project) => project.stack)).size;
+const mainProject = projects[0];
+const siteProject = projects.find((project) => project.name === "muxin.space");
+const featuredBuildNote =
+  notes.find((note) => note.id === "from-handwritten-notes-to-an-astro-site") ?? notes[0];
+const latestNotes = notes.slice(0, 3);
+
+const slugify = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 ---
 
 <BaseLayout title="Projects | muxin.space" description="正在推进、复盘和公开分享中的个人项目。">
-  <section class="mx-auto max-w-4xl animate-fade-in-up motion-reduce:animate-none">
-    <div class="rounded-[2rem] border border-zinc-100 bg-white p-7 shadow-[0_1px_0_rgba(24,24,27,0.02)] sm:p-10">
-      <p class="text-sm font-medium text-violet-600">Projects</p>
-      <h1 class="mt-3 font-serif text-4xl tracking-tight text-zinc-900 sm:text-5xl">
-        把想法做成能跑、能展示、能持续分享的作品。
-      </h1>
-      <p class="mt-5 max-w-2xl text-base leading-8 text-zinc-500">
-        这里不只是项目陈列页，也是一组可持续公开复盘的工程样本，记录它们在解决什么问题、用了什么技术，以及还能继续展开哪些内容。
-      </p>
+  <div class="grid gap-8 lg:grid-cols-12 lg:gap-10 xl:gap-14 2xl:gap-16">
+    <aside class="animate-fade-in-up motion-reduce:animate-none lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24 lg:self-start">
+      <div class="rounded-[2.3rem] border border-zinc-100 bg-white/90 p-7 shadow-[0_20px_60px_rgba(24,24,27,0.05)] backdrop-blur sm:p-8">
+        <div class="inline-flex items-center gap-2 rounded-full border border-violet-100 bg-violet-50/80 px-4 py-2 text-sm font-medium text-violet-700">
+          <span>✦</span>
+          <span>Projects</span>
+        </div>
+
+        <h1 class="mt-6 font-serif text-4xl leading-tight tracking-tight text-zinc-900 sm:text-5xl lg:text-4xl xl:text-5xl">
+          这里主要放我正在长期推进的项目主线。
+        </h1>
+        <p class="mt-5 text-base leading-8 text-zinc-500">
+          项目页负责给你一个全局视角: 我在做什么、重点卡在哪里、哪部分已经被拆成文章可以继续看。
+        </p>
+
+        <div class="mt-8 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+          <article class="rounded-2xl border border-zinc-100 bg-zinc-50/80 px-4 py-3">
+            <p class="text-xs font-medium uppercase tracking-[0.24em] text-zinc-400">Projects</p>
+            <p class="mt-2 font-serif text-2xl text-zinc-900">{projects.length}</p>
+            <p class="mt-1 text-xs leading-6 text-zinc-500">当前公开记录的核心项目数量</p>
+          </article>
+          <article class="rounded-2xl border border-zinc-100 bg-zinc-50/80 px-4 py-3">
+            <p class="text-xs font-medium uppercase tracking-[0.24em] text-zinc-400">Stacks</p>
+            <p class="mt-2 font-serif text-2xl text-zinc-900">{stackCount}</p>
+            <p class="mt-1 text-xs leading-6 text-zinc-500">这些项目里已经在交叉使用的主要技术栈</p>
+          </article>
+          <article class="rounded-2xl border border-zinc-100 bg-zinc-50/80 px-4 py-3">
+            <p class="text-xs font-medium uppercase tracking-[0.24em] text-zinc-400">Notes</p>
+            <p class="mt-2 font-serif text-2xl text-zinc-900">{notes.length}</p>
+            <p class="mt-1 text-xs leading-6 text-zinc-500">已经和项目主线关联起来的公开分享</p>
+          </article>
+        </div>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a
+            href="/notes/"
+            class="inline-flex items-center rounded-full bg-zinc-900 px-5 py-3 text-sm font-medium text-white transition duration-200 hover:-translate-y-0.5 hover:bg-violet-600"
+          >
+            读项目相关文章
+            <span class="ml-2">→</span>
+          </a>
+          <a
+            href={`#project-${slugify(mainProject.name)}`}
+            class="inline-flex items-center rounded-full border border-zinc-200 bg-white px-5 py-3 text-sm font-medium text-zinc-700 transition duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:text-violet-600"
+          >
+            先看主线项目
+          </a>
+        </div>
+      </div>
+
+      <div class="mt-5 rounded-[2.2rem] border border-zinc-100 bg-white/80 p-6 shadow-[0_14px_40px_rgba(24,24,27,0.03)] sm:p-7">
+        <div class="flex items-center gap-2 text-sm font-medium text-violet-600">
+          <span>✦</span>
+          <span>怎么用这个页面</span>
+        </div>
+        <ul class="mt-5 space-y-4 text-sm leading-7 text-zinc-600">
+          <li class="flex gap-3">
+            <span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-violet-400"></span>
+            <span>如果你想最快了解我的技术主线，先看 <strong class="font-medium text-zinc-900">{mainProject.name}</strong>。</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-violet-400"></span>
+            <span>如果你更关心这个网站怎么搭、怎么部署，再看 <strong class="font-medium text-zinc-900">muxin.space</strong> 相关记录。</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-violet-400"></span>
+            <span>项目页看全局，具体实现和踩坑会继续沉淀到文章里，后面直接点进去就行。</span>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <div class="min-w-0 space-y-8 animate-fade-in-up motion-reduce:animate-none [animation-delay:120ms] lg:col-span-8 xl:col-span-9">
+      <section class="overflow-hidden rounded-[2.7rem] border border-zinc-100 bg-white/95 p-8 shadow-[0_30px_80px_rgba(24,24,27,0.06)] sm:p-10 xl:p-12 2xl:p-14">
+        <div class="grid gap-6 2xl:grid-cols-12 2xl:gap-8">
+          <div class="2xl:col-span-8">
+            <div class="inline-flex items-center gap-2 rounded-full border border-violet-100 bg-violet-50/70 px-4 py-2 text-sm font-medium text-violet-700">
+              <span>✦</span>
+              <span>持续推进中的项目主轴</span>
+            </div>
+
+            <h2 class="mt-6 max-w-[15ch] font-serif text-5xl leading-[1.05] tracking-tight text-zinc-900 sm:text-6xl xl:text-7xl">
+              我更想把项目做成可持续复盘的公开资产。
+            </h2>
+
+            <p class="mt-6 max-w-4xl text-base leading-8 text-zinc-500 sm:text-lg 2xl:max-w-[52rem]">
+              所以这里不会只放结果图。更重要的是把项目的定位、技术点和后续文章入口整理清楚，让它们真的能被别人读懂和继续追踪。
+            </p>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-3 2xl:col-span-4 2xl:grid-cols-1 2xl:content-start">
+            <article class="rounded-[1.8rem] border border-zinc-100 bg-zinc-50/80 p-5">
+              <p class="text-sm font-medium text-violet-600">当前主线</p>
+              <h3 class="mt-3 font-serif text-2xl tracking-tight text-zinc-900">{mainProject.name}</h3>
+              <p class="mt-2 text-sm leading-7 text-zinc-600">{mainProject.summary}</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                {mainProject.highlights.map((item) => (
+                  <span class="rounded-full bg-white px-3 py-1 text-xs font-medium text-zinc-600">
+                    {item}
+                  </span>
+                ))}
+              </div>
+              <a
+                href={`#project-${slugify(mainProject.name)}`}
+                class="mt-5 inline-flex items-center text-sm font-medium text-zinc-700 transition hover:text-violet-600"
+              >
+                跳到这个项目
+                <span class="ml-2">→</span>
+              </a>
+            </article>
+            <article class="rounded-[1.8rem] border border-zinc-100 bg-zinc-50/80 p-5">
+              <p class="text-sm font-medium text-violet-600">推荐起点</p>
+              <h3 class="mt-3 font-serif text-2xl tracking-tight text-zinc-900">
+                {featuredBuildNote.data.title}
+              </h3>
+              <p class="mt-2 text-sm leading-7 text-zinc-600">
+                {featuredBuildNote.data.description}
+              </p>
+              <a
+                href={`/notes/${featuredBuildNote.id}/`}
+                class="mt-5 inline-flex items-center text-sm font-medium text-zinc-700 transition hover:text-violet-600"
+              >
+                先读这篇
+                <span class="ml-2">→</span>
+              </a>
+            </article>
+            <article class="rounded-[1.8rem] border border-zinc-100 bg-zinc-50/80 p-5">
+              <p class="text-sm font-medium text-violet-600">内容入口</p>
+              <div class="mt-3 space-y-3 text-sm leading-7 text-zinc-600">
+                <p>项目页负责全局概览，文章页负责拆细节，后面也会继续和 B 站 / 小红书内容联动。</p>
+                <div class="flex flex-col gap-2">
+                  <a href="/notes/" class="inline-flex items-center text-sm font-medium text-zinc-700 transition hover:text-violet-600">
+                    看全部分享
+                    <span class="ml-2">→</span>
+                  </a>
+                  <a href="/about/" class="inline-flex items-center text-sm font-medium text-zinc-700 transition hover:text-violet-600">
+                    看我的背景
+                    <span class="ml-2">→</span>
+                  </a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="rounded-[2.3rem] border border-zinc-100 bg-white p-7 shadow-[0_18px_52px_rgba(24,24,27,0.04)] sm:p-8 2xl:p-9">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="text-sm font-medium text-violet-600">项目列表</p>
+            <h2 class="mt-2 font-serif text-3xl tracking-tight text-zinc-900">主线项目先铺开，再慢慢把细节补厚</h2>
+          </div>
+          <div class="rounded-full border border-zinc-200 bg-zinc-50 px-4 py-2 text-xs font-medium uppercase tracking-[0.24em] text-zinc-400">
+            updated in public
+          </div>
+        </div>
+
+        <div class="mt-8 grid gap-5 xl:grid-cols-2 2xl:grid-cols-6">
+          {projects.map((project, index) => (
+            <div class:list={[
+              "2xl:col-span-3",
+              index === 0 && "xl:col-span-2 2xl:col-span-6",
+            ]} id={`project-${slugify(project.name)}`}>
+              <ProjectCard project={project} />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr] 2xl:gap-8">
+        <article class="rounded-[2.2rem] border border-zinc-100 bg-white p-7 shadow-[0_14px_40px_rgba(24,24,27,0.03)] sm:p-8">
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <p class="text-sm font-medium text-violet-600">项目之外</p>
+              <h2 class="mt-2 font-serif text-3xl tracking-tight text-zinc-900">已经写出来的相关内容</h2>
+            </div>
+            <a
+              href="/notes/"
+              class="text-sm font-medium text-zinc-500 transition hover:text-violet-600"
+            >
+              查看全部 →
+            </a>
+          </div>
+
+          <div class="mt-6 space-y-4">
+            {latestNotes.map((note) => (
+              <a
+                href={`/notes/${note.id}/`}
+                class="block rounded-[1.6rem] border border-zinc-100 bg-zinc-50/70 p-5 transition duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:bg-white"
+              >
+                <p class="text-xs font-medium uppercase tracking-[0.24em] text-zinc-400">
+                  {note.data.pubDate.toISOString().slice(0, 10)}
+                </p>
+                <h3 class="mt-3 font-serif text-2xl tracking-tight text-zinc-900">
+                  {note.data.title}
+                </h3>
+                <p class="mt-3 text-sm leading-7 text-zinc-500">{note.data.description}</p>
+              </a>
+            ))}
+          </div>
+        </article>
+
+        <article class="rounded-[2.2rem] border border-zinc-100 bg-white p-7 shadow-[0_14px_40px_rgba(24,24,27,0.03)] sm:p-8">
+          <p class="text-sm font-medium text-violet-600">公开原则</p>
+          <div class="mt-5 space-y-4">
+            {sitePrinciples.map((item, index) => (
+              <section class="rounded-[1.6rem] border border-zinc-100 bg-zinc-50/70 p-5">
+                <p class="text-xs font-medium uppercase tracking-[0.24em] text-zinc-400">0{index + 1}</p>
+                <h3 class="mt-3 font-serif text-2xl tracking-tight text-zinc-900">{item.title}</h3>
+                <p class="mt-3 text-sm leading-7 text-zinc-500">{item.description}</p>
+              </section>
+            ))}
+          </div>
+
+          {siteProject && (
+            <div class="mt-6 rounded-[1.6rem] border border-violet-100 bg-violet-50/60 p-5">
+              <p class="text-sm font-medium text-violet-600">这个站本身也是项目</p>
+              <p class="mt-3 text-sm leading-7 text-zinc-600">{siteProject.summary}</p>
+              <a
+                href={`#project-${slugify(siteProject.name)}`}
+                class="mt-4 inline-flex items-center text-sm font-medium text-zinc-700 transition hover:text-violet-600"
+              >
+                回到这个项目
+                <span class="ml-2">→</span>
+              </a>
+            </div>
+          )}
+        </article>
+      </section>
     </div>
-  </section>
-
-  <section class="mx-auto mt-10 grid max-w-4xl animate-fade-in-up motion-reduce:animate-none [animation-delay:120ms] gap-4 md:grid-cols-2">
-    {projects.map((project) => <ProjectCard project={project} />)}
-  </section>
-
-  <section class="mx-auto mt-10 grid max-w-4xl animate-fade-in-up motion-reduce:animate-none [animation-delay:180ms] gap-4 md:grid-cols-3">
-    {sitePrinciples.map((item) => (
-      <article class="rounded-[1.75rem] border border-zinc-100 bg-zinc-50/70 p-5">
-        <h3 class="font-serif text-xl tracking-tight text-zinc-900">{item.title}</h3>
-        <p class="mt-3 text-sm leading-7 text-zinc-500">{item.description}</p>
-      </article>
-    ))}
-  </section>
+  </div>
 </BaseLayout>
