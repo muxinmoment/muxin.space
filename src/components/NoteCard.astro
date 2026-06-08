@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { noteCategoryMeta } from "../data";
 
 interface Props {
   note: CollectionEntry<"notes">;
@@ -11,6 +12,7 @@ const dateText = new Intl.DateTimeFormat("zh-CN", {
   month: "2-digit",
   day: "2-digit",
 }).format(note.data.pubDate);
+const categoryMeta = noteCategoryMeta[note.data.category];
 ---
 
 <article class="group rounded-[2rem] border border-zinc-100 bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(250,250,255,0.92)_100%)] p-5 shadow-[0_12px_36px_rgba(24,24,27,0.04)] transition duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-[0_20px_44px_rgba(139,92,246,0.10)] sm:p-6">
@@ -20,9 +22,18 @@ const dateText = new Intl.DateTimeFormat("zh-CN", {
     </time>
 
     <div class="min-w-0 flex-1">
+      <div class="flex flex-wrap items-center gap-2">
+        <a
+          href={`/notes/category/${categoryMeta.slug}/`}
+          class="rounded-full border border-violet-100 bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700 transition hover:border-violet-200 hover:bg-white"
+        >
+          {note.data.category}
+        </a>
+      </div>
+
       <a
         href={`/notes/${note.id}/`}
-        class="font-serif text-xl tracking-tight text-zinc-900 transition-colors hover:text-violet-600"
+        class="mt-3 block font-serif text-xl tracking-tight text-zinc-900 transition-colors hover:text-violet-600"
       >
         {note.data.title}
       </a>

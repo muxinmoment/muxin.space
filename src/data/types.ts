@@ -1,3 +1,5 @@
+import type { NoteCategory } from "./noteTaxonomy";
+
 export type Profile = {
   badge: string;
   name: string;
@@ -17,6 +19,8 @@ export type Project = {
   summary: string;
   stack: string[];
   highlights: string[];
+  liveUrl?: string;
+  liveLabel?: string;
 };
 
 export type SkillGroup = {
@@ -29,3 +33,5 @@ export type TimelineItem = {
   title: string;
   description: string;
 };
+
+export type { NoteCategory };

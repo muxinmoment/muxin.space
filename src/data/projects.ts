@@ -8,6 +8,8 @@ export const projects: Project[] = [
       "自研多智能体个人效能管家，重点在 Agent Loop、流式响应和外部状态管理，也会持续拆成可公开分享的工程内容。",
     stack: ["FastAPI", "SSE", "PostgreSQL"],
     highlights: ["Agent Loop", "流式渲染", "状态外置"],
+    liveUrl: "http://47.110.76.9/",
+    liveLabel: "进入 Aido",
   },
   {
     name: "muxin.space",

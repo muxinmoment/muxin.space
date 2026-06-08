@@ -2,6 +2,7 @@
 title: "欢迎来到 muxin.space"
 description: "第一篇站点日志，解释这个网站为什么存在。"
 pubDate: 2026-05-31
+category: "项目记录"
 tags:
   - site
   - journal

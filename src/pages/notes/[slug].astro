@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from "astro:content";
+import { noteCategoryMeta } from "../../data";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 export async function getStaticPaths() {
@@ -17,6 +18,7 @@ const dateText = new Intl.DateTimeFormat("zh-CN", {
   month: "long",
   day: "numeric",
 }).format(entry.data.pubDate);
+const categoryMeta = noteCategoryMeta[entry.data.category];
 ---
 
 <BaseLayout title={`${entry.data.title} | muxin.space`} description={entry.data.description}>
@@ -39,6 +41,18 @@ const dateText = new Intl.DateTimeFormat("zh-CN", {
         </p>
 
         <div class="mt-6 space-y-4 border-t border-zinc-100 pt-6">
+          <div>
+            <p class="text-xs font-medium uppercase tracking-[0.24em] text-zinc-400">Category</p>
+            <div class="mt-3">
+              <a
+                href={`/notes/category/${categoryMeta.slug}/`}
+                class="rounded-full border border-violet-100 bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700 transition hover:border-violet-200 hover:bg-white"
+              >
+                {entry.data.category}
+              </a>
+            </div>
+          </div>
+
           <div>
             <p class="text-xs font-medium uppercase tracking-[0.24em] text-zinc-400">Published</p>
             <time class="mt-2 block text-sm text-zinc-600" datetime={entry.data.pubDate.toISOString()}>

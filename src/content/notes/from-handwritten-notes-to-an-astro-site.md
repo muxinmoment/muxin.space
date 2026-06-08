@@ -2,6 +2,7 @@
 title: "从零个人网站落地：我为什么用 Astro + Cloudflare Pages"
 description: "结合这次真实搭站过程，聊清楚我为什么选 Astro、岛屿架构到底解决了什么，以及 Cloudflare Pages 和阿里云域名应该怎么接。"
 pubDate: 2026-06-07
+category: "技术分享"
 tags:
   - astro
   - cloudflare

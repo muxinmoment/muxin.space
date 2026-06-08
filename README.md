@@ -59,11 +59,20 @@ frontmatter 示例:
 title: "文章标题"
 description: "一句话简介"
 pubDate: 2026-05-31
+category: "技术分享"
 tags:
   - astro
   - frontend
 ---
 ```
+
+文章分类固定使用：
+
+- `项目记录`
+- `技术分享`
+- `思考随笔`
+
+更完整的分类与 tags 规则见 `docs/文章分类与标签规范.md`，可直接套用的草稿模板见 `src/content/notes/_article-template.md`。
 
 ## Cloudflare Pages 部署
 
