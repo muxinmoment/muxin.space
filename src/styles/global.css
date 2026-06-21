@@ -95,11 +95,19 @@
     font-weight: 500;
     border: 0;
     border-radius: 0;
+    color: rgb(39 39 42) !important;
+    -webkit-text-fill-color: rgb(39 39 42);
   }
 
   .article-prose pre code::before,
   .article-prose pre code::after {
     content: none;
+  }
+
+  .article-prose pre code,
+  .article-prose pre code span,
+  .article-prose pre code .line {
+    color: rgb(39 39 42) !important;
   }
 
   .article-prose pre.astro-code {
