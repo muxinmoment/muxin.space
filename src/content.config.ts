@@ -16,4 +16,15 @@ const notes = defineCollection({
   }),
 });
 
-export const collections = { notes };
+const memo = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/memo" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    pubDate: z.coerce.date(),
+    tags: z.array(z.string()).default([]),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { notes, memo };
