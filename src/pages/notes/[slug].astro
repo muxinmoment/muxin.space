@@ -22,68 +22,70 @@ const categoryMeta = noteCategoryMeta[entry.data.category];
 ---
 
 <BaseLayout title={`${entry.data.title} | muxin.space`} description={entry.data.description}>
-  <div class="grid gap-8 lg:grid-cols-12 lg:gap-10 xl:gap-14 2xl:gap-16">
-    <aside class="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24 lg:self-start">
-      <div class="rounded-[2.3rem] border border-zinc-100 bg-white/90 p-6 shadow-[0_18px_44px_rgba(24,24,27,0.04)] backdrop-blur sm:p-7">
+  <div class="grid gap-6 lg:gap-10 xl:gap-14 2xl:gap-16 md:grid-cols-12">
+    <aside class="md:col-span-4 xl:col-span-3 md:sticky md:top-24 md:self-start">
+      <div class="rounded-2xl md:rounded-[2.3rem] border border-zinc-100 bg-white/90 p-4 sm:p-6 md:shadow-[0_18px_44px_rgba(24,24,27,0.04)] md:backdrop-blur">
         <a
           href="/notes/"
-          class="inline-flex items-center rounded-full border border-zinc-200 bg-zinc-50 px-4 py-2 text-sm font-medium text-zinc-600 transition hover:border-violet-200 hover:text-violet-600"
+          class="inline-flex items-center rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm font-medium text-zinc-600 transition hover:border-violet-200 hover:text-violet-600"
         >
           ← 返回分享列表
         </a>
 
-        <p class="mt-8 text-sm font-medium text-violet-600">Article</p>
-        <h1 class="mt-3 font-serif text-3xl leading-tight tracking-tight text-zinc-900 sm:text-4xl xl:text-[2.6rem]">
+        <div class="mt-4 md:mt-8 flex flex-wrap items-center gap-3">
+          <a
+            href={`/notes/category/${categoryMeta.slug}/`}
+            class="rounded-full border border-violet-100 bg-violet-50 px-2.5 py-1 text-xs font-medium text-violet-700 transition hover:border-violet-200 hover:bg-white"
+          >
+            {entry.data.category}
+          </a>
+          <time class="text-xs text-zinc-400" datetime={entry.data.pubDate.toISOString()}>
+            {dateText}
+          </time>
+        </div>
+
+        <h1 class="mt-3 md:hidden font-serif text-xl leading-snug tracking-tight text-zinc-900">
           {entry.data.title}
         </h1>
-        <p class="mt-5 text-sm leading-8 text-zinc-500 sm:text-base">
+        <p class="mt-2 md:hidden text-sm leading-7 text-zinc-500">
           {entry.data.description}
         </p>
 
-        <div class="mt-6 space-y-4 border-t border-zinc-100 pt-6">
-          <div>
-            <p class="text-xs font-medium uppercase tracking-[0.24em] text-zinc-400">Category</p>
-            <div class="mt-3">
-              <a
-                href={`/notes/category/${categoryMeta.slug}/`}
-                class="rounded-full border border-violet-100 bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700 transition hover:border-violet-200 hover:bg-white"
-              >
-                {entry.data.category}
-              </a>
-            </div>
-          </div>
+        <div class="hidden md:block">
+          <p class="mt-8 text-sm font-medium text-violet-600">Article</p>
+          <h1 class="mt-3 font-serif text-3xl leading-tight tracking-tight text-zinc-900 sm:text-4xl xl:text-[2.6rem]">
+            {entry.data.title}
+          </h1>
+          <p class="mt-5 text-sm leading-8 text-zinc-500 sm:text-base">
+            {entry.data.description}
+          </p>
+        </div>
 
-          <div>
-            <p class="text-xs font-medium uppercase tracking-[0.24em] text-zinc-400">Published</p>
-            <time class="mt-2 block text-sm text-zinc-600" datetime={entry.data.pubDate.toISOString()}>
-              {dateText}
-            </time>
-          </div>
-
-          <div>
-            <p class="text-xs font-medium uppercase tracking-[0.24em] text-zinc-400">Tags</p>
-            <div class="mt-3 flex flex-wrap gap-2">
+        <div class="mt-4 md:mt-6 md:space-y-4 md:border-t md:border-zinc-100 md:pt-6">
+          <div class="flex flex-wrap gap-1.5 md:block">
+            <span class="hidden md:inline text-xs font-medium uppercase tracking-[0.24em] text-zinc-400">Tags</span>
+            <div class="flex flex-wrap gap-1.5 md:mt-3">
               {entry.data.tags.map((tag) => (
-                <span class="rounded-full border border-violet-100 bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700">
+                <span class="rounded-full border border-violet-100 bg-violet-50 px-2 py-0.5 text-[11px] md:text-xs font-medium text-violet-700 md:px-3 md:py-1">
                   {tag}
                 </span>
               ))}
             </div>
           </div>
 
-          <div>
-            <p class="text-xs font-medium uppercase tracking-[0.24em] text-zinc-400">Reading</p>
-            <p class="mt-2 text-sm leading-7 text-zinc-500">
-              这篇文章按长文阅读节奏排版，适合在桌面端慢慢看，也适合后续拆成更短的公开表达内容。
-            </p>
+          <div class="hidden md:block">
+            <p class="text-xs font-medium uppercase tracking-[0.24em] text-zinc-400">Published</p>
+            <time class="mt-2 block text-sm text-zinc-600" datetime={entry.data.pubDate.toISOString()}>
+              {dateText}
+            </time>
           </div>
         </div>
       </div>
     </aside>
 
-    <article class="lg:col-span-8 xl:col-span-9">
-      <div class="rounded-[2.4rem] border border-zinc-100 bg-white p-6 shadow-[0_12px_36px_rgba(24,24,27,0.04)] sm:p-10 xl:p-12 2xl:px-14 2xl:py-12">
-        <div class="border-b border-zinc-100 pb-8">
+    <article class="md:col-span-8 xl:col-span-9">
+      <div class="rounded-2xl md:rounded-[2.4rem] border border-zinc-100 bg-white p-5 sm:p-7 md:p-10 xl:p-12 2xl:px-14 2xl:py-12 shadow-[0_8px_24px_rgba(24,24,27,0.03)] md:shadow-[0_12px_36px_rgba(24,24,27,0.04)]">
+        <div class="hidden md:block border-b border-zinc-100 pb-6 md:pb-8">
           <p class="text-sm font-medium text-violet-600">Essay</p>
           <h2 class="mt-3 font-serif text-4xl leading-tight tracking-tight text-zinc-900 xl:text-5xl 2xl:max-w-[18ch]">
             {entry.data.title}
@@ -93,7 +95,7 @@ const categoryMeta = noteCategoryMeta[entry.data.category];
           </p>
         </div>
 
-        <div class="article-prose prose prose-zinc mt-10 max-w-none prose-headings:font-serif prose-headings:tracking-tight prose-a:text-violet-600 prose-a:no-underline hover:prose-a:text-violet-700 prose-strong:text-zinc-900 2xl:max-w-[86ch]">
+        <div class="article-prose prose prose-zinc mt-6 md:mt-10 max-w-none prose-headings:font-serif prose-headings:tracking-tight prose-a:text-violet-600 prose-a:no-underline hover:prose-a:text-violet-700 prose-strong:text-zinc-900 2xl:max-w-[86ch]">
           <Content />
         </div>
       </div>

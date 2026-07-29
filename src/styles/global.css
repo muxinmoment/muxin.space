@@ -151,6 +151,51 @@
 
   .article-prose p,
   .article-prose li {
-    @apply leading-9;
+    @apply leading-8 lg:leading-9;
+  }
+
+  /* 文章内图片响应式适配 */
+  .article-prose img {
+    @apply max-w-full h-auto rounded-xl;
+  }
+
+  .article-prose svg {
+    @apply max-w-full h-auto;
+  }
+
+  /* 文章内表格横向滚动 */
+  .article-prose table {
+    @apply block w-full overflow-x-auto text-sm;
+  }
+
+  .article-prose thead,
+  .article-prose tbody,
+  .article-prose tr,
+  .article-prose th,
+  .article-prose td {
+    @apply whitespace-nowrap;
+  }
+
+  /* 手机端缩小代码块字号和边距 */
+  .article-prose pre {
+    @apply text-[0.82rem] leading-6 px-4 py-3 sm:text-[0.95rem] sm:leading-7 sm:px-5 sm:py-4 overflow-x-auto;
+  }
+
+  /* 手机端缩小标题 */
+  .article-prose h2 {
+    @apply text-[1.4rem] leading-tight sm:text-[1.65rem] lg:text-[2rem] xl:text-[2.2rem];
+  }
+
+  .article-prose h3 {
+    @apply text-[1.15rem] leading-tight sm:text-[1.3rem] lg:text-[1.45rem] xl:text-[1.58rem];
+  }
+
+  /* 手机端引用块缩小内边距 */
+  .article-prose blockquote {
+    @apply px-5 py-4 sm:px-6 sm:py-5;
+  }
+
+  .article-prose blockquote p {
+    @apply text-[0.95rem] leading-7 sm:text-[1.02rem] sm:leading-8;
   }
 }

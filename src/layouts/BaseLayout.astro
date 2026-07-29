@@ -41,15 +41,15 @@ const isActive = (href: string) =>
     ></div>
 
     <header class="border-b border-zinc-100/90 bg-white/90 backdrop-blur-xl">
-      <div class="mx-auto flex w-full max-w-[1840px] flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-14 lg:flex-row lg:items-center lg:justify-between">
-        <a href="/" class="inline-flex items-center gap-2 self-start font-serif text-2xl tracking-tight text-zinc-900">
+      <div class="mx-auto flex w-full max-w-[1840px] items-center justify-between gap-4 px-3 py-3 sm:px-6 lg:px-8 xl:px-10 2xl:px-14">
+        <a href="/" class="inline-flex items-center gap-2 font-serif text-lg sm:text-2xl tracking-tight text-zinc-900 shrink-0">
           <span>muxin</span>
           <span class="text-violet-500">✦</span>
           <span>space</span>
         </a>
 
-        <nav aria-label="主导航" class="self-start lg:self-auto">
-          <ul class="flex flex-wrap items-center gap-2 text-sm font-medium text-zinc-500">
+        <nav aria-label="主导航" class="shrink-0">
+          <ul class="flex items-center gap-1 text-[13px] sm:text-sm font-medium text-zinc-500">
             {
               navLinks.map((link) => (
                 <li>
@@ -57,7 +57,7 @@ const isActive = (href: string) =>
                     href={link.href}
                     aria-current={isActive(link.href) ? "page" : undefined}
                     class:list={[
-                      "rounded-full px-3 py-2 transition-colors duration-200 hover:text-violet-600",
+                      "rounded-full px-2 py-1.5 sm:px-3 sm:py-2 transition-colors duration-200 hover:text-violet-600",
                       {
                         "text-violet-600": isActive(link.href),
                         "bg-violet-50 text-violet-600": isActive(link.href),
