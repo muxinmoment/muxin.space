@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 260">
+  <style>
+    text { font-family: -apple-system, 'Segoe UI', sans-serif; }
+  </style>
+
+  <rect width="780" height="260" fill="#fff" rx="8"/>
+
+  <text x="390" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1a1a2e">改后：人工介入是一条时间线</text>
+
+  <!-- Phase labels -->
+  <text x="92" y="52" text-anchor="middle" font-size="10" fill="#3b82f6" font-weight="600">⚠️ 前置准备</text>
+  <text x="260" y="52" text-anchor="middle" font-size="10" fill="#64748b" font-weight="600">API 调用</text>
+  <text x="434" y="52" text-anchor="middle" font-size="10" fill="#f59e0b" font-weight="600">⚠️ 中置交互</text>
+  <text x="608" y="52" text-anchor="middle" font-size="10" fill="#f59e0b" font-weight="600">⚠️ 后置确认</text>
+  <text x="730" y="52" text-anchor="middle" font-size="10" fill="#22c55e" font-weight="600">断言</text>
+
+  <!-- Box: preManual -->
+  <rect x="20" y="65" width="145" height="70" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="92" y="92" text-anchor="middle" font-size="13" font-weight="600" fill="#1e40af">preManual</text>
+  <text x="92" y="110" text-anchor="middle" font-size="11" fill="#64748b">环境准备</text>
+  <text x="92" y="126" text-anchor="middle" font-size="10" fill="#94a3b8">放二维码 / 切页面</text>
+
+  <line x1="165" y1="100" x2="195" y2="100" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow2)"/>
+
+  <!-- Box: invoke -->
+  <rect x="195" y="65" width="130" height="70" rx="8" fill="#e8f4fd" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="260" y="92" text-anchor="middle" font-size="13" font-weight="600" fill="#1e40af">invoke()</text>
+  <text x="260" y="110" text-anchor="middle" font-size="11" fill="#64748b">调用 API</text>
+  <text x="260" y="126" text-anchor="middle" font-size="10" fill="#94a3b8">callback 监听启动</text>
+
+  <line x1="325" y1="100" x2="355" y2="100" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow2)"/>
+
+  <!-- Box: midManual -->
+  <rect x="355" y="65" width="160" height="70" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="435" y="92" text-anchor="middle" font-size="13" font-weight="600" fill="#92400e">midManual</text>
+  <text x="435" y="110" text-anchor="middle" font-size="11" fill="#64748b">人工交互</text>
+  <text x="435" y="126" text-anchor="middle" font-size="10" fill="#94a3b8">点击按钮触发回调</text>
+
+  <line x1="515" y1="100" x2="545" y2="100" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow2)"/>
+
+  <!-- Box: manual -->
+  <rect x="545" y="65" width="135" height="70" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="612" y="92" text-anchor="middle" font-size="13" font-weight="600" fill="#92400e">manual</text>
+  <text x="612" y="110" text-anchor="middle" font-size="11" fill="#64748b">后置确认</text>
+  <text x="612" y="126" text-anchor="middle" font-size="10" fill="#94a3b8">确认结果</text>
+
+  <line x1="680" y1="100" x2="705" y2="100" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow2)"/>
+
+  <!-- Box: expect -->
+  <rect x="705" y="65" width="55" height="70" rx="8" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="732" y="105" text-anchor="middle" font-size="12" font-weight="600" fill="#166534">断言</text>
+
+  <!-- Key insight bar -->
+  <rect x="20" y="165" width="740" height="75" rx="8" fill="#f0f9ff" stroke="#3b82f6" stroke-width="1"/>
+  <text x="390" y="190" text-anchor="middle" font-size="13" font-weight="600" fill="#1e40af">💡 核心设计</text>
+  <text x="390" y="210" text-anchor="middle" font-size="12" fill="#475569">midManual 与 callback 收集并行运行：用户一边交互，监听一边回收数据</text>
+  <text x="390" y="228" text-anchor="middle" font-size="12" fill="#475569">三个阶段独立可选，缺省不触发，现有用例零修改兼容</text>
+
+  <defs>
+    <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+</svg>
