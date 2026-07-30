@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" font-family="'Inter', 'PingFang SC', sans-serif">
+  <defs>
+    <linearGradient id="gL0" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#6D28D9"/></linearGradient>
+    <linearGradient id="gL1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2563EB"/><stop offset="100%" stop-color="#1D4ED8"/></linearGradient>
+    <linearGradient id="gL2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+    <linearGradient id="gWF" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#DC2626"/><stop offset="100%" stop-color="#B91C1C"/></linearGradient>
+    <linearGradient id="gCat" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#2563EB"/><stop offset="100%" stop-color="#1E40AF"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="2" dy="4" stdDeviation="4" flood-opacity="0.15"/></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#6B7280"/></marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="620" fill="#F8FAFC" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="38" text-anchor="middle" font-size="22" font-weight="bold" fill="#1E293B">JSAPI Skill 分层架构：三维模型全景</text>
+  <text x="450" y="58" text-anchor="middle" font-size="13" fill="#64748B">纵向三级作用域 × 横向五大流程分类 × 双维度等级管控</text>
+
+  <!-- === L0 Layer === -->
+  <rect x="60" y="80" width="780" height="80" rx="10" fill="url(#gL0)" filter="url(#shadow)" opacity="0.95"/>
+  <text x="90" y="112" font-size="16" font-weight="bold" fill="#DDD6FE">L0 全局级</text>
+  <text x="220" y="112" font-size="13" fill="#C4B5FD">~/.config/opencode/skills/</text>
+  <text x="620" y="112" font-size="12" fill="#C4B5FD" text-anchor="end">跨项目通用 · 3-5 个 Skill</text>
+  <rect x="90" y="124" width="160" height="26" rx="6" fill="#A78BFA" opacity="0.7"/>
+  <text x="100" y="142" font-size="12" fill="white">lingxi-miner</text>
+  <text x="265" y="142" font-size="12" fill="#C4B5FD">范式挖掘 · 通用 Git 助手</text>
+
+  <!-- Arrow L0 → L1 -->
+  <line x1="450" y1="162" x2="450" y2="185" stroke="#6B7280" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="465" y="178" font-size="11" fill="#6B7280">继承</text>
+
+  <!-- === L1: Project Level === -->
+  <rect x="60" y="190" width="780" height="260" rx="10" fill="url(#gL1)" filter="url(#shadow)" opacity="0.95"/>
+  <text x="90" y="220" font-size="16" font-weight="bold" fill="#BFDBFE">L1 项目级</text>
+  <text x="220" y="220" font-size="13" fill="#93C5FD">仓库根目录 .opencode/skills/</text>
+  <text x="620" y="220" font-size="12" fill="#93C5FD" text-anchor="end">按流程阶段分类 · 5-7 个 Skill</text>
+
+  <!-- L1 Category Boxes -->
+  <!-- Workflow -->
+  <rect x="85" y="240" width="136" height="95" rx="8" fill="white" opacity="0.18"/>
+  <rect x="85" y="240" width="136" height="28" rx="8" fill="#DC2626" opacity="0.8"/>
+  <text x="153" y="259" text-anchor="middle" font-size="13" font-weight="bold" fill="white">🔀 workflow</text>
+  <text x="153" y="300" text-anchor="middle" font-size="12" fill="#BFDBFE">全流程编排</text>
+  <text x="153" y="318" text-anchor="middle" font-size="11" fill="#93C5FD">full-pipeline</text>
+
+  <!-- Doc -->
+  <rect x="235" y="240" width="136" height="95" rx="8" fill="white" opacity="0.18"/>
+  <rect x="235" y="240" width="136" height="28" rx="8" fill="#EA580C" opacity="0.8"/>
+  <text x="303" y="259" text-anchor="middle" font-size="13" font-weight="bold" fill="white">📋 doc</text>
+  <text x="303" y="300" text-anchor="middle" font-size="12" fill="#BFDBFE">文档校验</text>
+  <text x="303" y="318" text-anchor="middle" font-size="11" fill="#93C5FD">doc-validator</text>
+
+  <!-- Usecase -->
+  <rect x="385" y="240" width="136" height="95" rx="8" fill="white" opacity="0.18"/>
+  <rect x="385" y="240" width="136" height="28" rx="8" fill="#CA8A04" opacity="0.8"/>
+  <text x="453" y="259" text-anchor="middle" font-size="13" font-weight="bold" fill="white">🧪 usecase</text>
+  <text x="453" y="300" text-anchor="middle" font-size="12" fill="#BFDBFE">用例生成</text>
+  <text x="453" y="318" text-anchor="middle" font-size="11" fill="#93C5FD">usecase-generator</text>
+
+  <!-- Execution -->
+  <rect x="535" y="240" width="136" height="95" rx="8" fill="white" opacity="0.18"/>
+  <rect x="535" y="240" width="136" height="28" rx="8" fill="#059669" opacity="0.8"/>
+  <text x="603" y="259" text-anchor="middle" font-size="13" font-weight="bold" fill="white">⚡ execution</text>
+  <text x="603" y="300" text-anchor="middle" font-size="12" fill="#BFDBFE">测试执行报告</text>
+  <text x="603" y="318" text-anchor="middle" font-size="11" fill="#93C5FD">testkit-runner</text>
+
+  <!-- Feedback -->
+  <rect x="685" y="240" width="136" height="95" rx="8" fill="white" opacity="0.18"/>
+  <rect x="685" y="240" width="136" height="28" rx="8" fill="#7C3AED" opacity="0.8"/>
+  <text x="753" y="259" text-anchor="middle" font-size="13" font-weight="bold" fill="white">🔄 feedback</text>
+  <text x="753" y="300" text-anchor="middle" font-size="12" fill="#BFDBFE">反馈校准</text>
+  <text x="753" y="318" text-anchor="middle" font-size="11" fill="#93C5FD">usecase-calibrator</text>
+
+  <!-- L1 Process arrows -->
+  <text x="193" y="358" text-anchor="middle" font-size="12" fill="#93C5FD">调度 →</text>
+  <text x="268" y="358" text-anchor="middle" font-size="12" fill="#93C5FD">→</text>
+  <text x="343" y="358" text-anchor="middle" font-size="12" fill="#93C5FD">→</text>
+  <text x="418" y="358" text-anchor="middle" font-size="12" fill="#93C5FD">→</text>
+  <text x="493" y="358" text-anchor="middle" font-size="12" fill="#93C5FD">→</text>
+  <text x="568" y="358" text-anchor="middle" font-size="12" fill="#93C5FD">→</text>
+  <text x="643" y="358" text-anchor="middle" font-size="12" fill="#93C5FD">→</text>
+  <text x="718" y="358" text-anchor="middle" font-size="12" fill="#93C5FD">→</text>
+
+  <!-- Arrow L1 → L2 -->
+  <line x1="450" y1="452" x2="450" y2="475" stroke="#6B7280" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="465" y="468" font-size="11" fill="#6B7280">继承</text>
+
+  <!-- === L2: Package Level === -->
+  <rect x="60" y="480" width="780" height="55" rx="10" fill="url(#gL2)" filter="url(#shadow)" opacity="0.95"/>
+  <text x="90" y="505" font-size="16" font-weight="bold" fill="#A7F3D0">L2 包级</text>
+  <text x="220" y="505" font-size="13" fill="#6EE7B7">子包目录 .opencode/skills/</text>
+  <text x="620" y="505" font-size="12" fill="#6EE7B7" text-anchor="end">单包专属 · 0-3 个 Skill</text>
+  <text x="95" y="525" font-size="12" fill="#A7F3D0">同名覆盖规则：包级 > 项目级 > 全局级</text>
+
+  <!-- Right side: Grade controls -->
+  <rect x="60" y="550" width="780" height="55" rx="10" fill="#1E293B" opacity="0.92"/>
+  <text x="85" y="578" font-size="13" font-weight="bold" fill="#FBBF24">双维度等级管控：</text>
+  <text x="240" y="578" font-size="12" fill="#FCD34D">成熟度 P0-P3（核心→探索）</text>
+  <text x="500" y="578" font-size="12" fill="#FCD34D">安全等级 Tier1-Tier4（只读→自主执行）</text>
+</svg>

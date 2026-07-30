@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 360" font-family="'Inter', 'PingFang SC', sans-serif">
+  <defs>
+    <filter id="s"><feDropShadow dx="1" dy="2" stdDeviation="3" flood-opacity="0.1"/></filter>
+  </defs>
+
+  <rect width="900" height="360" fill="#F8FAFC" rx="12"/>
+  <text x="450" y="38" text-anchor="middle" font-size="20" font-weight="bold" fill="#1E293B">Skill 与 AGENTS.md 协作模型</text>
+  <text x="450" y="58" text-anchor="middle" font-size="13" fill="#64748B">"Skill 负责怎么做事，AGENTS.md 负责做事的标准——一一对应，变更联动"</text>
+
+  <!-- Skill column -->
+  <text x="220" y="95" text-anchor="middle" font-size="16" font-weight="bold" fill="#2563EB">Skill（执行层）</text>
+  <text x="220" y="112" text-anchor="middle" font-size="11" fill="#64748B">「怎么做事」</text>
+
+  <rect x="70" y="125" width="300" height="50" rx="8" fill="#DBEAFE" filter="url(#s)"/>
+  <text x="80" y="148" font-size="13" fill="#1E40AF" font-weight="bold">doc/doc-validator</text>
+  <text x="80" y="166" font-size="11" fill="#3B82F6">校验步骤、格式检查项、差异输出</text>
+
+  <rect x="70" y="185" width="300" height="50" rx="8" fill="#DBEAFE" filter="url(#s)"/>
+  <text x="80" y="208" font-size="13" fill="#1E40AF" font-weight="bold">usecase/usecase-generator</text>
+  <text x="80" y="226" font-size="11" fill="#3B82F6">规则生成 / 知识库生成、批量模式</text>
+
+  <rect x="70" y="245" width="300" height="50" rx="8" fill="#DBEAFE" filter="url(#s)"/>
+  <text x="80" y="268" font-size="13" fill="#1E40AF" font-weight="bold">feedback/usecase-calibrator</text>
+  <text x="80" y="286" font-size="11" fill="#3B82F6">报告解析 → 预期校准 → 文档修正</text>
+
+  <!-- Arrow connectors -->
+  <line x1="375" y1="150" x2="525" y2="150" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="6,3"/>
+  <line x1="375" y1="210" x2="525" y2="210" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="6,3"/>
+  <line x1="375" y1="270" x2="525" y2="270" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="6,3"/>
+
+  <text x="450" y="105" text-anchor="middle" font-size="11" fill="#94A3B8">约束</text>
+
+  <!-- AGENTS.md column -->
+  <text x="680" y="95" text-anchor="middle" font-size="16" font-weight="bold" fill="#DC2626">AGENTS.md（标准层）</text>
+  <text x="680" y="112" text-anchor="middle" font-size="11" fill="#64748B">「做事的标准」</text>
+
+  <rect x="530" y="125" width="330" height="50" rx="8" fill="#FEE2E2" filter="url(#s)"/>
+  <text x="540" y="148" font-size="13" fill="#991B1B" font-weight="bold">packages/api_docs/AGENTS.md</text>
+  <text x="540" y="166" font-size="11" fill="#DC2626">校验规则以该规范为准</text>
+
+  <rect x="530" y="185" width="330" height="50" rx="8" fill="#FEE2E2" filter="url(#s)"/>
+  <text x="540" y="208" font-size="13" fill="#991B1B" font-weight="bold">packages/api_usecases_json/AGENTS.md</text>
+  <text x="540" y="226" font-size="11" fill="#DC2626">生成的用例必须符合该规范</text>
+
+  <rect x="530" y="245" width="330" height="50" rx="8" fill="#FEE2E2" filter="url(#s)"/>
+  <text x="540" y="268" font-size="13" fill="#991B1B" font-weight="bold">api_docs + usescases AGENTS.md</text>
+  <text x="540" y="286" font-size="11" fill="#DC2626">校准双通道均受标准约束</text>
+
+  <!-- Bottom note -->
+  <rect x="70" y="315" width="760" height="32" rx="8" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <text x="450" y="336" text-anchor="middle" font-size="12" fill="#64748B">⚡ 变更联动：AGENTS.md 规范更新后对应 Skill 必须同步适配；Skill 输出格式变更前必须先更新 AGENTS.md</text>
+</svg>
