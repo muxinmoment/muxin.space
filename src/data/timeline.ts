@@ -2,11 +2,6 @@ import type { TimelineItem } from "./types";
 
 export const timeline: TimelineItem[] = [
   {
-    period: "2026 - now",
-    title: "把个人站升级成知识分享主站",
-    description: "用 Astro + Tailwind 搭内容骨架，让文章、项目和个人表达逐步形成统一出口。",
-  },
-  {
     period: "2025 - now",
     title: "Aido 主线项目",
     description: "自研 Agent Loop，打通流式响应、状态管理和多智能体交付。",

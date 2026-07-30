@@ -8,11 +8,6 @@ export type Profile = {
   description: string;
 };
 
-export type Principle = {
-  title: string;
-  description: string;
-};
-
 export type Project = {
   name: string;
   status: string;
