@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460">
+  <style>
+    text { font-family: -apple-system, 'Segoe UI', sans-serif; }
+  </style>
+
+  <rect width="760" height="460" fill="#fff" rx="8"/>
+
+  <text x="380" y="32" text-anchor="middle" font-size="16" font-weight="700" fill="#1a1a2e">一次求助，是怎么走到"分手稿"的</text>
+
+  <!-- Stage 1 -->
+  <rect x="40" y="60" width="200" height="70" rx="8" fill="#e8f4fd" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="140" y="88" text-anchor="middle" font-size="13" font-weight="600" fill="#1e40af">起点</text>
+  <text x="140" y="106" text-anchor="middle" font-size="11" fill="#64748b">一次争吵，双方各有问题</text>
+  <text x="140" y="120" text-anchor="middle" font-size="11" fill="#64748b">（第一版分析：五五分）</text>
+
+  <line x1="240" y1="95" x2="290" y2="95" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow1)"/>
+
+  <!-- Stage 2 loop -->
+  <rect x="290" y="60" width="220" height="70" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="400" y="82" text-anchor="middle" font-size="13" font-weight="600" fill="#92400e">持续追问（数十轮）</text>
+  <text x="400" y="100" text-anchor="middle" font-size="11" fill="#64748b">"再多说点"、"我是不是想多了"</text>
+  <text x="400" y="115" text-anchor="middle" font-size="11" fill="#64748b">每一句动摇都被重新按回原立场</text>
+
+  <!-- loop arrow -->
+  <path d="M 460 130 C 460 155, 340 155, 340 130" stroke="#f59e0b" stroke-width="1.5" fill="none" marker-end="url(#arrowY)"/>
+  <text x="400" y="168" text-anchor="middle" font-size="10" fill="#92400e">循环强化，立场只往一个方向走</text>
+
+  <line x1="510" y1="95" x2="560" y2="95" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow1)"/>
+
+  <!-- Stage 3 -->
+  <rect x="560" y="60" width="160" height="70" rx="8" fill="#fde68a" stroke="#d97706" stroke-width="1.5"/>
+  <text x="640" y="88" text-anchor="middle" font-size="13" font-weight="600" fill="#78350f">对她的定性</text>
+  <text x="640" y="106" text-anchor="middle" font-size="11" fill="#78350f">"她根本不在乎"</text>
+  <text x="640" y="120" text-anchor="middle" font-size="11" fill="#78350f">（无信息来源，语气却很确定）</text>
+
+  <line x1="640" y1="130" x2="640" y2="170" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow2)"/>
+
+  <!-- Missing brake zone -->
+  <rect x="40" y="200" width="680" height="70" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="380" y="223" text-anchor="middle" font-size="13" font-weight="700" fill="#dc2626">⚠️ 这一段没有出现过的刹车问题</text>
+  <text x="380" y="243" text-anchor="middle" font-size="11" fill="#7f1d1d">"你确定要走到这一步吗？" "要不要先冷静几天再说？" "有没有可能只是一时的情绪？"</text>
+  <text x="380" y="258" text-anchor="middle" font-size="11" fill="#7f1d1d">——一次都没有被主动问出来</text>
+
+  <line x1="380" y1="270" x2="380" y2="300" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow2)"/>
+
+  <!-- Stage 4 -->
+  <rect x="230" y="300" width="300" height="60" rx="8" fill="#fecaca" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="380" y="325" text-anchor="middle" font-size="13" font-weight="600" fill="#7f1d1d">具体行动方案</text>
+  <text x="380" y="343" text-anchor="middle" font-size="11" fill="#7f1d1d">逐字写好的"分手稿" + 应对话术清单</text>
+
+  <line x1="380" y1="360" x2="380" y2="390" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow2)"/>
+
+  <!-- Stage 5 -->
+  <rect x="260" y="390" width="240" height="55" rx="8" fill="#450a0a" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="380" y="412" text-anchor="middle" font-size="13" font-weight="700" fill="#fecaca">发送出去 = 不可逆</text>
+  <text x="380" y="430" text-anchor="middle" font-size="11" fill="#fecaca">模糊的念头，变成了做实的决定</text>
+
+  <defs>
+    <marker id="arrow1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+    <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+    <marker id="arrowY" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+</svg>
