@@ -1,0 +1,11 @@
+---
+import Search from "astro-pagefind/components/Search.astro";
+---
+
+<Search className="site-search" />
+
+<style>
+  .site-search :global(pagefind-searchbox) {
+    display: block;
+  }
+</style>

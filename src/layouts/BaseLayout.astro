@@ -1,20 +1,30 @@
 ---
 import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
 
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  type?: "website" | "article";
 }
 
 const {
   title = "muxin.space | 木辛时刻",
   description = "分享项目实践、技术整理与真实成长的个人内容主站。",
+  image = "/og-cover.svg",
+  type = "website",
 } = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const absoluteImage = new URL(image, Astro.site).toString();
 
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/notes", label: "Sharing" },
   { href: "/projects", label: "Projects" },
+  { href: "/resume", label: "Resume" },
+  { href: "/now", label: "Now" },
   { href: "/memo", label: "🪵 小木" },
   { href: "/about", label: "About" },
 ];
@@ -31,26 +41,39 @@ const isActive = (href: string) =>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#fbfbfa" />
+    <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title="muxin.space" href="/rss.xml" />
+    <ClientRouter />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={absoluteImage} />
+    <meta property="og:site_name" content="muxin.space" />
+    <meta property="og:locale" content="zh_CN" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={absoluteImage} />
+
     <title>{title}</title>
   </head>
   <body class="font-sans text-zinc-900">
-    <div
-      aria-hidden="true"
-      class="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(139,92,246,0.08),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(244,114,182,0.06),_transparent_24%)]"
-    ></div>
-
-    <header class="border-b border-zinc-100/90 bg-white/90 backdrop-blur-xl">
-      <div class="mx-auto flex w-full max-w-[1840px] items-center justify-between gap-4 px-3 py-3 sm:px-6 lg:px-8 xl:px-10 2xl:px-14">
-        <a href="/" class="inline-flex items-center gap-2 font-serif text-lg sm:text-2xl tracking-tight text-zinc-900 shrink-0">
+    <header class="border-b border-zinc-200/70 bg-[#fbfbfa]/95 backdrop-blur-xl">
+      <div class="mx-auto flex w-full max-w-[1600px] items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-10">
+        <a href="/" class="inline-flex items-center gap-1.5 font-serif text-lg tracking-tight text-zinc-900 shrink-0">
           <span>muxin</span>
-          <span class="text-violet-500">✦</span>
+          <span class="text-zinc-400">/</span>
           <span>space</span>
         </a>
 
         <nav aria-label="主导航" class="shrink-0">
-          <ul class="flex items-center gap-1 text-[13px] sm:text-sm font-medium text-zinc-500">
+          <ul class="flex items-center gap-0.5 text-[13px] sm:text-sm font-medium text-zinc-500">
             {
               navLinks.map((link) => (
                 <li>
@@ -58,11 +81,8 @@ const isActive = (href: string) =>
                     href={link.href}
                     aria-current={isActive(link.href) ? "page" : undefined}
                     class:list={[
-                      "rounded-full px-2 py-1.5 sm:px-3 sm:py-2 transition-colors duration-200 hover:text-violet-600",
-                      {
-                        "text-violet-600": isActive(link.href),
-                        "bg-violet-50 text-violet-600": isActive(link.href),
-                      },
+                      "rounded-full px-2.5 py-1.5 sm:px-3.5 sm:py-2 transition-colors duration-200 hover:text-zinc-900",
+                      isActive(link.href) ? "bg-zinc-900 text-white hover:text-white" : "",
                     ]}
                   >
                     {link.label}
@@ -75,15 +95,42 @@ const isActive = (href: string) =>
       </div>
     </header>
 
-    <main class="mx-auto w-full max-w-[1840px] px-4 py-10 sm:px-6 lg:px-8 xl:px-10 2xl:px-14 lg:py-14 2xl:py-16">
+    <main class="mx-auto w-full max-w-[1600px] px-4 py-12 sm:px-6 lg:px-10 lg:py-16">
       <slot />
     </main>
 
-    <footer class="border-t border-zinc-100 bg-white">
-      <div class="mx-auto flex w-full max-w-[1840px] flex-col gap-2 px-4 py-6 text-sm text-zinc-500 sm:px-6 lg:px-8 xl:px-10 2xl:px-14 md:flex-row md:items-center md:justify-between">
+    <footer class="border-t border-zinc-200/70">
+      <div class="mx-auto flex w-full max-w-[1600px] flex-col gap-2 px-4 py-8 text-sm text-zinc-400 sm:px-6 lg:px-10 md:flex-row md:items-center md:justify-between">
         <p>Built with Astro + Tailwind CSS</p>
         <p>{new Date().getFullYear()} muxin.space</p>
       </div>
     </footer>
+
+    <script>
+      function initReveal() {
+        const targets = document.querySelectorAll<HTMLElement>(".reveal");
+        if (!targets.length) return;
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                observer.unobserve(entry.target);
+              }
+            }
+          },
+          { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+        );
+
+        targets.forEach((el, index) => {
+          el.style.transitionDelay = `${Math.min(index * 60, 300)}ms`;
+          observer.observe(el);
+        });
+      }
+
+      initReveal();
+      document.addEventListener("astro:page-load", initReveal);
+    </script>
   </body>
 </html>

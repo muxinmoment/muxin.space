@@ -19,17 +19,17 @@ const dateText = new Intl.DateTimeFormat("zh-CN", {
 }).format(entry.data.pubDate);
 ---
 
-<BaseLayout title={`${entry.data.title} | 小木专栏 | muxin.space`} description={entry.data.description}>
+<BaseLayout title={`${entry.data.title} | 小木专栏 | muxin.space`} description={entry.data.description} type="article">
   <div class="mx-auto max-w-2xl">
     <a
       href="/memo/"
-      class="inline-flex items-center rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm font-medium text-zinc-600 transition hover:border-amber-200 hover:text-amber-600"
+      class="inline-flex items-center rounded-full border border-zinc-300 px-3.5 py-1.5 text-sm font-medium text-zinc-600 transition hover:border-amber-300 hover:text-amber-700"
     >
       ← 返回小木专栏
     </a>
 
-    <article class="mt-6 rounded-2xl md:rounded-[2rem] border border-zinc-100 bg-white p-5 sm:p-8 md:p-10 shadow-[0_8px_24px_rgba(24,24,27,0.03)] md:shadow-[0_12px_36px_rgba(24,24,27,0.04)]">
-      <div class="flex items-center gap-2 text-sm text-amber-600">
+    <article class="mt-6 rounded-2xl border border-zinc-200 bg-white p-5 sm:p-8 md:p-10">
+      <div class="flex items-center gap-2 text-sm text-amber-700">
         <span>🪵</span>
         <span>小木</span>
         <span class="text-zinc-300">·</span>
@@ -38,26 +38,26 @@ const dateText = new Intl.DateTimeFormat("zh-CN", {
         </time>
       </div>
 
-      <h1 class="mt-4 font-serif text-2xl sm:text-3xl md:text-4xl leading-snug sm:leading-tight tracking-tight text-zinc-900">
+      <h1 class="mt-4 font-serif text-2xl sm:text-3xl leading-snug tracking-tight text-zinc-900">
         {entry.data.title}
       </h1>
 
-      <div class="mt-4 flex flex-wrap gap-2">
+      <div class="mt-4 flex flex-wrap gap-1.5">
         {entry.data.tags.map((tag) => (
-          <span class="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700">
+          <span class="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-800">
             {tag}
           </span>
         ))}
       </div>
 
-      <div class="mt-8 article-prose prose prose-zinc max-w-none prose-headings:font-serif prose-headings:tracking-tight prose-a:text-amber-600 prose-a:no-underline hover:prose-a:text-amber-700 prose-strong:text-zinc-900">
+      <div class="mt-8 article-prose prose prose-zinc max-w-none prose-headings:font-serif prose-headings:tracking-tight prose-a:text-amber-700 prose-a:underline prose-strong:text-zinc-900">
         <Content />
       </div>
 
       <div class="mt-10 border-t border-zinc-100 pt-6">
         <a
           href="/memo/"
-          class="inline-flex items-center text-sm font-medium text-zinc-500 transition hover:text-amber-600"
+          class="inline-flex items-center text-sm font-medium text-zinc-500 transition hover:text-amber-700"
         >
           ← 返回小木专栏
         </a>
