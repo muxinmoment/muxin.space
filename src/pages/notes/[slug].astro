@@ -3,6 +3,7 @@ import { getCollection, render } from "astro:content";
 import { noteCategoryMeta } from "../../data";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import NoteCard from "../../components/NoteCard.astro";
+import GiscusComments from "../../components/GiscusComments.astro";
 import { estimateReadingMinutes, findRelatedNotes } from "../../utils/reading";
 
 export async function getStaticPaths() {
@@ -80,6 +81,8 @@ const relatedNotes = findRelatedNotes(entry, allNotes);
           </div>
         </div>
       )}
+
+      <GiscusComments />
     </article>
   </div>
 </BaseLayout>
