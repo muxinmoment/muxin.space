@@ -79,6 +79,7 @@ const isActive = (href: string) =>
                 <li>
                   <a
                     href={link.href}
+                    data-astro-prefetch
                     aria-current={isActive(link.href) ? "page" : undefined}
                     class:list={[
                       "whitespace-nowrap rounded-full px-2.5 py-1.5 sm:px-3.5 sm:py-2 transition-colors duration-200 hover:text-zinc-900",

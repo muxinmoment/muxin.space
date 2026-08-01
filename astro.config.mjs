@@ -6,6 +6,9 @@ import pagefind from "astro-pagefind";
 
 export default defineConfig({
   site: "https://muxin-space.top",
+  prefetch: {
+    defaultStrategy: "hover",
+  },
   markdown: {
     syntaxHighlight: false,
   },
