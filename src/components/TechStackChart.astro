@@ -1,0 +1,38 @@
+---
+interface StackItem {
+  name: string;
+  count: number;
+}
+
+interface Props {
+  items: StackItem[];
+  /** 最多展示多少项，默认 8 */
+  limit?: number;
+}
+
+const { items, limit = 8 } = Astro.props;
+
+const sorted = [...items]
+  .sort((a, b) => b.count - a.count)
+  .slice(0, limit);
+
+const maxCount = Math.max(...sorted.map((item) => item.count), 1);
+---
+
+<div class="space-y-3">
+  {sorted.map((item) => (
+    <div class="flex items-center gap-3">
+      <span class="w-28 shrink-0 truncate text-sm text-zinc-600" title={item.name}>
+        {item.name}
+      </span>
+      <div class="h-2 flex-1 overflow-hidden rounded-full bg-zinc-100">
+        <div
+          class="reveal h-full rounded-full bg-rose-400"
+          style={`width: ${Math.max(6, (item.count / maxCount) * 100)}%`}
+        >
+        </div>
+      </div>
+      <span class="w-4 shrink-0 text-right text-xs font-medium text-zinc-400">{item.count}</span>
+    </div>
+  ))}
+</div>

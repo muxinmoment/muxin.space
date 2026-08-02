@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import ProjectCard from "../components/ProjectCard.astro";
+import StatBars from "../components/StatBars.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { projects } from "../data";
 
@@ -34,18 +35,13 @@ const slugify = (value: string) =>
         </p>
 
         <div class="mt-6 flex items-center gap-5">
-          <div>
-            <p class="font-serif text-xl text-zinc-900">{projects.length}</p>
-            <p class="eyebrow mt-0.5">Projects</p>
-          </div>
-          <div>
-            <p class="font-serif text-xl text-zinc-900">{stackCount}</p>
-            <p class="eyebrow mt-0.5">Stacks</p>
-          </div>
-          <div>
-            <p class="font-serif text-xl text-zinc-900">{notes.length}</p>
-            <p class="eyebrow mt-0.5">Notes</p>
-          </div>
+          <StatBars
+            items={[
+              { label: "Projects", value: projects.length },
+              { label: "Stacks", value: stackCount },
+              { label: "Notes", value: notes.length },
+            ]}
+          />
         </div>
 
         <div class="mt-6 flex flex-wrap gap-2">
