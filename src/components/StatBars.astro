@@ -18,7 +18,7 @@ const maxValue = Math.max(...items.map((item) => item.value), 1);
       <p class="font-serif text-xl text-zinc-900">{item.value}</p>
       <div class="flex h-14 w-2.5 items-end overflow-hidden rounded-full bg-zinc-100">
         <div
-          class="reveal w-full rounded-full bg-rose-400"
+          class="w-full rounded-full bg-rose-400"
           style={`height: ${Math.max(10, (item.value / maxValue) * 100)}%`}
         >
         </div>
