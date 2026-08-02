@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 480">
+  <style>
+    text { font-family: -apple-system, 'Segoe UI', sans-serif; }
+  </style>
+  <rect width="780" height="480" fill="#fff" rx="8"/>
+  <text x="390" y="34" text-anchor="middle" font-size="16" font-weight="700" fill="#1a1a2e">Agent = Model + Harness</text>
+  <text x="390" y="54" text-anchor="middle" font-size="11" fill="#64748b">模型负责"想"，harness 负责"做"</text>
+
+  <!-- equation row -->
+  <rect x="40" y="78" width="180" height="70" rx="10" fill="#ddd6fe" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="130" y="106" text-anchor="middle" font-size="13" font-weight="700" fill="#4c1d95">Model</text>
+  <text x="130" y="126" text-anchor="middle" font-size="10" fill="#5b21b6">推理引擎</text>
+  <text x="130" y="140" text-anchor="middle" font-size="9.5" fill="#7c3aed">唯一非确定性的部分</text>
+
+  <text x="238" y="122" text-anchor="middle" font-size="20" font-weight="700" fill="#64748b">+</text>
+
+  <rect x="256" y="78" width="480" height="70" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+  <text x="496" y="106" text-anchor="middle" font-size="13" font-weight="700" fill="#92400e">Harness</text>
+  <text x="496" y="126" text-anchor="middle" font-size="10" fill="#78350f">工具执行 · 上下文管理 · 安全护栏 · 状态持久化</text>
+  <text x="496" y="140" text-anchor="middle" font-size="9.5" fill="#b45309">一切不是模型本身的代码，全部确定性</text>
+
+  <!-- ReAct loop -->
+  <text x="390" y="182" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">这个等式在运行时长这样：ReAct 循环</text>
+
+  <g>
+    <circle cx="140" cy="260" r="46" fill="#ddd6fe" stroke="#7c3aed" stroke-width="1.5"/>
+    <text x="140" y="256" text-anchor="middle" font-size="11" font-weight="700" fill="#4c1d95">模型</text>
+    <text x="140" y="272" text-anchor="middle" font-size="9.5" fill="#5b21b6">接收上下文</text>
+    <text x="140" y="286" text-anchor="middle" font-size="9.5" fill="#5b21b6">决定下一步</text>
+
+    <path d="M 186 250 L 260 240" stroke="#64748b" stroke-width="1.6" fill="none" marker-end="url(#l1)"/>
+
+    <rect x="264" y="205" width="140" height="70" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+    <text x="334" y="230" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">Harness</text>
+    <text x="334" y="248" text-anchor="middle" font-size="9.5" fill="#78350f">路由到工具</text>
+    <text x="334" y="262" text-anchor="middle" font-size="9.5" fill="#78350f">执行 / 校验权限</text>
+
+    <path d="M 404 240 L 478 250" stroke="#64748b" stroke-width="1.6" fill="none" marker-end="url(#l1)"/>
+
+    <rect x="482" y="205" width="150" height="70" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="557" y="230" text-anchor="middle" font-size="11" font-weight="700" fill="#1e3a8a">工具</text>
+    <text x="557" y="248" text-anchor="middle" font-size="9.5" fill="#1e40af">返回结果</text>
+    <text x="557" y="262" text-anchor="middle" font-size="9.5" fill="#1e40af">写回上下文</text>
+
+    <path d="M 557 275 C 557 340, 200 355, 140 306" stroke="#64748b" stroke-width="1.6" fill="none" marker-end="url(#l1)" stroke-dasharray="5 4"/>
+    <text x="390" y="340" text-anchor="middle" font-size="10" fill="#94a3b8">循环，直到任务完成或触发终止条件</text>
+  </g>
+
+  <text x="390" y="400" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="700">循环里只有"模型决定"这一步是非确定性的</text>
+  <text x="390" y="420" text-anchor="middle" font-size="10.5" fill="#64748b">其余每一环都应该是确定性的 —— 这是 harness 工程的核心信条</text>
+  <text x="390" y="446" text-anchor="middle" font-size="10" fill="#94a3b8">模型停止调工具 ≠ 任务真的完成，harness 要自己判断目标是否达成</text>
+
+  <defs>
+    <marker id="l1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+</svg>
