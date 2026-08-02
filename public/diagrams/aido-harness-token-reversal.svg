@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 500">
+  <style>
+    text { font-family: -apple-system, 'Segoe UI', sans-serif; }
+  </style>
+  <rect width="780" height="500" fill="#fff" rx="8"/>
+  <text x="390" y="32" text-anchor="middle" font-size="16" font-weight="700" fill="#1a1a2e">三轮实验：token 到底降没降</text>
+
+  <!-- axis -->
+  <line x1="90" y1="420" x2="720" y2="420" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="90" y1="80" x2="90" y2="420" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="60" y="85" text-anchor="middle" font-size="10" fill="#64748b">tokens</text>
+
+  <!-- gridlines -->
+  <line x1="90" y1="340" x2="720" y2="340" stroke="#e2e8f0" stroke-width="1"/>
+  <line x1="90" y1="260" x2="720" y2="260" stroke="#e2e8f0" stroke-width="1"/>
+  <line x1="90" y1="180" x2="720" y2="180" stroke="#e2e8f0" stroke-width="1"/>
+  <line x1="90" y1="100" x2="720" y2="100" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="82" y="344" text-anchor="end" font-size="9" fill="#94a3b8">0</text>
+  <text x="82" y="264" text-anchor="end" font-size="9" fill="#94a3b8">6K</text>
+  <text x="82" y="184" text-anchor="end" font-size="9" fill="#94a3b8">12K</text>
+  <text x="82" y="104" text-anchor="end" font-size="9" fill="#94a3b8">18K</text>
+
+  <!-- Round 1&2: test account -->
+  <rect x="140" y="330" width="70" height="10" fill="#94a3b8"/>
+  <text x="175" y="350" text-anchor="middle" font-size="10" fill="#475569">v1 context ~1K</text>
+  <rect x="230" y="335" width="70" height="5" fill="#4ade80"/>
+  <text x="265" y="350" text-anchor="middle" font-size="10" fill="#166534">v3 context 更小</text>
+  <text x="220" y="378" text-anchor="middle" font-size="11" font-weight="700" fill="#166534">第一二轮（测试账号）</text>
+  <text x="220" y="396" text-anchor="middle" font-size="10" fill="#475569">历史任务是空的，工具总查到空结果</text>
+  <text x="220" y="412" text-anchor="middle" font-size="10" fill="#16a34a">看起来"降 87-89%，延迟不恶化"</text>
+
+  <!-- Round 3: real account -->
+  <rect x="380" y="260" width="70" height="80" fill="#93c5fd"/>
+  <text x="415" y="350" text-anchor="middle" font-size="10" fill="#1e40af">v1 context 6.1K</text>
+  <rect x="470" y="100" width="70" height="240" fill="#fca5a5"/>
+  <text x="505" y="350" text-anchor="middle" font-size="10" fill="#991b1b">v3 total 18-20K ↑</text>
+  <text x="460" y="378" text-anchor="middle" font-size="11" font-weight="700" fill="#991b1b">第三轮（真实账号，71 个任务）</text>
+  <text x="460" y="396" text-anchor="middle" font-size="10" fill="#475569">装配层 token 降了，总 LLM token 却涨了</text>
+  <text x="460" y="412" text-anchor="middle" font-size="10" fill="#dc2626">口径不同：18-20K 是多轮 input+output 累加</text>
+
+  <!-- Round 4: after fix -->
+  <rect x="610" y="290" width="70" height="50" fill="#86efac"/>
+  <text x="645" y="350" text-anchor="middle" font-size="10" fill="#14532d">第二轮消息 -72%</text>
+  <text x="645" y="378" text-anchor="middle" font-size="11" font-weight="700" fill="#14532d">修正后：prompt 拆分</text>
+  <text x="645" y="396" text-anchor="middle" font-size="10" fill="#475569">首轮完整版，后续轮换 2,122 字符精简版</text>
+  <text x="645" y="412" text-anchor="middle" font-size="10" fill="#16a34a">15,203 → 4,192 字符</text>
+
+  <text x="390" y="460" text-anchor="middle" font-size="11" fill="#64748b">先怀疑测量口径，再怀疑方案本身 —— 两次都是口径 / 工程问题，不是架构判断错了</text>
+</svg>

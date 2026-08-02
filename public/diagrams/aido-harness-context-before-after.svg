@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 480">
+  <style>
+    text { font-family: -apple-system, 'Segoe UI', sans-serif; }
+  </style>
+  <rect width="780" height="480" fill="#fff" rx="8"/>
+  <text x="390" y="32" text-anchor="middle" font-size="16" font-weight="700" fill="#1a1a2e">改造前 vs 改造后：谁来决定这次规划需要什么</text>
+
+  <!-- BEFORE panel -->
+  <rect x="30" y="55" width="340" height="380" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="200" y="82" text-anchor="middle" font-size="13" font-weight="700" fill="#7f1d1d">改造前：全量装配</text>
+
+  <rect x="55" y="98" width="290" height="60" rx="8" fill="#fecaca"/>
+  <text x="200" y="120" text-anchor="middle" font-size="11" fill="#7f1d1d">用户："帮我排今天的活"</text>
+  <text x="200" y="140" text-anchor="middle" font-size="10" fill="#991b1b">/ "下周交方案，帮我倒推"</text>
+
+  <path d="M 200 158 L 200 178" stroke="#dc2626" stroke-width="1.6" marker-end="url(#b1)"/>
+
+  <rect x="55" y="182" width="290" height="70" rx="8" fill="#fca5a5"/>
+  <text x="200" y="202" text-anchor="middle" font-size="11" font-weight="700" fill="#7f1d1d">装配层：不知道需要什么</text>
+  <text x="200" y="220" text-anchor="middle" font-size="10" fill="#991b1b">→ 只能把 25 个 key 全塞进去</text>
+  <text x="200" y="236" text-anchor="middle" font-size="10" fill="#991b1b">22 + N 次 service 调用</text>
+
+  <path d="M 200 252 L 200 272" stroke="#dc2626" stroke-width="1.6" marker-end="url(#b1)"/>
+
+  <rect x="55" y="276" width="290" height="70" rx="8" fill="#f87171"/>
+  <text x="200" y="298" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">两次请求拿到同一份 context</text>
+  <text x="200" y="316" text-anchor="middle" font-size="10" fill="#fff1f2">同一张任务表被读 9 遍</text>
+  <text x="200" y="332" text-anchor="middle" font-size="10" fill="#fff1f2">近一半字段根本不参与决策</text>
+
+  <path d="M 200 346 L 200 366" stroke="#dc2626" stroke-width="1.6" marker-end="url(#b1)"/>
+
+  <rect x="55" y="370" width="290" height="46" rx="8" fill="#dc2626"/>
+  <text x="200" y="397" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">中位数 6,349 tokens / 峰值 11,485</text>
+
+  <!-- AFTER panel -->
+  <rect x="410" y="55" width="340" height="380" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="580" y="82" text-anchor="middle" font-size="13" font-weight="700" fill="#14532d">改造后：按需 tool calling</text>
+
+  <rect x="435" y="98" width="290" height="60" rx="8" fill="#bbf7d0"/>
+  <text x="580" y="120" text-anchor="middle" font-size="11" fill="#14532d">同一句用户输入</text>
+  <text x="580" y="140" text-anchor="middle" font-size="10" fill="#166534">只带必须直供的硬约束字段</text>
+
+  <path d="M 580 158 L 580 178" stroke="#16a34a" stroke-width="1.6" marker-end="url(#b2)"/>
+
+  <rect x="435" y="182" width="290" height="70" rx="8" fill="#86efac"/>
+  <text x="580" y="202" text-anchor="middle" font-size="11" font-weight="700" fill="#14532d">模型自己判断该不该查</text>
+  <text x="580" y="220" text-anchor="middle" font-size="10" fill="#166534">"今天排期" → 不调工具</text>
+  <text x="580" y="236" text-anchor="middle" font-size="10" fill="#166534">"倒推准备" → 调 query_tasks_by_range</text>
+
+  <path d="M 580 252 L 580 272" stroke="#16a34a" stroke-width="1.6" marker-end="url(#b2)"/>
+
+  <rect x="435" y="276" width="290" height="70" rx="8" fill="#4ade80"/>
+  <text x="580" y="298" text-anchor="middle" font-size="11" font-weight="700" fill="#052e16">工具结果先投影再进上下文</text>
+  <text x="580" y="316" text-anchor="middle" font-size="10" fill="#14532d">21 字段裁到 9 个决策相关字段</text>
+  <text x="580" y="332" text-anchor="middle" font-size="10" fill="#14532d">重复参数命中缓存，不占配额</text>
+
+  <path d="M 580 346 L 580 366" stroke="#16a34a" stroke-width="1.6" marker-end="url(#b2)"/>
+
+  <rect x="435" y="370" width="290" height="46" rx="8" fill="#16a34a"/>
+  <text x="580" y="397" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">装配层传输 token 降 82～89%</text>
+
+  <defs>
+    <marker id="b1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="b2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+</svg>
