@@ -1,4 +1,5 @@
 export { currentFocus } from "./focus";
+export type { FocusItem } from "./focus";
 export {
   getNoteCategoryBySlug,
   noteCategoryLabels,

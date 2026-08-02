@@ -17,6 +17,28 @@ for (const item of [...experiences, ...resumeProjects]) {
   }
 }
 const stackFrequency = Array.from(stackCounts, ([name, count]) => ({ name, count }));
+
+// 合并实习+项目经历，按开始时间倒序排列，形成一条时间线概览
+function parsePeriodStart(period: string): number {
+  const match = period.match(/(\d{4})\.(\d{2})/);
+  if (!match) return 0;
+  return new Date(Number(match[1]), Number(match[2]) - 1).getTime();
+}
+
+const resumeTimeline = [
+  ...experiences.map((item) => ({
+    period: item.period,
+    title: item.org,
+    subtitle: item.role,
+    kind: "实习" as const,
+  })),
+  ...resumeProjects.map((item) => ({
+    period: item.period,
+    title: item.name,
+    subtitle: item.role,
+    kind: "项目" as const,
+  })),
+].sort((a, b) => parsePeriodStart(b.period) - parsePeriodStart(a.period));
 ---
 
 <BaseLayout
@@ -74,6 +96,21 @@ const stackFrequency = Array.from(stackCounts, ([name, count]) => ({ name, count
         <div class="mt-4 flex flex-wrap gap-2">
           {resumeHighlights.map((item) => (
             <span class="tag-accent">{item}</span>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <p class="eyebrow">时间线概览</p>
+        <h2 class="mt-2 font-serif text-2xl tracking-tight text-zinc-900">事情发生的前后顺序</h2>
+
+        <div class="mt-5 space-y-4">
+          {resumeTimeline.map((item) => (
+            <div class="relative border-l border-zinc-200 pl-5">
+              <p class="eyebrow">{item.period} · {item.kind}</p>
+              <h3 class="mt-1.5 font-serif text-lg tracking-tight text-zinc-900">{item.title}</h3>
+              <p class="mt-1 text-sm text-zinc-500">{item.subtitle}</p>
+            </div>
           ))}
         </div>
       </section>

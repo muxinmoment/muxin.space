@@ -60,19 +60,6 @@ const categoryCounts = noteCategoryLabels.map((category) => ({
     </section>
 
     <section class="min-w-0 space-y-5 lg:col-span-8">
-      <div class="grid gap-3 sm:grid-cols-3">
-        {categoryCounts.map(({ label, count, meta }) => (
-          <a
-            href={`/notes/category/${meta.slug}/`}
-            class="rounded-xl border border-zinc-200 bg-white p-4 transition duration-200 hover:border-zinc-400"
-          >
-            <p class="text-sm font-medium text-zinc-900">{label}</p>
-            <p class="mt-1.5 font-serif text-xl tracking-tight text-zinc-900">{count} 篇</p>
-            <p class="mt-1.5 text-xs leading-6 text-zinc-500">{meta.prompt}</p>
-          </a>
-        ))}
-      </div>
-
       <div class="space-y-4">
         {notes.map((note) => <NoteCard note={note} />)}
       </div>
