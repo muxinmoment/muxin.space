@@ -117,6 +117,10 @@ if (root && root.dataset.ready !== "true") {
       controls.forEach((button) => button.addEventListener("click", () => choose(button.dataset.roomCamera ?? "center")));
       const raycaster = new THREE.Raycaster();
       const pointer = new THREE.Vector2();
+      const orbit = new THREE.Vector2();
+      let dragging = false;
+      let dragged = false;
+      let lastPointer = { x: 0, y: 0 };
       const hotspots = [shelf, photo, desk, radio];
       const findHotspot = (object: THREE.Object3D | undefined) => {
         let currentObject = object;
@@ -136,12 +140,28 @@ if (root && root.dataset.ready !== "true") {
         if (hint) hint.textContent = key ? `${views[key].label} · 点击进入` : "点击房间里的物件探索";
       };
       canvas.addEventListener("pointermove", updatePointer);
+      canvas.addEventListener("pointerdown", (event) => {
+        dragging = true;
+        dragged = false;
+        lastPointer = { x: event.clientX, y: event.clientY };
+        canvas.setPointerCapture(event.pointerId);
+      });
+      canvas.addEventListener("pointermove", (event) => {
+        if (!dragging) return;
+        const deltaX = event.clientX - lastPointer.x;
+        const deltaY = event.clientY - lastPointer.y;
+        if (Math.abs(deltaX) + Math.abs(deltaY) > 2) dragged = true;
+        orbit.x = THREE.MathUtils.clamp(orbit.x + deltaX * 0.006, -0.8, 0.8);
+        orbit.y = THREE.MathUtils.clamp(orbit.y - deltaY * 0.004, -0.45, 0.45);
+        lastPointer = { x: event.clientX, y: event.clientY };
+      });
       canvas.addEventListener("pointerleave", () => { canvas.style.cursor = "grab"; if (hint) hint.textContent = "点击房间里的物件探索"; });
       canvas.addEventListener("pointerup", (event) => {
+        dragging = false;
         updatePointer(event);
         raycaster.setFromCamera(pointer, camera);
         const key = findHotspot(raycaster.intersectObjects(hotspots, true)[0]?.object);
-        if (key) choose(key);
+        if (key && !dragged) choose(key);
       });
       choose("center");
       resize();
@@ -154,6 +174,8 @@ if (root && root.dataset.ready !== "true") {
         radio.position.y = 0.15 + Math.sin(time * 1.4) * 0.025;
         keyLight.position.x = -4 + Math.sin(time * 0.35) * 0.35;
         const next = new THREE.Vector3(...current.position);
+        next.x += orbit.x;
+        next.y += orbit.y;
         camera.position.lerp(next, reduce ? 1 : 0.045);
         cameraTarget.lerp(new THREE.Vector3(...current.target), reduce ? 1 : 0.06);
         camera.lookAt(cameraTarget);
