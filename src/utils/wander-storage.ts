@@ -9,12 +9,17 @@ export type WanderDetailState = {
 };
 
 export type StorageLike = Pick<Storage, "getItem" | "setItem">;
+export type SiteMode = "career" | "wander";
 export type WanderScene = "night" | "day";
 
 export type WanderRoomState = {
   scene: WanderScene;
   resumeKey: string;
 };
+
+export const normalizeWanderScene = (value: unknown): WanderScene => value === "day" ? "day" : "night";
+
+export const normalizeSiteMode = (value: unknown): SiteMode => value === "wander" ? "wander" : "career";
 
 export const shouldInitializeWander = (ready: string | undefined): boolean => ready !== "true";
 
@@ -26,7 +31,7 @@ export const getWanderRoomState = (
   storedKey: string | null,
   availableKeys: readonly string[],
 ): WanderRoomState => ({
-  scene: storedScene === "day" ? "day" : "night",
+  scene: normalizeWanderScene(storedScene),
   resumeKey: getWanderResumeKey(storedKey, availableKeys),
 });
 

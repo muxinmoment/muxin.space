@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { getWanderRoomState, getWanderStorage, readStorageValue, readVisitedProgress, recordRecentProgress, shouldInitializeWander, writeStorageValue, writeVisitedProgress } from "../utils/wander-storage";
+import { getWanderRoomState, getWanderStorage, normalizeWanderScene, readStorageValue, readVisitedProgress, recordRecentProgress, shouldInitializeWander, writeStorageValue, writeVisitedProgress } from "../utils/wander-storage";
 
 const root = document.querySelector<HTMLElement>("[data-wander-3d]");
 if (root && shouldInitializeWander(root.dataset.ready)) {
@@ -125,7 +125,7 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       const targetKey = sceneColor.key.clone();
       const targetDust = sceneColor.dust.clone();
       const syncScene = (sceneKey: string, immediate = false) => {
-        activeScene = sceneKey === "day" ? "day" : "night";
+        activeScene = normalizeWanderScene(sceneKey);
         const colors = sceneColors[activeScene];
         targetBackground.copy(colors.background);
         targetFog.copy(colors.fog);
@@ -144,6 +144,9 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       window.addEventListener("muxin-wander-scene", (event) => {
         const sceneKey = (event as CustomEvent<{ scene?: string }>).detail?.scene;
         if (sceneKey) syncScene(sceneKey);
+      });
+      window.addEventListener("storage", (event) => {
+        if (event.key === "muxin-wander-scene") syncScene(event.newValue ?? "night");
       });
 
       let current = views.center;

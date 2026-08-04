@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { formatWanderFootprintTime, getWanderDetailState, getWanderDirectoryState, getWanderResumeKey, getWanderRoomState, parseRecentProgress, parseVisitedProgress, readRecentProgress, readStorageValue, readVisitedProgress, recordRecentProgress, shouldInitializeWander, writeRecentProgress, writeStorageValue, writeVisitedProgress } from "../src/utils/wander-storage.ts";
+import { formatWanderFootprintTime, getWanderDetailState, getWanderDirectoryState, getWanderResumeKey, getWanderRoomState, normalizeSiteMode, normalizeWanderScene, parseRecentProgress, parseVisitedProgress, readRecentProgress, readStorageValue, readVisitedProgress, recordRecentProgress, shouldInitializeWander, writeRecentProgress, writeStorageValue, writeVisitedProgress } from "../src/utils/wander-storage.ts";
+
+test("normalizes persisted mode and scene values before syncing the UI", () => {
+  assert.equal(normalizeSiteMode("wander"), "wander");
+  assert.equal(normalizeSiteMode("unknown"), "career");
+  assert.equal(normalizeWanderScene("day"), "day");
+  assert.equal(normalizeWanderScene("storm"), "night");
+  assert.equal(normalizeWanderScene(null), "night");
+});
 
 test("initializes each Astro page once while allowing a fresh page", () => {
   assert.equal(shouldInitializeWander(undefined), true);

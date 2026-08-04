@@ -262,29 +262,38 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
 </BaseLayout>
 
 <script>
-  import { getWanderStorage } from "../utils/wander-storage";
+  import { getWanderStorage, normalizeSiteMode, readStorageValue, writeStorageValue } from "../utils/wander-storage";
   function initModeSwitch() {
     const root = document.querySelector<HTMLElement>('[data-mode-switch]');
     if (!root || root.dataset.ready === "true") return;
     const buttons = root.querySelectorAll<HTMLButtonElement>("[data-mode-button]");
     const panels = document.querySelectorAll<HTMLElement>("[data-mode-panel]");
-    const setMode = (mode: string) => {
+    const setMode = (mode: string, broadcast = true) => {
+      const normalizedMode = normalizeSiteMode(mode);
       buttons.forEach((button) => {
-        const active = button.dataset.modeButton === mode;
+        const active = button.dataset.modeButton === normalizedMode;
         button.classList.toggle("bg-white", active);
         button.classList.toggle("text-zinc-900", active);
         button.classList.toggle("shadow-sm", active);
         button.classList.toggle("text-zinc-500", !active);
       });
-      panels.forEach((panel) => panel.classList.toggle("hidden", panel.dataset.modePanel !== mode));
-      document.documentElement.dataset.siteMode = mode;
+      panels.forEach((panel) => panel.classList.toggle("hidden", panel.dataset.modePanel !== normalizedMode));
+      document.documentElement.dataset.siteMode = normalizedMode;
       const storage = getWanderStorage();
-      storage?.setItem("muxin-site-mode", mode);
-      storage?.setItem("muxin-home-mode", mode);
+      writeStorageValue(storage, "muxin-site-mode", normalizedMode);
+      writeStorageValue(storage, "muxin-home-mode", normalizedMode);
+      if (broadcast) window.dispatchEvent(new CustomEvent("muxin:mode-change", { detail: normalizedMode }));
     };
     buttons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.modeButton ?? "career")));
     const storage = getWanderStorage();
-    setMode(storage?.getItem("muxin-site-mode") ?? storage?.getItem("muxin-home-mode") ?? "career");
+    setMode(normalizeSiteMode(readStorageValue(storage, "muxin-site-mode") ?? readStorageValue(storage, "muxin-home-mode")));
+    window.addEventListener("muxin:mode-change", (event) => {
+      const mode = (event as CustomEvent<string>).detail;
+      if (mode) setMode(mode, false);
+    });
+    window.addEventListener("storage", (event) => {
+      if (event.key === "muxin-site-mode" || event.key === "muxin-home-mode") setMode(event.newValue ?? "career");
+    });
     root.dataset.ready = "true";
   }
 

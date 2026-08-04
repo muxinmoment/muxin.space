@@ -122,7 +122,7 @@ const isActive = (href: string) =>
     </footer>
 
     <script>
-      import { getWanderStorage, readVisitedProgress, recordRecentProgress, writeVisitedProgress } from "../utils/wander-storage";
+      import { getWanderStorage, normalizeSiteMode, readStorageValue, readVisitedProgress, recordRecentProgress, writeStorageValue, writeVisitedProgress } from "../utils/wander-storage";
 
       function initReveal() {
         const targets = document.querySelectorAll<HTMLElement>(".reveal");
@@ -153,28 +153,36 @@ const isActive = (href: string) =>
         const links = document.querySelectorAll<HTMLAnchorElement>("[data-site-mode-link]");
         if (document.documentElement.dataset.siteModeReady === "true") return;
 
-        const setMode = (mode: "career" | "wander") => {
-          document.documentElement.dataset.siteMode = mode;
+        const setMode = (mode: string, broadcast = true) => {
+          const normalizedMode = normalizeSiteMode(mode);
+          document.documentElement.dataset.siteMode = normalizedMode;
           buttons.forEach((button) => {
-            const active = button.dataset.siteModeButton === mode;
-            button.classList.toggle("bg-zinc-900", active && mode === "career");
-            button.classList.toggle("text-white", active && mode === "career");
-            button.classList.toggle("bg-violet-600", active && mode === "wander");
+            const active = button.dataset.siteModeButton === normalizedMode;
+            button.classList.toggle("bg-zinc-900", active && normalizedMode === "career");
+            button.classList.toggle("text-white", active && normalizedMode === "career");
+            button.classList.toggle("bg-violet-600", active && normalizedMode === "wander");
             button.classList.toggle("text-zinc-500", !active);
           });
           labels.forEach((label) => {
-            label.textContent = mode === "wander" ? label.dataset.wanderLabel ?? label.textContent : label.dataset.careerLabel ?? label.textContent;
+            label.textContent = normalizedMode === "wander" ? label.dataset.wanderLabel ?? label.textContent : label.dataset.careerLabel ?? label.textContent;
           });
           links.forEach((link) => {
-            link.href = mode === "wander" ? link.dataset.wanderHref ?? link.dataset.careerHref ?? link.href : link.dataset.careerHref ?? link.href;
+            link.href = normalizedMode === "wander" ? link.dataset.wanderHref ?? link.dataset.careerHref ?? link.href : link.dataset.careerHref ?? link.href;
           });
           const storage = getWanderStorage();
-          if (storage?.getItem("muxin-site-mode") !== mode) storage?.setItem("muxin-site-mode", mode);
-          window.dispatchEvent(new CustomEvent("muxin:mode-change", { detail: mode }));
+          if (readStorageValue(storage, "muxin-site-mode") !== normalizedMode) writeStorageValue(storage, "muxin-site-mode", normalizedMode);
+          if (broadcast) window.dispatchEvent(new CustomEvent("muxin:mode-change", { detail: normalizedMode }));
         };
 
-        buttons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.siteModeButton as "career" | "wander")));
-        setMode((getWanderStorage()?.getItem("muxin-site-mode") as "career" | "wander") ?? "career");
+        buttons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.siteModeButton ?? "career")));
+        window.addEventListener("muxin:mode-change", (event) => {
+          const mode = (event as CustomEvent<string>).detail;
+          if (mode) setMode(mode, false);
+        });
+        window.addEventListener("storage", (event) => {
+          if (event.key === "muxin-site-mode" || event.key === "muxin-home-mode") setMode(event.newValue ?? "career");
+        });
+        setMode(normalizeSiteMode(readStorageValue(getWanderStorage(), "muxin-site-mode")));
         document.documentElement.dataset.siteModeReady = "true";
         if (root) root.dataset.ready = "true";
       }

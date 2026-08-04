@@ -98,7 +98,7 @@ const counts = {
 </BaseLayout>
 
 <script>
-  import { formatWanderFootprintTime, getWanderDirectoryState, getWanderStorage, readRecentProgress, readVisitedProgress, readStorageValue, shouldInitializeWander, writeStorageValue, writeVisitedProgress } from "../../utils/wander-storage";
+  import { formatWanderFootprintTime, getWanderDirectoryState, getWanderStorage, normalizeWanderScene, readRecentProgress, readVisitedProgress, readStorageValue, shouldInitializeWander, writeStorageValue, writeVisitedProgress } from "../../utils/wander-storage";
 
   function initSceneSwitch() {
     const room = document.querySelector<HTMLElement>("[data-wander-room]");
@@ -106,22 +106,26 @@ const counts = {
     const text = document.querySelector<HTMLElement>("[data-scene-text]");
     if (!room || !buttons.length || !shouldInitializeWander(room.dataset.ready)) return;
     const setScene = (scene: string) => {
-      room.dataset.scene = scene;
-      if (text) text.textContent = scene === "day" ? "晴天，风很轻" : "深夜，有星星";
+      const normalizedScene = normalizeWanderScene(scene);
+      room.dataset.scene = normalizedScene;
+      if (text) text.textContent = normalizedScene === "day" ? "晴天，风很轻" : "深夜，有星星";
       buttons.forEach((button) => {
-        const active = button.dataset.sceneButton === scene;
-        button.classList.toggle("bg-violet-500", active && scene === "night");
-        button.classList.toggle("bg-amber-400", active && scene === "day");
+        const active = button.dataset.sceneButton === normalizedScene;
+        button.classList.toggle("bg-violet-500", active && normalizedScene === "night");
+        button.classList.toggle("bg-amber-400", active && normalizedScene === "day");
         button.classList.toggle("text-white", active);
         button.classList.toggle("text-violet-200/60", !active);
         button.setAttribute("aria-pressed", String(active));
       });
       const storage = getWanderStorage();
-      if (readStorageValue(storage, "muxin-wander-scene") !== scene) writeStorageValue(storage, "muxin-wander-scene", scene);
-      window.dispatchEvent(new CustomEvent("muxin-wander-scene", { detail: { scene } }));
+      if (readStorageValue(storage, "muxin-wander-scene") !== normalizedScene) writeStorageValue(storage, "muxin-wander-scene", normalizedScene);
+      window.dispatchEvent(new CustomEvent("muxin-wander-scene", { detail: { scene: normalizedScene } }));
     };
     buttons.forEach((button) => button.addEventListener("click", () => setScene(button.dataset.sceneButton ?? "night")));
     setScene(readStorageValue(getWanderStorage(), "muxin-wander-scene") ?? "night");
+    window.addEventListener("storage", (event) => {
+      if (event.key === "muxin-wander-scene") setScene(event.newValue ?? "night");
+    });
     room.dataset.ready = "true";
   }
   initSceneSwitch();
