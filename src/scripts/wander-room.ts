@@ -300,6 +300,7 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
         : null;
       viewportObserver?.observe(canvas);
       document.addEventListener("visibilitychange", handleVisibilityChange, cleanupOptions);
+      let cleanedUp = false;
       const disposeMaterial = (value: THREE.Material) => {
         const textures = new Set<THREE.Texture>();
         Object.values(value).forEach((materialValue) => {
@@ -309,6 +310,8 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
         value.dispose();
       };
       const cleanup = () => {
+        if (cleanedUp) return;
+        cleanedUp = true;
         stopAnimation();
         viewportObserver?.disconnect();
         cleanupController.abort();
