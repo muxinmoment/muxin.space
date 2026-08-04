@@ -21,7 +21,7 @@ const branch = entry.data.type === "anime" ? { key: "anime", label: "番剧书�
 </BaseLayout>
 
 <script>
-  import { getWanderStorage, readVisitedProgress, recordRecentProgress, writeVisitedProgress } from "../../utils/wander-storage";
+  import { getWanderDetailState, getWanderStorage, readVisitedProgress, recordRecentProgress, writeVisitedProgress } from "../../utils/wander-storage";
 
   function initWanderDetail() {
     const detail = document.querySelector<HTMLElement>("[data-wander-detail]");
@@ -31,24 +31,14 @@ const branch = entry.data.type === "anime" ? { key: "anime", label: "番剧书�
     const recentKey = "muxin-wander-recent";
     const key = detail.dataset.wanderKey;
     if (!key) return;
-    const formatFootprintTime = (visitedAt: number) => {
-      const visitedDate = new Date(visitedAt);
-      const now = new Date();
-      if (now.getTime() - visitedDate.getTime() < 60 * 60 * 1000) return "刚刚";
-      if (visitedDate.toDateString() === now.toDateString()) return "今天";
-      return new Intl.DateTimeFormat("zh-CN", { month: "numeric", day: "numeric" }).format(visitedDate).replace("/", "月") + "日";
-    };
-    try {
-      const storage = getWanderStorage();
-      const visited = readVisitedProgress(storage, visitedKey);
-      visited.add(key);
-      writeVisitedProgress(storage, visitedKey, visited);
-      const recent = recordRecentProgress(storage, recentKey, key);
-      window.dispatchEvent(new CustomEvent("muxin-wander-progress"));
-      footprint.textContent = `当前足迹 · ${detail.dataset.wanderLabel} · ${formatFootprintTime(recent[0].visitedAt)}`;
-    } catch {
-      footprint.textContent = "继续探索 · 进度仅保存在当前浏览器";
-    }
+    const storage = getWanderStorage();
+    const visited = readVisitedProgress(storage, visitedKey);
+    visited.add(key);
+    const visitedSaved = writeVisitedProgress(storage, visitedKey, visited);
+    const recent = recordRecentProgress(storage, recentKey, key);
+    const state = getWanderDetailState(detail.dataset.wanderLabel ?? "漫游入口", recent, Boolean(storage && visitedSaved));
+    window.dispatchEvent(new CustomEvent("muxin-wander-progress"));
+    footprint.textContent = state.storageHint ? `${state.footprint} · ${state.storageHint}` : state.footprint;
     detail.dataset.ready = "true";
   }
   initWanderDetail();

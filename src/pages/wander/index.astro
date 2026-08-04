@@ -98,7 +98,7 @@ const counts = {
 </BaseLayout>
 
 <script>
-  import { getWanderDirectoryState, getWanderStorage, readRecentProgress, readVisitedProgress, readStorageValue, writeStorageValue, writeVisitedProgress } from "../../utils/wander-storage";
+  import { formatWanderFootprintTime, getWanderDirectoryState, getWanderStorage, readRecentProgress, readVisitedProgress, readStorageValue, writeStorageValue, writeVisitedProgress } from "../../utils/wander-storage";
 
   function initSceneSwitch() {
     const room = document.querySelector<HTMLElement>("[data-wander-room]");
@@ -159,13 +159,6 @@ const counts = {
       if (timeline && timelineList) {
         const recent = state.recent.filter((item) => labels[item.key]);
         timeline.hidden = recent.length === 0;
-        const formatFootprintTime = (visitedAt: number) => {
-          const visitedDate = new Date(visitedAt);
-          const now = new Date();
-          if (now.getTime() - visitedDate.getTime() < 60 * 60 * 1000) return "刚刚";
-          if (visitedDate.toDateString() === now.toDateString()) return "今天";
-          return new Intl.DateTimeFormat("zh-CN", { month: "numeric", day: "numeric" }).format(visitedDate).replace("/", "月") + "日";
-        };
         timelineList.replaceChildren(...recent.map((item, index) => {
           const listItem = document.createElement("li");
           listItem.className = "flex items-center gap-2";
@@ -176,7 +169,7 @@ const counts = {
           const time = document.createElement("time");
           time.className = "ml-auto text-violet-100/35";
           time.dateTime = new Date(item.visitedAt).toISOString();
-          time.textContent = formatFootprintTime(item.visitedAt);
+          time.textContent = formatWanderFootprintTime(item.visitedAt);
           listItem.append(dot, label, time);
           return listItem;
         }));

@@ -3,6 +3,11 @@ export type WanderRecent = {
   visitedAt: number;
 };
 
+export type WanderDetailState = {
+  footprint: string;
+  storageHint: string;
+};
+
 export type StorageLike = Pick<Storage, "getItem" | "setItem">;
 
 const MAX_STORAGE_VALUE_LENGTH = 100_000;
@@ -31,6 +36,25 @@ export const writeStorageValue = (storage: StorageLike | null, key: string, valu
 
 const isValidTimestamp = (value: unknown): value is number =>
   typeof value === "number" && Number.isFinite(value) && new Date(value).getTime() === value;
+
+export const formatWanderFootprintTime = (visitedAt: number, now = Date.now()): string => {
+  const elapsed = now - visitedAt;
+  if (elapsed >= 0 && elapsed < 60 * 60 * 1000) return "刚刚";
+  const visitedDate = new Date(visitedAt);
+  const nowDate = new Date(now);
+  if (visitedDate.toDateString() === nowDate.toDateString()) return "今天";
+  return new Intl.DateTimeFormat("zh-CN", { month: "numeric", day: "numeric" }).format(visitedDate).replace("/", "月") + "日";
+};
+
+export const getWanderDetailState = (
+  label: string,
+  recent: WanderRecent[],
+  storageAvailable: boolean,
+  now = Date.now(),
+): WanderDetailState => ({
+  footprint: recent[0] ? `当前足迹 · ${label} · ${formatWanderFootprintTime(recent[0].visitedAt, now)}` : "继续探索",
+  storageHint: storageAvailable ? "" : "进度仅保存在当前浏览器",
+});
 
 const parseJson = (raw: string | null): unknown => {
   if (!raw || raw.length > MAX_STORAGE_VALUE_LENGTH) return [];

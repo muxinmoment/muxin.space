@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { getWanderDirectoryState, parseRecentProgress, parseVisitedProgress, readRecentProgress, readStorageValue, readVisitedProgress, recordRecentProgress, writeRecentProgress, writeStorageValue, writeVisitedProgress } from "../src/utils/wander-storage.ts";
+import { formatWanderFootprintTime, getWanderDetailState, getWanderDirectoryState, parseRecentProgress, parseVisitedProgress, readRecentProgress, readStorageValue, readVisitedProgress, recordRecentProgress, writeRecentProgress, writeStorageValue, writeVisitedProgress } from "../src/utils/wander-storage.ts";
 
 test("ignores corrupted JSON instead of throwing", () => {
   assert.deepEqual(parseVisitedProgress("{not-json"), []);
@@ -83,6 +83,20 @@ test("derives safe directory progress, explored labels, and recent footprints", 
   assert.equal(getWanderDirectoryState(["anime", "photo", "notes", "memo"], [], ["anime", "photo", "notes", "memo"]).isComplete, true);
 });
 
+test("formats recent footprints consistently and derives detail fallback state", () => {
+  const now = new Date("2026-08-05T12:00:00+08:00").getTime();
+  assert.equal(formatWanderFootprintTime(now - 30 * 60 * 1000, now), "刚刚");
+  assert.equal(formatWanderFootprintTime(new Date("2026-08-05T08:00:00+08:00").getTime(), now), "今天");
+  assert.equal(formatWanderFootprintTime(new Date("2026-07-30T08:00:00+08:00").getTime(), now), "7月30日");
+  assert.deepEqual(getWanderDetailState("番剧书架", [{ key: "anime", visitedAt: now }], true, now), {
+    footprint: "当前足迹 · 番剧书架 · 刚刚",
+    storageHint: "",
+  });
+  assert.deepEqual(getWanderDetailState("番剧书架", [], false, now), {
+    footprint: "继续探索",
+    storageHint: "进度仅保存在当前浏览器",
+  });
+});
 test("records one recent footprint per key and caps the timeline", () => {
   const values = new Map<string, string>();
   const storage = {
