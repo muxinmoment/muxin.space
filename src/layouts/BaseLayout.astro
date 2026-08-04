@@ -149,7 +149,7 @@ const isActive = (href: string) =>
         const buttons = document.querySelectorAll<HTMLButtonElement>("[data-site-mode-button]");
         const labels = document.querySelectorAll<HTMLElement>("[data-site-mode-label]");
         const links = document.querySelectorAll<HTMLAnchorElement>("[data-site-mode-link]");
-        if (!root || !buttons.length || root.dataset.ready === "true") return;
+        if (document.documentElement.dataset.siteModeReady === "true") return;
 
         const setMode = (mode: "career" | "wander") => {
           document.documentElement.dataset.siteMode = mode;
@@ -166,13 +166,14 @@ const isActive = (href: string) =>
           links.forEach((link) => {
             link.href = mode === "wander" ? link.dataset.wanderHref ?? link.dataset.careerHref ?? link.href : link.dataset.careerHref ?? link.href;
           });
-          localStorage.setItem("muxin-site-mode", mode);
+          if (localStorage.getItem("muxin-site-mode") !== mode) localStorage.setItem("muxin-site-mode", mode);
           window.dispatchEvent(new CustomEvent("muxin:mode-change", { detail: mode }));
         };
 
         buttons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.siteModeButton as "career" | "wander")));
         setMode((localStorage.getItem("muxin-site-mode") as "career" | "wander") ?? "career");
-        root.dataset.ready = "true";
+        document.documentElement.dataset.siteModeReady = "true";
+        if (root) root.dataset.ready = "true";
       }
 
       function initWanderFootprints() {
