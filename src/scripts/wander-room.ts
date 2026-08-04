@@ -183,12 +183,16 @@ if (root && root.dataset.ready !== "true") {
       const visitedStorageKey = "muxin-wander-visited";
       const recentStorageKey = "muxin-wander-recent";
       const readVisited = () => {
-        try { return new Set(JSON.parse(localStorage.getItem(visitedStorageKey) ?? "[]") as string[]); } catch { return new Set<string>(); }
+        try {
+          const stored = JSON.parse(localStorage.getItem(visitedStorageKey) ?? "[]");
+          return new Set<string>(Array.isArray(stored) ? stored.filter((item): item is string => typeof item === "string") : []);
+        } catch { return new Set<string>(); }
       };
       const recordVisit = (key: string) => {
         try {
-          const recent = (JSON.parse(localStorage.getItem(recentStorageKey) ?? "[]") as { key: string; visitedAt: number }[])
-            .filter((item) => item && typeof item.key === "string" && typeof item.visitedAt === "number" && item.key !== key)
+          const stored = JSON.parse(localStorage.getItem(recentStorageKey) ?? "[]");
+          const recent = (Array.isArray(stored) ? stored : [])
+            .filter((item): item is { key: string; visitedAt: number } => item && typeof item.key === "string" && Number.isFinite(item.visitedAt) && item.key !== key)
             .slice(0, 2);
           recent.unshift({ key, visitedAt: Date.now() });
           localStorage.setItem(recentStorageKey, JSON.stringify(recent));

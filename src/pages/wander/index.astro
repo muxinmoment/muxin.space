@@ -138,7 +138,10 @@ const counts = {
     const recentStorageKey = "muxin-wander-recent";
     const labels: Record<string, string> = { anime: "番剧书架", photo: "照片墙", notes: "支线随笔", memo: "小木电台" };
     const readVisited = () => {
-      try { return new Set(JSON.parse(localStorage.getItem(storageKey) ?? "[]") as string[]); } catch { return new Set<string>(); }
+      try {
+        const stored = JSON.parse(localStorage.getItem(storageKey) ?? "[]");
+        return new Set<string>(Array.isArray(stored) ? stored.filter((item): item is string => typeof item === "string") : []);
+      } catch { return new Set<string>(); }
     };
     const updateProgress = () => {
       const visited = readVisited();
@@ -157,7 +160,10 @@ const counts = {
       if (completion) completion.textContent = isComplete ? "四个入口都到访过了。现在回到上面，看看房间亮起来的样子。" : "";
       if (timeline && timelineList) {
         let recent: { key: string; visitedAt: number }[] = [];
-        try { recent = (JSON.parse(localStorage.getItem(recentStorageKey) ?? "[]") as { key: string; visitedAt: number }[]).filter((item) => labels[item.key] && typeof item.visitedAt === "number").slice(0, 3); } catch { }
+        try {
+          const stored = JSON.parse(localStorage.getItem(recentStorageKey) ?? "[]");
+          recent = (Array.isArray(stored) ? stored : []).filter((item): item is { key: string; visitedAt: number } => item && labels[item.key] && Number.isFinite(item.visitedAt)).slice(0, 3);
+        } catch { }
         timeline.hidden = recent.length === 0;
         const formatFootprintTime = (visitedAt: number) => {
           const visitedDate = new Date(visitedAt);
@@ -166,7 +172,20 @@ const counts = {
           if (visitedDate.toDateString() === now.toDateString()) return "今天";
           return new Intl.DateTimeFormat("zh-CN", { month: "numeric", day: "numeric" }).format(visitedDate).replace("/", "月") + "日";
         };
-        timelineList.innerHTML = recent.map((item, index) => `<li class="flex items-center gap-2"><span class="h-1.5 w-1.5 shrink-0 rounded-full ${index === 0 ? "bg-violet-300" : "bg-violet-300/40"}"></span><span>${labels[item.key]}</span><time class="ml-auto text-violet-100/35" datetime="${new Date(item.visitedAt).toISOString()}">${formatFootprintTime(item.visitedAt)}</time></li>`).join("");
+        timelineList.replaceChildren(...recent.map((item, index) => {
+          const listItem = document.createElement("li");
+          listItem.className = "flex items-center gap-2";
+          const dot = document.createElement("span");
+          dot.className = `h-1.5 w-1.5 shrink-0 rounded-full ${index === 0 ? "bg-violet-300" : "bg-violet-300/40"}`;
+          const label = document.createElement("span");
+          label.textContent = labels[item.key];
+          const time = document.createElement("time");
+          time.className = "ml-auto text-violet-100/35";
+          time.dateTime = new Date(item.visitedAt).toISOString();
+          time.textContent = formatFootprintTime(item.visitedAt);
+          listItem.append(dot, label, time);
+          return listItem;
+        }));
       }
     };
     links.forEach((link) => link.addEventListener("click", () => {

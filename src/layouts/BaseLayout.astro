@@ -189,11 +189,13 @@ const isActive = (href: string) =>
         const visitedKey = "muxin-wander-visited";
         const recentKey = "muxin-wander-recent";
         try {
-          const visited = new Set(JSON.parse(localStorage.getItem(visitedKey) ?? "[]") as string[]);
+          const storedVisited = JSON.parse(localStorage.getItem(visitedKey) ?? "[]");
+          const visited = new Set<string>(Array.isArray(storedVisited) ? storedVisited.filter((item): item is string => typeof item === "string") : []);
           visited.add(key);
           localStorage.setItem(visitedKey, JSON.stringify([...visited]));
-          const recent = (JSON.parse(localStorage.getItem(recentKey) ?? "[]") as { key: string; visitedAt: number }[])
-            .filter((item) => item && typeof item.key === "string" && typeof item.visitedAt === "number" && item.key !== key)
+          const storedRecent = JSON.parse(localStorage.getItem(recentKey) ?? "[]");
+          const recent = (Array.isArray(storedRecent) ? storedRecent : [])
+            .filter((item): item is { key: string; visitedAt: number } => item && typeof item.key === "string" && Number.isFinite(item.visitedAt) && item.key !== key)
             .slice(0, 2);
           recent.unshift({ key, visitedAt: Date.now() });
           localStorage.setItem(recentKey, JSON.stringify(recent));
