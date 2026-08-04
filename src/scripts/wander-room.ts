@@ -243,7 +243,8 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       let animationFrame: number | null = null;
       let isVisible = document.visibilityState !== "hidden";
-      let isInViewport = true;
+      const supportsViewportObserver = "IntersectionObserver" in window;
+      let isInViewport = !supportsViewportObserver;
       const shouldAnimate = () => isVisible && isInViewport;
       const stopAnimation = () => {
         if (animationFrame !== null) cancelAnimationFrame(animationFrame);
@@ -270,7 +271,10 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
         cameraTarget.lerp(new THREE.Vector3(...current.target), reduce ? 1 : 0.06);
         camera.lookAt(cameraTarget);
         renderer.render(scene, camera);
-        animationFrame = requestAnimationFrame(animate);
+        scheduleAnimation();
+      };
+      const scheduleAnimation = () => {
+        if (shouldAnimate() && animationFrame === null) animationFrame = requestAnimationFrame(animate);
       };
       const handleVisibilityChange = () => {
         isVisible = document.visibilityState !== "hidden";
@@ -278,21 +282,21 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
           stopAnimation();
           return;
         }
-        if (shouldAnimate() && animationFrame === null) animate();
+        scheduleAnimation();
       };
-      const viewportObserver = "IntersectionObserver" in window
+      const viewportObserver = supportsViewportObserver
         ? new IntersectionObserver(([entry]) => {
             isInViewport = entry.isIntersecting;
             if (!isInViewport) {
               stopAnimation();
               return;
             }
-            if (isVisible && animationFrame === null) animate();
+            scheduleAnimation();
           }, { threshold: 0 })
         : null;
       viewportObserver?.observe(canvas);
       document.addEventListener("visibilitychange", handleVisibilityChange);
-      animate();
+      scheduleAnimation();
     } catch {
       root.classList.add("is-failed");
       if (fallback) fallback.style.display = "grid";
