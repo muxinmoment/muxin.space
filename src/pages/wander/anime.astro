@@ -1,0 +1,8 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+const entries = (await getCollection("wander", ({ data }) => !data.draft && data.type === "anime")).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+---
+<BaseLayout title="番剧观测站 | 漫游" description="番剧观看记录与感想。">
+  <div class="mx-auto max-w-4xl"><a href="/wander/" class="text-sm text-zinc-500 hover:text-violet-600">← 回到漫游</a><header class="mt-10 border-b border-violet-200 pb-10"><p class="eyebrow text-violet-500">Anime log</p><h1 class="mt-3 font-serif text-5xl tracking-tight text-zinc-900">番剧观测站</h1><p class="mt-4 max-w-2xl text-base leading-8 text-zinc-500">不写排行榜，只记录某一部作品在某个时刻碰到我的地方。</p></header><div class="mt-8 grid gap-4 sm:grid-cols-2">{entries.length ? entries.map((entry) => <a href={`/wander/${entry.id}/`} class="rounded-2xl border border-zinc-200 bg-white p-5 hover:border-violet-300"><p class="eyebrow">{entry.data.pubDate.toISOString().slice(0, 10)}</p><h2 class="mt-3 font-serif text-xl text-zinc-900">{entry.data.title}</h2><p class="mt-2 text-sm leading-7 text-zinc-500">{entry.data.description}</p></a>) : <div class="rounded-2xl border border-dashed border-violet-300 bg-violet-50/50 p-10 text-center sm:col-span-2"><p class="text-3xl">📺</p><p class="mt-3 font-serif text-xl text-zinc-900">观测站待开机</p><p class="mt-2 text-sm text-zinc-500">第一篇番剧感悟会从这里开始。</p></div>}</div></div>
+</BaseLayout>

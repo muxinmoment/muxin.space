@@ -19,11 +19,11 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
 const absoluteImage = new URL(image, Astro.site).toString();
 
 const navLinks = [
-  { href: "/", label: "Home", wanderLabel: "起点" },
-  { href: "/notes", label: "Sharing", wanderLabel: "日志" },
-  { href: "/portfolio", label: "Portfolio", wanderLabel: "主线任务" },
-  { href: "/resume", label: "Resume", wanderLabel: "角色卡" },
-  { href: "/memo", label: "🪵 小木", wanderLabel: "小木电台" },
+  { href: "/", label: "Home", wanderHref: "/wander/", wanderLabel: "起点" },
+  { href: "/notes", label: "Sharing", wanderHref: "/wander/anime/", wanderLabel: "番剧" },
+  { href: "/portfolio", label: "Portfolio", wanderHref: "/wander/photos/", wanderLabel: "摄影" },
+  { href: "/resume", label: "Resume", wanderHref: "/wander/notes/", wanderLabel: "随笔" },
+  { href: "/memo", label: "🪵 小木", wanderHref: "/memo", wanderLabel: "小木电台" },
 ];
 
 const currentPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
@@ -75,6 +75,9 @@ const isActive = (href: string) =>
                 <li>
                   <a
                     href={link.href}
+                    data-site-mode-link
+                    data-career-href={link.href}
+                    data-wander-href={link.wanderHref}
                     data-astro-prefetch
                     aria-current={isActive(link.href) ? "page" : undefined}
                     class:list={[
@@ -145,6 +148,7 @@ const isActive = (href: string) =>
         const root = document.querySelector<HTMLElement>("[data-site-mode-switch]");
         const buttons = document.querySelectorAll<HTMLButtonElement>("[data-site-mode-button]");
         const labels = document.querySelectorAll<HTMLElement>("[data-site-mode-label]");
+        const links = document.querySelectorAll<HTMLAnchorElement>("[data-site-mode-link]");
         if (!root || !buttons.length || root.dataset.ready === "true") return;
 
         const setMode = (mode: "career" | "wander") => {
@@ -158,6 +162,9 @@ const isActive = (href: string) =>
           });
           labels.forEach((label) => {
             label.textContent = mode === "wander" ? label.dataset.wanderLabel ?? label.textContent : label.dataset.careerLabel ?? label.textContent;
+          });
+          links.forEach((link) => {
+            link.href = mode === "wander" ? link.dataset.wanderHref ?? link.dataset.careerHref ?? link.href : link.dataset.careerHref ?? link.href;
           });
           localStorage.setItem("muxin-site-mode", mode);
           window.dispatchEvent(new CustomEvent("muxin:mode-change", { detail: mode }));

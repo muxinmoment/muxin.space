@@ -1,0 +1,8 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+const entries = (await getCollection("wander", ({ data }) => !data.draft && data.type === "essay")).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+---
+<BaseLayout title="支线随笔 | 漫游" description="和工程无关，但和我有关的随笔。">
+  <div class="mx-auto max-w-3xl"><a href="/wander/" class="text-sm text-zinc-500 hover:text-amber-600">← 回到漫游</a><header class="mt-10 border-b border-amber-200 pb-10"><p class="eyebrow text-amber-600">Side notes</p><h1 class="mt-3 font-serif text-5xl tracking-tight text-zinc-900">支线随笔</h1><p class="mt-4 text-base leading-8 text-zinc-500">关于游戏、生活、审美，以及那些不需要被归档成“有用”的时刻。</p></header><div class="mt-8 space-y-4">{entries.length ? entries.map((entry) => <a href={`/wander/${entry.id}/`} class="block rounded-2xl border border-zinc-200 bg-white p-6 hover:border-amber-300"><p class="eyebrow">{entry.data.pubDate.toISOString().slice(0, 10)}</p><h2 class="mt-3 font-serif text-2xl text-zinc-900">{entry.data.title}</h2><p class="mt-2 text-sm leading-7 text-zinc-500">{entry.data.description}</p></a>) : <div class="rounded-2xl border border-dashed border-amber-300 bg-amber-50/50 p-10 text-center"><p class="text-3xl">✦</p><p class="mt-3 font-serif text-xl text-zinc-900">支线尚未解锁</p><p class="mt-2 text-sm text-zinc-500">等一个值得写下来的瞬间。</p></div>}</div></div>
+</BaseLayout>

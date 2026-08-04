@@ -1,0 +1,15 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("wander", ({ data }) => !data.draft);
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+<BaseLayout title={`${entry.data.title} | 漫游`} description={entry.data.description} type="article">
+  <article class="mx-auto max-w-3xl"><a href="/wander/" class="text-sm text-zinc-500 hover:text-violet-600">← 回到漫游</a><header class="mt-10 border-b border-zinc-200 pb-10"><p class="eyebrow">{entry.data.type} · {entry.data.pubDate.toISOString().slice(0, 10)}</p><h1 class="mt-4 font-serif text-5xl leading-tight tracking-tight text-zinc-900">{entry.data.title}</h1><p class="mt-5 text-lg leading-8 text-zinc-500">{entry.data.description}</p></header><div class="article-prose prose prose-zinc mt-10 max-w-none"><Content /></div></article>
+</BaseLayout>

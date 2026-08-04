@@ -27,4 +27,17 @@ const memo = defineCollection({
   }),
 });
 
-export const collections = { notes, memo };
+const wander = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/wander" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    pubDate: z.coerce.date(),
+    type: z.enum(["anime", "photo", "essay"]),
+    tags: z.array(z.string()).default([]),
+    cover: z.string().optional(),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { notes, memo, wander };

@@ -1,0 +1,45 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const entries = (await getCollection("wander", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const counts = {
+  anime: entries.filter((entry) => entry.data.type === "anime").length,
+  photo: entries.filter((entry) => entry.data.type === "photo").length,
+  essay: entries.filter((entry) => entry.data.type === "essay").length,
+};
+const latest = entries.slice(0, 4);
+---
+
+<BaseLayout title="漫游 | muxin.space" description="番剧、摄影和不太正经的个人支线。">
+  <div class="mx-auto max-w-5xl">
+    <section class="grid gap-8 rounded-[2rem] border border-violet-200 bg-[linear-gradient(135deg,#251b35_0%,#17131f_70%)] p-7 text-white sm:p-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+      <div>
+        <p class="eyebrow text-violet-300">Wander universe · side quests</p>
+        <h1 class="mt-4 font-serif text-5xl leading-[1.05] tracking-tight sm:text-7xl">不只写代码，<br /><span class="text-violet-300">也记录喜欢的东西。</span></h1>
+        <p class="mt-5 max-w-xl text-sm leading-8 text-violet-100/75">这里是另一个我：看番时的感受、按下快门的瞬间、以及那些不一定有用但值得留下来的小念头。</p>
+      </div>
+      <div class="grid grid-cols-3 gap-2 text-center text-xs text-violet-200/70">
+        <a href="/wander/anime/" class="rounded-2xl border border-violet-300/20 bg-white/5 p-4 transition hover:bg-white/10"><span class="block font-serif text-3xl text-white">{counts.anime}</span><span class="mt-1 block">番剧</span></a>
+        <a href="/wander/photos/" class="rounded-2xl border border-violet-300/20 bg-white/5 p-4 transition hover:bg-white/10"><span class="block font-serif text-3xl text-white">{counts.photo}</span><span class="mt-1 block">摄影</span></a>
+        <a href="/wander/notes/" class="rounded-2xl border border-violet-300/20 bg-white/5 p-4 transition hover:bg-white/10"><span class="block font-serif text-3xl text-white">{counts.essay}</span><span class="mt-1 block">随笔</span></a>
+      </div>
+    </section>
+
+    <section class="mt-8 grid gap-4 sm:grid-cols-3">
+      <a href="/wander/anime/" class="rounded-2xl border border-violet-200 bg-violet-50/60 p-5 transition hover:-translate-y-0.5 hover:border-violet-400"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-violet-500">01 · Anime</p><h2 class="mt-3 font-serif text-2xl text-zinc-900">番剧观测站</h2><p class="mt-2 text-sm leading-7 text-zinc-600">看完一部番之后，留下真正想说的话。</p></a>
+      <a href="/wander/photos/" class="rounded-2xl border border-rose-200 bg-rose-50/60 p-5 transition hover:-translate-y-0.5 hover:border-rose-400"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-rose-500">02 · Photos</p><h2 class="mt-3 font-serif text-2xl text-zinc-900">取景框之外</h2><p class="mt-2 text-sm leading-7 text-zinc-600">摄影、光线、角色和被按下快门的时刻。</p></a>
+      <a href="/wander/notes/" class="rounded-2xl border border-amber-200 bg-amber-50/60 p-5 transition hover:-translate-y-0.5 hover:border-amber-400"><p class="text-xs font-semibold uppercase tracking-[0.14em] text-amber-600">03 · Essays</p><h2 class="mt-3 font-serif text-2xl text-zinc-900">支线随笔</h2><p class="mt-2 text-sm leading-7 text-zinc-600">一些和工程无关，但和我有关的事情。</p></a>
+    </section>
+
+    <section class="mt-10">
+      <div class="flex items-end justify-between gap-4"><div><p class="eyebrow">Latest wanderings</p><h2 class="mt-2 font-serif text-2xl text-zinc-900">最近的漫游记录</h2></div><span class="text-sm text-zinc-400">{entries.length} 条记录</span></div>
+      {latest.length ? (
+        <div class="mt-5 grid gap-4 sm:grid-cols-2">{latest.map((entry) => <a href={`/wander/${entry.id}/`} class="rounded-2xl border border-zinc-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-violet-300"><p class="eyebrow">{entry.data.type}</p><h3 class="mt-3 font-serif text-xl text-zinc-900">{entry.data.title}</h3><p class="mt-2 text-sm leading-7 text-zinc-500">{entry.data.description}</p></a>)}</div>
+      ) : (
+        <div class="mt-5 rounded-2xl border border-dashed border-violet-300 bg-violet-50/40 p-10 text-center"><p class="text-3xl">🌙</p><p class="mt-3 font-serif text-xl text-zinc-900">第一篇漫游记录还在路上</p><p class="mt-2 text-sm text-zinc-500">下一次看完番、拍完片或突然想写点什么，就从这里开始。</p></div>
+      )}
+    </section>
+  </div>
+</BaseLayout>
