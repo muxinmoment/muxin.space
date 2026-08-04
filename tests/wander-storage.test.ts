@@ -1,6 +1,21 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { formatWanderFootprintTime, getWanderDetailState, getWanderDirectoryState, parseRecentProgress, parseVisitedProgress, readRecentProgress, readStorageValue, readVisitedProgress, recordRecentProgress, writeRecentProgress, writeStorageValue, writeVisitedProgress } from "../src/utils/wander-storage.ts";
+import { formatWanderFootprintTime, getWanderDetailState, getWanderDirectoryState, getWanderResumeKey, parseRecentProgress, parseVisitedProgress, readRecentProgress, readStorageValue, readVisitedProgress, recordRecentProgress, shouldInitializeWander, writeRecentProgress, writeStorageValue, writeVisitedProgress } from "../src/utils/wander-storage.ts";
+
+test("initializes each Astro page once while allowing a fresh page", () => {
+  assert.equal(shouldInitializeWander(undefined), true);
+  assert.equal(shouldInitializeWander("false"), true);
+  assert.equal(shouldInitializeWander("true"), false);
+  assert.equal(shouldInitializeWander("true"), false);
+});
+
+test("resumes the remembered room camera without accepting stale keys", () => {
+  const availableKeys = ["center", "anime", "photo", "notes", "memo"] as const;
+  assert.equal(getWanderResumeKey("photo", availableKeys), "photo");
+  assert.equal(getWanderResumeKey("photo", availableKeys), "photo");
+  assert.equal(getWanderResumeKey("missing", availableKeys), "center");
+  assert.equal(getWanderResumeKey(null, availableKeys), "center");
+});
 
 test("ignores corrupted JSON instead of throwing", () => {
   assert.deepEqual(parseVisitedProgress("{not-json"), []);

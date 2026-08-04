@@ -1,8 +1,8 @@
 import * as THREE from "three";
-import { getWanderStorage, readStorageValue, readVisitedProgress, recordRecentProgress, writeStorageValue, writeVisitedProgress } from "../utils/wander-storage";
+import { getWanderResumeKey, getWanderStorage, readStorageValue, readVisitedProgress, recordRecentProgress, shouldInitializeWander, writeStorageValue, writeVisitedProgress } from "../utils/wander-storage";
 
 const root = document.querySelector<HTMLElement>("[data-wander-3d]");
-if (root && root.dataset.ready !== "true") {
+if (root && shouldInitializeWander(root.dataset.ready)) {
   root.dataset.ready = "true";
   const canvas = root.querySelector<HTMLCanvasElement>("[data-wander-canvas]");
   const fallback = root.querySelector<HTMLElement>("[data-wander-fallback]");
@@ -224,9 +224,10 @@ if (root && root.dataset.ready !== "true") {
         if (key && !dragged) choose(key);
       });
       const rememberedKey = readStorageValue(storage, "muxin-wander-last-room");
-      if (rememberedKey && views[rememberedKey]) {
-        choose(rememberedKey, false);
-        if (memory) memory.textContent = `上次停在：${views[rememberedKey].label.replace(/^进入|^打开/, "")}`;
+      const resumeKey = getWanderResumeKey(rememberedKey, Object.keys(views));
+      if (resumeKey !== "center") {
+        choose(resumeKey, false);
+        if (memory) memory.textContent = `上次停在：${views[resumeKey].label.replace(/^进入|^打开/, "")}`;
       } else {
         choose("center");
       }

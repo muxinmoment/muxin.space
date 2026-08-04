@@ -98,13 +98,13 @@ const counts = {
 </BaseLayout>
 
 <script>
-  import { formatWanderFootprintTime, getWanderDirectoryState, getWanderStorage, readRecentProgress, readVisitedProgress, readStorageValue, writeStorageValue, writeVisitedProgress } from "../../utils/wander-storage";
+  import { formatWanderFootprintTime, getWanderDirectoryState, getWanderStorage, readRecentProgress, readVisitedProgress, readStorageValue, shouldInitializeWander, writeStorageValue, writeVisitedProgress } from "../../utils/wander-storage";
 
   function initSceneSwitch() {
     const room = document.querySelector<HTMLElement>("[data-wander-room]");
     const buttons = document.querySelectorAll<HTMLButtonElement>("[data-scene-button]");
     const text = document.querySelector<HTMLElement>("[data-scene-text]");
-    if (!room || !buttons.length || room.dataset.ready === "true") return;
+    if (!room || !buttons.length || !shouldInitializeWander(room.dataset.ready)) return;
     const setScene = (scene: string) => {
       room.dataset.scene = scene;
       if (text) text.textContent = scene === "day" ? "晴天，风很轻" : "深夜，有星星";
@@ -136,7 +136,7 @@ const counts = {
     const completion = document.querySelector<HTMLElement>("[data-wander-complete]");
     const timeline = document.querySelector<HTMLElement>("[data-wander-timeline]");
     const timelineList = document.querySelector<HTMLOListElement>("[data-wander-timeline-list]");
-    if (!directory || !links.length || directory.dataset.ready === "true") return;
+    if (!directory || !links.length || !shouldInitializeWander(directory.dataset.ready)) return;
     const storageKey = "muxin-wander-visited";
     const recentStorageKey = "muxin-wander-recent";
     const labels: Record<string, string> = { anime: "番剧书架", photo: "照片墙", notes: "支线随笔", memo: "小木电台" };

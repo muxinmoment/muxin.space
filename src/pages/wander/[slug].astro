@@ -21,12 +21,12 @@ const branch = entry.data.type === "anime" ? { key: "anime", label: "番剧书�
 </BaseLayout>
 
 <script>
-  import { getWanderDetailState, getWanderStorage, readVisitedProgress, recordRecentProgress, writeVisitedProgress } from "../../utils/wander-storage";
+  import { getWanderDetailState, getWanderStorage, readVisitedProgress, recordRecentProgress, shouldInitializeWander, writeVisitedProgress } from "../../utils/wander-storage";
 
   function initWanderDetail() {
     const detail = document.querySelector<HTMLElement>("[data-wander-detail]");
     const footprint = detail?.querySelector<HTMLElement>("[data-wander-detail-footprint]");
-    if (!detail || !footprint || detail.dataset.ready === "true") return;
+    if (!detail || !footprint || !shouldInitializeWander(detail.dataset.ready)) return;
     const visitedKey = "muxin-wander-visited";
     const recentKey = "muxin-wander-recent";
     const key = detail.dataset.wanderKey;

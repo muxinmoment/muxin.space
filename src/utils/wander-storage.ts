@@ -10,6 +10,11 @@ export type WanderDetailState = {
 
 export type StorageLike = Pick<Storage, "getItem" | "setItem">;
 
+export const shouldInitializeWander = (ready: string | undefined): boolean => ready !== "true";
+
+export const getWanderResumeKey = (storedKey: string | null, availableKeys: readonly string[]): string =>
+  storedKey && availableKeys.includes(storedKey) ? storedKey : "center";
+
 const MAX_STORAGE_VALUE_LENGTH = 100_000;
 const MAX_KEY_LENGTH = 128;
 const MAX_VISITED_KEYS = 32;
