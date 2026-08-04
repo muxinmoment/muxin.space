@@ -1,0 +1,124 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const cases = {
+  internship: {
+    eyebrow: "Featured experience",
+    title: "AI 测试平台工程化实习",
+    period: "2026.07 — 至今",
+    role: "AI 测试平台开发",
+    intro: "把 AI 生成的测试用例送上真实设备，并让每一次失败都能反过来改善下一轮生成。",
+    metrics: [
+      { label: "真机一次通过率", before: "72.7%", after: "90.5%", tone: "rose" },
+      { label: "用例有效率", before: "34.9%", after: "78.6%", tone: "violet" },
+      { label: "单月覆盖 API", before: "—", after: "90+", tone: "amber" },
+    ],
+    sections: [
+      ["问题", "传统测试用例编写依赖人工，源码、文档、用例和真机执行之间缺少稳定的反馈闭环。AI 能提高产出速度，却可能生成格式正确但实际上不可执行的用例。"],
+      ["我的工作", "围绕源码→文档校验→用例生成→真机执行→反馈校准建立工程化流程；按 v4.0 JSON Schema 规范整理测试用例，并持续根据真机结果校准生成策略。"],
+      ["关键设计", "独立设计 Skill 三维分层架构，将纵向作用域、横向流程分类和成熟度/安全级管控组合起来；同时设计三阶段人工介入框架，为后续 Agent 自主执行手动测试预留接口。"],
+      ["结果与反思", "真机一次通过率从 72.7% 提升到 90.5%，用例有效率从 34.9% 提升到 78.6%。这段经历让我更确定：AI 工程的核心不是把模型接上，而是让数据、执行和反馈真正闭环。"],
+    ],
+    stack: ["TypeScript", "Mocha", "React", "Hono", "Node.js", "npm workspaces"],
+  },
+  aido: {
+    eyebrow: "Selected project",
+    title: "Aido",
+    period: "2026.02 — 至今",
+    role: "项目负责人 · 核心 AI 后端开发",
+    intro: "一个能把目标拆解、排期和反馈串起来的个人效能智能体系统。",
+    metrics: [
+      { label: "按需提取 token", before: "100%", after: "11–18%", tone: "rose" },
+      { label: "Sonnet 工具调用", before: "—", after: "12 / 12", tone: "violet" },
+      { label: "Haiku 工具调用", before: "—", after: "6 / 12", tone: "amber" },
+    ],
+    sections: [
+      ["问题", "把一个任务交给 Agent 不难，难的是让它在上下文、工具调用、预算和失败恢复之间保持稳定。"],
+      ["架构", "主导 Planner 从 LangGraph 迁移到自研 Harness，拆出 AgentLoop、ToolRegistry 和 LoopBudget，让循环控制、工具注册与预算熔断成为可以单测和观测的边界。"],
+      ["实验", "围绕按需提取与全量装配做三轮真实数据实验。token 消耗下降 82–89%，但延迟恶化；继续拆解后发现瓶颈来自模型工具调用能力，于是理性回退全量装配。"],
+      ["结果", "保留 Harness 的工具调用能力，为未来更大上下文规模和更多工具场景留下演进空间；架构选择由实验数据而不是技术新颖性决定。"],
+    ],
+    stack: ["Agent Harness", "FastAPI", "Vue3", "PostgreSQL", "SSE"],
+  },
+  keeperkit: {
+    eyebrow: "Selected project",
+    title: "KeeperKit",
+    period: "2026.03 — 至今",
+    role: "项目负责人 · 产品与全栈开发",
+    intro: "一个本地优先的 TRPG 规则 RAG 助手，把复杂规则书变成可追问、可追溯的知识工具。",
+    metrics: [
+      { label: "RAG 核心链路", before: "0", after: "6 steps", tone: "rose" },
+      { label: "产品迭代", before: "MVP", after: "V1.2", tone: "violet" },
+      { label: "核心 RAG 代码", before: "—", after: "1500+ 行", tone: "amber" },
+    ],
+    sections: [
+      ["问题", "TRPG 规则信息分散在长篇规则书中，GM 需要在准备和临场决策时快速定位依据，同时还要避免模型自由发挥。"],
+      ["架构", "从零搭建文档加载、切块、向量化、检索、精排、生成的流水线，并把 Embedding、VectorStore、Reranker、Generator 都抽象成可替换接口。"],
+      ["产品化", "按 10 个 step 渐进式实现，每一步独立沉淀设计文档；基于 LangGraph 扩展模组助手工作流，结合 PostgreSQL 会话记忆整理时间线、NPC 和线索。"],
+      ["结果", "项目从 MVP 迭代到 V1.2，形成一套可替换、可解释、可持续升级的 RAG 工程骨架。"],
+    ],
+    stack: ["FastAPI", "ChromaDB", "BGE", "LangGraph", "PostgreSQL"],
+  },
+  oppo: {
+    eyebrow: "Selected project",
+    title: "OPPO 小布助手",
+    period: "2025.10 — 2026.01",
+    role: "项目负责人 · 算法开发",
+    intro: "一次围绕语义匹配、模型压缩和端侧推理的完整算法工程实践。",
+    metrics: [
+      { label: "模型层数", before: "12", after: "4", tone: "rose" },
+      { label: "参数量", before: "100%", after: "35%", tone: "violet" },
+      { label: "推理速度", before: "1×", after: "3×", tone: "amber" },
+    ],
+    sections: [
+      ["数据", "处理 45 万条真实脱敏对话数据，完成清洗、训练、评估和端侧推理验证。"],
+      ["模型", "将 12 层 BERT 压缩为 RoBERTa-4Layers，结合 SimCSE 对比学习与 FGM 对抗训练，兼顾匹配效果和推理效率。"],
+      ["结果", "参数量降低 65%，推理速度提升约 3 倍，自测 AUC 达到 0.93，并完成 ONNX 端侧推理验证。"],
+    ],
+    stack: ["PyTorch", "RoBERTa", "SimCSE", "FGM", "ONNX"],
+  },
+} as const;
+
+export function getStaticPaths() {
+  return ["internship", "aido", "keeperkit", "oppo"].map((slug) => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const project = cases[slug as keyof typeof cases];
+
+if (!project) return Astro.redirect("/portfolio/");
+const toneMap = { rose: "bg-rose-500", violet: "bg-violet-500", amber: "bg-amber-500" };
+---
+
+<BaseLayout title={`${project.title} | Portfolio`} description={project.intro}>
+  <div class="mx-auto max-w-5xl">
+    <a href="/portfolio/" class="text-sm font-medium text-zinc-500 transition hover:text-zinc-900">← 返回作品集</a>
+    <header class="mt-10 border-b border-zinc-200 pb-12">
+      <p class="eyebrow">{project.eyebrow} · {project.period}</p>
+      <h1 class="mt-4 max-w-4xl font-serif text-5xl leading-[1.08] tracking-tight text-zinc-900 sm:text-7xl">{project.title}</h1>
+      <div class="mt-6 flex flex-wrap items-center gap-3 text-sm text-zinc-500"><span>{project.role}</span><span class="text-zinc-300">/</span><span>{project.stack.join(" · ")}</span></div>
+      <p class="mt-8 max-w-3xl text-xl leading-9 text-zinc-600">{project.intro}</p>
+    </header>
+
+    <section class="grid gap-4 py-8 sm:grid-cols-3">
+      {project.metrics.map((metric) => (
+        <article class="rounded-2xl border border-zinc-200 bg-white p-5">
+          <p class="eyebrow">{metric.label}</p>
+          <div class="mt-4 flex items-end justify-between gap-3"><span class="font-serif text-2xl text-zinc-400">{metric.before}</span><span class="text-zinc-300">→</span><span class="font-serif text-3xl text-zinc-900">{metric.after}</span></div>
+          <div class="mt-5 flex h-2 items-end gap-1.5"><span class="h-full w-1/2 rounded-full bg-zinc-200"></span><span class={`h-full w-1/2 rounded-full ${toneMap[metric.tone]}`}></span></div>
+        </article>
+      ))}
+    </section>
+
+    <main class="mt-6 space-y-6">
+      {project.sections.map(([heading, content], index) => (
+        <section class="grid gap-4 border-t border-zinc-200 py-8 sm:grid-cols-[10rem_1fr] sm:gap-10">
+          <div class="flex items-start gap-3"><span class="font-serif text-xl text-zinc-300">0{index + 1}</span><h2 class="pt-1 text-sm font-semibold text-zinc-900">{heading}</h2></div>
+          <p class="max-w-3xl text-lg leading-9 text-zinc-600">{content}</p>
+        </section>
+      ))}
+    </main>
+
+    <footer class="mt-8 flex flex-wrap gap-4 border-t border-zinc-200 pt-6"><a href="/portfolio/" class="text-sm font-medium text-zinc-700 hover:text-rose-600">← 作品集首页</a><a href="/resume/" class="text-sm font-medium text-zinc-700 hover:text-rose-600">查看简历 ↗</a></footer>
+  </div>
+</BaseLayout>
