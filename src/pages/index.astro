@@ -99,8 +99,8 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
 
         <div class="mt-8 rounded-2xl border border-zinc-200 bg-zinc-50 p-1.5" data-mode-switch>
           <div class="grid grid-cols-2 gap-1.5">
-            <button type="button" data-mode-button="career" class="rounded-xl bg-white px-3 py-2.5 text-sm font-medium text-zinc-900 shadow-sm transition">求职模式</button>
-            <button type="button" data-mode-button="wander" class="rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-500 transition hover:text-zinc-900">漫游模式</button>
+            <button type="button" data-mode-button="career" aria-pressed="true" class="rounded-xl bg-white px-3 py-2.5 text-sm font-medium text-zinc-900 shadow-sm transition">求职模式</button>
+            <button type="button" data-mode-button="wander" aria-pressed="false" class="rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-500 transition hover:text-zinc-900">漫游模式</button>
           </div>
         </div>
       </section>
@@ -263,7 +263,7 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
 
 <script>
   import { getWanderStorage, readStorageValue, writeStorageValue } from "../utils/wander-storage";
-  import { getSiteModeSyncState, isSiteModeStorageKey, resolveSiteMode } from "../utils/site-mode";
+  import { getSiteModeSyncState, isSiteModeStorageKey, resolveSiteMode, syncSiteModeButtons } from "../utils/site-mode";
   function initModeSwitch() {
     const root = document.querySelector<HTMLElement>('[data-mode-switch]');
     if (!root || root.dataset.ready === "true") return;
@@ -271,6 +271,7 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
     const panels = document.querySelectorAll<HTMLElement>("[data-mode-panel]");
     const setMode = (mode: string, broadcast = true) => {
       const normalizedMode = getSiteModeSyncState(mode).mode;
+      syncSiteModeButtons(buttons, normalizedMode);
       buttons.forEach((button) => {
         const active = button.dataset.modeButton === normalizedMode;
         button.classList.toggle("bg-white", active);

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { getSiteModeSyncState, isSiteModeStorageKey, resolveSiteMode } from "../src/utils/site-mode.ts";
+import { getSiteModeSyncState, isSiteModeStorageKey, resolveSiteMode, syncSiteModeButtons } from "../src/utils/site-mode.ts";
 import { formatWanderFootprintTime, getWanderDetailState, getWanderDirectoryState, getWanderResumeKey, getWanderRoomState, normalizeSiteMode, normalizeWanderScene, parseRecentProgress, parseVisitedProgress, readRecentProgress, readStorageValue, readVisitedProgress, recordRecentProgress, shouldInitializeWander, writeRecentProgress, writeStorageValue, writeVisitedProgress } from "../src/utils/wander-storage.ts";
 
 test("normalizes persisted mode and scene values before syncing the UI", () => {
@@ -37,6 +37,27 @@ test("falls back to career for invalid mode input and recognizes both storage ev
   assert.equal(isSiteModeStorageKey("muxin-home-mode"), true);
   assert.equal(isSiteModeStorageKey("muxin-wander-scene"), false);
   assert.equal(isSiteModeStorageKey(null), false);
+});
+
+test("clearing either mode storage value falls back to career and syncs aria state", () => {
+  const makeButton = (modeButton?: string, siteModeButton?: string) => {
+    const attributes = new Map<string, string>();
+    return {
+      dataset: { modeButton, siteModeButton },
+      setAttribute(name: string, value: string) { attributes.set(name, value); },
+      getAttribute(name: string) { return attributes.get(name) ?? null; },
+    };
+  };
+  const homeButtons = [makeButton("career"), makeButton("wander")];
+  const navigationButtons = [makeButton(undefined, "career"), makeButton(undefined, "wander")];
+
+  assert.equal(resolveSiteMode(null, null), "career");
+  assert.equal(syncSiteModeButtons(homeButtons, null), "career");
+  assert.equal(syncSiteModeButtons(navigationButtons, null), "career");
+  assert.equal(homeButtons[0].getAttribute("aria-pressed"), "true");
+  assert.equal(homeButtons[1].getAttribute("aria-pressed"), "false");
+  assert.equal(navigationButtons[0].getAttribute("aria-pressed"), "true");
+  assert.equal(navigationButtons[1].getAttribute("aria-pressed"), "false");
 });
 
 test("initializes each Astro page once while allowing a fresh page", () => {

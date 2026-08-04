@@ -17,3 +17,17 @@ export const getSiteModeSyncState = (value: unknown) => {
     navigationMode: mode,
   } as const;
 };
+
+type SiteModeButton = {
+  dataset: { modeButton?: string; siteModeButton?: string };
+  setAttribute: (name: string, value: string) => void;
+};
+
+export const syncSiteModeButtons = (buttons: Iterable<SiteModeButton>, value: unknown): SiteMode => {
+  const mode = getSiteModeSyncState(value).mode;
+  for (const button of buttons) {
+    const buttonMode = button.dataset.modeButton ?? button.dataset.siteModeButton;
+    button.setAttribute("aria-pressed", String(buttonMode === mode));
+  }
+  return mode;
+};
