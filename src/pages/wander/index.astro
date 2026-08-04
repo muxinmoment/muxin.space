@@ -158,7 +158,14 @@ const counts = {
         let recent: { key: string; visitedAt: number }[] = [];
         try { recent = (JSON.parse(localStorage.getItem(recentStorageKey) ?? "[]") as { key: string; visitedAt: number }[]).filter((item) => labels[item.key] && typeof item.visitedAt === "number").slice(0, 3); } catch { }
         timeline.hidden = recent.length === 0;
-        timelineList.innerHTML = recent.map((item, index) => `<li class="flex items-center gap-2"><span class="h-1.5 w-1.5 shrink-0 rounded-full ${index === 0 ? "bg-violet-300" : "bg-violet-300/40"}"></span><span>${labels[item.key]}</span><time class="ml-auto text-violet-100/35" datetime="${new Date(item.visitedAt).toISOString()}">${new Intl.DateTimeFormat("zh-CN", { month: "numeric", day: "numeric" }).format(item.visitedAt)}</time></li>`).join("");
+        const formatFootprintTime = (visitedAt: number) => {
+          const visitedDate = new Date(visitedAt);
+          const now = new Date();
+          if (now.getTime() - visitedDate.getTime() < 60 * 60 * 1000) return "刚刚";
+          if (visitedDate.toDateString() === now.toDateString()) return "今天";
+          return new Intl.DateTimeFormat("zh-CN", { month: "numeric", day: "numeric" }).format(visitedDate).replace("/", "月") + "日";
+        };
+        timelineList.innerHTML = recent.map((item, index) => `<li class="flex items-center gap-2"><span class="h-1.5 w-1.5 shrink-0 rounded-full ${index === 0 ? "bg-violet-300" : "bg-violet-300/40"}"></span><span>${labels[item.key]}</span><time class="ml-auto text-violet-100/35" datetime="${new Date(item.visitedAt).toISOString()}">${formatFootprintTime(item.visitedAt)}</time></li>`).join("");
       }
     };
     links.forEach((link) => link.addEventListener("click", () => {
