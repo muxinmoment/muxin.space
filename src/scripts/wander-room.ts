@@ -6,6 +6,7 @@ if (root && root.dataset.ready !== "true") {
   const canvas = root.querySelector<HTMLCanvasElement>("[data-wander-canvas]");
   const fallback = root.querySelector<HTMLElement>("[data-wander-fallback]");
   const hint = root.querySelector<HTMLElement>("[data-room-hint]");
+  const memory = root.querySelector<HTMLElement>("[data-room-memory]");
   const skip = root.querySelector<HTMLButtonElement>("[data-wander-3d-skip]");
   const controls = [...root.querySelectorAll<HTMLButtonElement>("[data-room-camera]")];
   const enter = root.querySelector<HTMLAnchorElement>("[data-room-enter]");
@@ -109,10 +110,11 @@ if (root && root.dataset.ready !== "true") {
         camera.aspect = rect.width / rect.height;
         camera.updateProjectionMatrix();
       };
-      const choose = (key: string) => {
+      const choose = (key: string, remember = true) => {
         current = views[key] ?? views.center;
         controls.forEach((button) => { button.dataset.active = button.dataset.roomCamera === key ? "true" : "false"; });
         if (enter) { enter.href = current.href; enter.textContent = `${current.label} →`; }
+        if (remember && key !== "center") localStorage.setItem("muxin-wander-last-room", key);
       };
       controls.forEach((button) => button.addEventListener("click", () => choose(button.dataset.roomCamera ?? "center")));
       const raycaster = new THREE.Raycaster();
@@ -163,7 +165,13 @@ if (root && root.dataset.ready !== "true") {
         const key = findHotspot(raycaster.intersectObjects(hotspots, true)[0]?.object);
         if (key && !dragged) choose(key);
       });
-      choose("center");
+      const rememberedKey = localStorage.getItem("muxin-wander-last-room");
+      if (rememberedKey && views[rememberedKey]) {
+        choose(rememberedKey, false);
+        if (memory) memory.textContent = `上次停在：${views[rememberedKey].label.replace(/^进入|^打开/, "")}`;
+      } else {
+        choose("center");
+      }
       resize();
       window.addEventListener("resize", resize);
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

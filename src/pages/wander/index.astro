@@ -59,16 +59,16 @@ const counts = {
       </div>
       <nav class="mt-6 grid gap-3 sm:grid-cols-2" aria-label="漫游章节目录">
         <a href="/wander/anime/" data-wander-link data-wander-key="anime" data-wander-shortcut="1" class="group flex items-center justify-between rounded-2xl border border-violet-200 bg-violet-50/60 p-4 transition hover:-translate-y-0.5 hover:border-violet-400 hover:bg-violet-50 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2">
-          <span class="flex items-center gap-3"><span class="text-2xl" aria-hidden="true">📺</span><span><span class="block text-xs text-violet-600">01 · {counts.anime} records</span><strong class="mt-1 block text-zinc-900">番剧书架</strong></span></span><span class="text-violet-500 transition group-hover:translate-x-1" aria-hidden="true">→</span>
+          <span class="flex items-center gap-3"><span class="text-2xl" aria-hidden="true">📺</span><span><span class="block text-xs text-violet-600">01 · {counts.anime} records</span><strong class="mt-1 block text-zinc-900">番剧书架</strong></span></span><span class="flex items-center gap-2 text-violet-500"><span data-wander-visited-label class="text-[.65rem] font-medium"></span><span class="transition group-hover:translate-x-1" aria-hidden="true">→</span></span>
         </a>
         <a href="/wander/photos/" data-wander-link data-wander-key="photo" data-wander-shortcut="2" class="group flex items-center justify-between rounded-2xl border border-rose-200 bg-rose-50/60 p-4 transition hover:-translate-y-0.5 hover:border-rose-400 hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2">
-          <span class="flex items-center gap-3"><span class="text-2xl" aria-hidden="true">📷</span><span><span class="block text-xs text-rose-600">02 · {counts.photo} albums</span><strong class="mt-1 block text-zinc-900">照片墙</strong></span></span><span class="text-rose-500 transition group-hover:translate-x-1" aria-hidden="true">→</span>
+          <span class="flex items-center gap-3"><span class="text-2xl" aria-hidden="true">📷</span><span><span class="block text-xs text-rose-600">02 · {counts.photo} albums</span><strong class="mt-1 block text-zinc-900">照片墙</strong></span></span><span class="flex items-center gap-2 text-rose-500"><span data-wander-visited-label class="text-[.65rem] font-medium"></span><span class="transition group-hover:translate-x-1" aria-hidden="true">→</span></span>
         </a>
         <a href="/wander/notes/" data-wander-link data-wander-key="notes" data-wander-shortcut="3" class="group flex items-center justify-between rounded-2xl border border-amber-200 bg-amber-50/60 p-4 transition hover:-translate-y-0.5 hover:border-amber-400 hover:bg-amber-50 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2">
-          <span class="flex items-center gap-3"><span class="text-2xl" aria-hidden="true">✦</span><span><span class="block text-xs text-amber-600">03 · {counts.essay} notes</span><strong class="mt-1 block text-zinc-900">支线随笔</strong></span></span><span class="text-amber-500 transition group-hover:translate-x-1" aria-hidden="true">→</span>
+          <span class="flex items-center gap-3"><span class="text-2xl" aria-hidden="true">✦</span><span><span class="block text-xs text-amber-600">03 · {counts.essay} notes</span><strong class="mt-1 block text-zinc-900">支线随笔</strong></span></span><span class="flex items-center gap-2 text-amber-500"><span data-wander-visited-label class="text-[.65rem] font-medium"></span><span class="transition group-hover:translate-x-1" aria-hidden="true">→</span></span>
         </a>
         <a href="/memo/" data-wander-link data-wander-key="memo" data-wander-shortcut="4" class="group flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4 transition hover:-translate-y-0.5 hover:border-emerald-400 hover:bg-emerald-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
-          <span class="flex items-center gap-3"><span class="text-2xl" aria-hidden="true">🪵</span><span><span class="block text-xs text-emerald-600">04 · 小木广播</span><strong class="mt-1 block text-zinc-900">电台</strong></span></span><span class="text-emerald-500 transition group-hover:translate-x-1" aria-hidden="true">→</span>
+          <span class="flex items-center gap-3"><span class="text-2xl" aria-hidden="true">🪵</span><span><span class="block text-xs text-emerald-600">04 · 小木广播</span><strong class="mt-1 block text-zinc-900">电台</strong></span></span><span class="flex items-center gap-2 text-emerald-500"><span data-wander-visited-label class="text-[.65rem] font-medium"></span><span class="transition group-hover:translate-x-1" aria-hidden="true">→</span></span>
         </a>
       </nav>
       <p class="mt-4 text-xs text-zinc-400">快捷键只在没有输入文字时生效。进度仅保存在当前浏览器。</p>
@@ -128,7 +128,12 @@ const counts = {
     };
     const updateProgress = () => {
       const visited = readVisited();
-      links.forEach((link) => link.dataset.visited = visited.has(link.dataset.wanderKey ?? "") ? "true" : "false");
+      links.forEach((link) => {
+        const isVisited = visited.has(link.dataset.wanderKey ?? "");
+        link.dataset.visited = isVisited ? "true" : "false";
+        const label = link.querySelector<HTMLElement>("[data-wander-visited-label]");
+        if (label) label.textContent = isVisited ? "已到访" : "";
+      });
       if (progress) progress.textContent = `${links.filter((link) => visited.has(link.dataset.wanderKey ?? "")).length} / ${links.length}`;
     };
     links.forEach((link) => link.addEventListener("click", () => {
@@ -157,4 +162,5 @@ const counts = {
   [data-wander-room][data-scene="day"] > section:first-child { background: linear-gradient(135deg, #713f12 0%, #1f2937 70%); }
   [data-wander-room][data-scene="day"] [data-scene-button="night"] { background: transparent; color: rgba(224, 231, 255, .6); }
   [data-wander-room][data-scene="day"] [data-scene-button="day"] { background: #f59e0b; color: white; }
+  [data-wander-link][data-visited="true"] { box-shadow: inset 0 0 0 1px rgba(82, 82, 91, .12); }
 </style>
