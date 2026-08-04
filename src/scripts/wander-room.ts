@@ -35,6 +35,8 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
 
   if (canvas && !root.classList.contains("is-disabled")) {
     try {
+      const cleanupController = new AbortController();
+      const cleanupOptions = { signal: cleanupController.signal };
       const scene = new THREE.Scene();
       const sceneColors = {
         night: { background: new THREE.Color("#120e19"), fog: new THREE.Color("#120e19"), hemisphere: new THREE.Color("#c4b5fd"), key: new THREE.Color("#fde68a"), dust: new THREE.Color("#fef3c7") },
@@ -141,13 +143,15 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
         }
       };
       syncScene(activeScene, true);
-      window.addEventListener("muxin-wander-scene", (event) => {
+      const handleSceneChange = (event: Event) => {
         const sceneKey = (event as CustomEvent<{ scene?: string }>).detail?.scene;
         if (sceneKey) syncScene(sceneKey);
-      });
-      window.addEventListener("storage", (event) => {
+      };
+      const handleStorageChange = (event: StorageEvent) => {
         if (event.key === "muxin-wander-scene") syncScene(event.newValue ?? "night");
-      });
+      };
+      window.addEventListener("muxin-wander-scene", handleSceneChange, cleanupOptions);
+      window.addEventListener("storage", handleStorageChange, cleanupOptions);
 
       let current = views.center;
       let cameraTarget = new THREE.Vector3(...current.target);
@@ -174,7 +178,7 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
           window.dispatchEvent(new CustomEvent("muxin-wander-progress"));
         }
       };
-      controls.forEach((button) => button.addEventListener("click", () => choose(button.dataset.roomCamera ?? "center")));
+      controls.forEach((button) => button.addEventListener("click", () => choose(button.dataset.roomCamera ?? "center"), cleanupOptions));
       const raycaster = new THREE.Raycaster();
       const pointer = new THREE.Vector2();
       const orbit = new THREE.Vector2();
@@ -196,7 +200,7 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       const updateProgress = () => {
         if (progress) progress.textContent = `已探索 ${readVisited().size} / 4`;
       };
-      window.addEventListener("muxin-wander-progress", updateProgress);
+      window.addEventListener("muxin-wander-progress", updateProgress, cleanupOptions);
       updateProgress();
       const updatePointer = (event: PointerEvent) => {
         const rect = canvas.getBoundingClientRect();
@@ -207,13 +211,13 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
         canvas.style.cursor = key ? "pointer" : "grab";
         if (hint) hint.textContent = key ? `${views[key].label} · 点击进入` : "点击房间里的物件探索";
       };
-      canvas.addEventListener("pointermove", updatePointer);
+      canvas.addEventListener("pointermove", updatePointer, cleanupOptions);
       canvas.addEventListener("pointerdown", (event) => {
         dragging = true;
         dragged = false;
         lastPointer = { x: event.clientX, y: event.clientY };
         canvas.setPointerCapture(event.pointerId);
-      });
+      }, cleanupOptions);
       canvas.addEventListener("pointermove", (event) => {
         if (!dragging) return;
         const deltaX = event.clientX - lastPointer.x;
@@ -222,15 +226,15 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
         orbit.x = THREE.MathUtils.clamp(orbit.x + deltaX * 0.006, -0.8, 0.8);
         orbit.y = THREE.MathUtils.clamp(orbit.y - deltaY * 0.004, -0.45, 0.45);
         lastPointer = { x: event.clientX, y: event.clientY };
-      });
-      canvas.addEventListener("pointerleave", () => { canvas.style.cursor = "grab"; if (hint) hint.textContent = "点击房间里的物件探索"; });
+      }, cleanupOptions);
+      canvas.addEventListener("pointerleave", () => { canvas.style.cursor = "grab"; if (hint) hint.textContent = "点击房间里的物件探索"; }, cleanupOptions);
       canvas.addEventListener("pointerup", (event) => {
         dragging = false;
         updatePointer(event);
         raycaster.setFromCamera(pointer, camera);
         const key = findHotspot(raycaster.intersectObjects(hotspots, true)[0]?.object);
         if (key && !dragged) choose(key);
-      });
+      }, cleanupOptions);
       const resumeKey = initialState.resumeKey;
       if (resumeKey !== "center") {
         choose(resumeKey, false);
@@ -239,7 +243,7 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
         choose("center");
       }
       resize();
-      window.addEventListener("resize", resize);
+      window.addEventListener("resize", resize, cleanupOptions);
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       let animationFrame: number | null = null;
       let isVisible = document.visibilityState !== "hidden";
@@ -295,7 +299,29 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
           }, { threshold: 0 })
         : null;
       viewportObserver?.observe(canvas);
-      document.addEventListener("visibilitychange", handleVisibilityChange);
+      document.addEventListener("visibilitychange", handleVisibilityChange, cleanupOptions);
+      const disposeMaterial = (value: THREE.Material) => {
+        const textures = new Set<THREE.Texture>();
+        Object.values(value).forEach((materialValue) => {
+          if (materialValue instanceof THREE.Texture) textures.add(materialValue);
+        });
+        textures.forEach((texture) => texture.dispose());
+        value.dispose();
+      };
+      const cleanup = () => {
+        stopAnimation();
+        viewportObserver?.disconnect();
+        cleanupController.abort();
+        scene.traverse((object) => {
+          const mesh = object as THREE.Mesh;
+          mesh.geometry?.dispose();
+          if (Array.isArray(mesh.material)) mesh.material.forEach(disposeMaterial);
+          else if (mesh.material) disposeMaterial(mesh.material);
+        });
+        renderer.dispose();
+        renderer.forceContextLoss();
+      };
+      document.addEventListener("astro:before-swap", cleanup, { once: true });
       scheduleAnimation();
     } catch {
       root.classList.add("is-failed");
