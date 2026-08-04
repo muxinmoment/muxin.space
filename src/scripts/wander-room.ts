@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { getWanderResumeKey, getWanderStorage, readStorageValue, readVisitedProgress, recordRecentProgress, shouldInitializeWander, writeStorageValue, writeVisitedProgress } from "../utils/wander-storage";
+import { getWanderRoomState, getWanderStorage, readStorageValue, readVisitedProgress, recordRecentProgress, shouldInitializeWander, writeStorageValue, writeVisitedProgress } from "../utils/wander-storage";
 
 const root = document.querySelector<HTMLElement>("[data-wander-3d]");
 if (root && shouldInitializeWander(root.dataset.ready)) {
@@ -14,6 +14,18 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
   const enter = root.querySelector<HTMLAnchorElement>("[data-room-enter]");
 
   const storage = getWanderStorage();
+  const views: Record<string, { position: [number, number, number]; target: [number, number, number]; href: string; label: string }> = {
+    center: { position: [0, 3.3, 7.4], target: [0, 1.2, -1], href: "/wander/", label: "逛一圈" },
+    anime: { position: [-3.3, 2.5, 2.4], target: [-2.4, 1.4, -2.2], href: "/wander/anime/", label: "进入番剧书架" },
+    photo: { position: [0.4, 2.7, 2.6], target: [0, 1.4, -3], href: "/wander/photos/", label: "进入照片墙" },
+    notes: { position: [2.8, 2.2, 2.3], target: [2.1, 1.2, -0.6], href: "/wander/notes/", label: "打开支线随笔" },
+    memo: { position: [3.8, 2.4, 3.3], target: [2.5, 1.1, 0.2], href: "/memo/", label: "打开小木电台" },
+  };
+  const initialState = getWanderRoomState(
+    readStorageValue(storage, "muxin-wander-scene"),
+    readStorageValue(storage, "muxin-wander-last-room"),
+    Object.keys(views),
+  );
   const disable = () => root.classList.add("is-disabled");
   if (readStorageValue(storage, "muxin-wander-3d") === "off") disable();
   skip?.addEventListener("click", () => {
@@ -106,7 +118,7 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       const dust = new THREE.Points(dustGeometry, dustMaterial);
       scene.add(dust);
 
-      let activeScene: keyof typeof sceneColors = readStorageValue(storage, "muxin-wander-scene") === "day" ? "day" : "night";
+      let activeScene: keyof typeof sceneColors = initialState.scene;
       const targetBackground = sceneColor.background.clone();
       const targetFog = sceneColor.fog.clone();
       const targetHemisphere = sceneColor.hemisphere.clone();
@@ -134,13 +146,6 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
         if (sceneKey) syncScene(sceneKey);
       });
 
-      const views: Record<string, { position: [number, number, number]; target: [number, number, number]; href: string; label: string }> = {
-        center: { position: [0, 3.3, 7.4], target: [0, 1.2, -1], href: "/wander/", label: "逛一圈" },
-        anime: { position: [-3.3, 2.5, 2.4], target: [-2.4, 1.4, -2.2], href: "/wander/anime/", label: "进入番剧书架" },
-        photo: { position: [0.4, 2.7, 2.6], target: [0, 1.4, -3], href: "/wander/photos/", label: "进入照片墙" },
-        notes: { position: [2.8, 2.2, 2.3], target: [2.1, 1.2, -0.6], href: "/wander/notes/", label: "打开支线随笔" },
-        memo: { position: [3.8, 2.4, 3.3], target: [2.5, 1.1, 0.2], href: "/memo/", label: "打开小木电台" },
-      };
       let current = views.center;
       let cameraTarget = new THREE.Vector3(...current.target);
       const resize = () => {
@@ -223,8 +228,7 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
         const key = findHotspot(raycaster.intersectObjects(hotspots, true)[0]?.object);
         if (key && !dragged) choose(key);
       });
-      const rememberedKey = readStorageValue(storage, "muxin-wander-last-room");
-      const resumeKey = getWanderResumeKey(rememberedKey, Object.keys(views));
+      const resumeKey = initialState.resumeKey;
       if (resumeKey !== "center") {
         choose(resumeKey, false);
         if (memory) memory.textContent = `上次停在：${views[resumeKey].label.replace(/^进入|^打开/, "")}`;
