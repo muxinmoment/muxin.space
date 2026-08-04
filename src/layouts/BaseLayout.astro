@@ -122,7 +122,8 @@ const isActive = (href: string) =>
     </footer>
 
     <script>
-      import { getWanderStorage, normalizeSiteMode, readStorageValue, readVisitedProgress, recordRecentProgress, writeStorageValue, writeVisitedProgress } from "../utils/wander-storage";
+      import { getWanderStorage, readStorageValue, readVisitedProgress, recordRecentProgress, writeStorageValue, writeVisitedProgress } from "../utils/wander-storage";
+      import { getSiteModeSyncState, isSiteModeStorageKey, resolveSiteMode } from "../utils/site-mode";
 
       function initReveal() {
         const targets = document.querySelectorAll<HTMLElement>(".reveal");
@@ -154,7 +155,7 @@ const isActive = (href: string) =>
         if (document.documentElement.dataset.siteModeReady === "true") return;
 
         const setMode = (mode: string, broadcast = true) => {
-          const normalizedMode = normalizeSiteMode(mode);
+          const normalizedMode = getSiteModeSyncState(mode).navigationMode;
           document.documentElement.dataset.siteMode = normalizedMode;
           buttons.forEach((button) => {
             const active = button.dataset.siteModeButton === normalizedMode;
@@ -180,9 +181,10 @@ const isActive = (href: string) =>
           if (mode) setMode(mode, false);
         });
         window.addEventListener("storage", (event) => {
-          if (event.key === "muxin-site-mode" || event.key === "muxin-home-mode") setMode(event.newValue ?? "career");
+          if (isSiteModeStorageKey(event.key)) setMode(event.newValue ?? "career");
         });
-        setMode(normalizeSiteMode(readStorageValue(getWanderStorage(), "muxin-site-mode")));
+        const storage = getWanderStorage();
+        setMode(resolveSiteMode(readStorageValue(storage, "muxin-site-mode"), readStorageValue(storage, "muxin-home-mode")));
         document.documentElement.dataset.siteModeReady = "true";
         if (root) root.dataset.ready = "true";
       }

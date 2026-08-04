@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { getSiteModeSyncState, isSiteModeStorageKey, resolveSiteMode } from "../src/utils/site-mode.ts";
 import { formatWanderFootprintTime, getWanderDetailState, getWanderDirectoryState, getWanderResumeKey, getWanderRoomState, normalizeSiteMode, normalizeWanderScene, parseRecentProgress, parseVisitedProgress, readRecentProgress, readStorageValue, readVisitedProgress, recordRecentProgress, shouldInitializeWander, writeRecentProgress, writeStorageValue, writeVisitedProgress } from "../src/utils/wander-storage.ts";
 
 test("normalizes persisted mode and scene values before syncing the UI", () => {
@@ -8,6 +9,34 @@ test("normalizes persisted mode and scene values before syncing the UI", () => {
   assert.equal(normalizeWanderScene("day"), "day");
   assert.equal(normalizeWanderScene("storm"), "night");
   assert.equal(normalizeWanderScene(null), "night");
+});
+
+test("keeps homepage and global navigation mode state synchronized", () => {
+  assert.deepEqual(getSiteModeSyncState("wander"), {
+    mode: "wander",
+    homeMode: "wander",
+    navigationMode: "wander",
+  });
+  assert.deepEqual(getSiteModeSyncState("career"), {
+    mode: "career",
+    homeMode: "career",
+    navigationMode: "career",
+  });
+  assert.equal(resolveSiteMode(null, "wander"), "wander");
+  assert.equal(resolveSiteMode("career", "wander"), "career");
+});
+
+test("falls back to career for invalid mode input and recognizes both storage events", () => {
+  assert.deepEqual(getSiteModeSyncState("invalid"), {
+    mode: "career",
+    homeMode: "career",
+    navigationMode: "career",
+  });
+  assert.equal(resolveSiteMode("invalid", "wander"), "career");
+  assert.equal(isSiteModeStorageKey("muxin-site-mode"), true);
+  assert.equal(isSiteModeStorageKey("muxin-home-mode"), true);
+  assert.equal(isSiteModeStorageKey("muxin-wander-scene"), false);
+  assert.equal(isSiteModeStorageKey(null), false);
 });
 
 test("initializes each Astro page once while allowing a fresh page", () => {

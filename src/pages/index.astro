@@ -262,14 +262,15 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
 </BaseLayout>
 
 <script>
-  import { getWanderStorage, normalizeSiteMode, readStorageValue, writeStorageValue } from "../utils/wander-storage";
+  import { getWanderStorage, readStorageValue, writeStorageValue } from "../utils/wander-storage";
+  import { getSiteModeSyncState, isSiteModeStorageKey, resolveSiteMode } from "../utils/site-mode";
   function initModeSwitch() {
     const root = document.querySelector<HTMLElement>('[data-mode-switch]');
     if (!root || root.dataset.ready === "true") return;
     const buttons = root.querySelectorAll<HTMLButtonElement>("[data-mode-button]");
     const panels = document.querySelectorAll<HTMLElement>("[data-mode-panel]");
     const setMode = (mode: string, broadcast = true) => {
-      const normalizedMode = normalizeSiteMode(mode);
+      const normalizedMode = getSiteModeSyncState(mode).mode;
       buttons.forEach((button) => {
         const active = button.dataset.modeButton === normalizedMode;
         button.classList.toggle("bg-white", active);
@@ -286,13 +287,13 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
     };
     buttons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.modeButton ?? "career")));
     const storage = getWanderStorage();
-    setMode(normalizeSiteMode(readStorageValue(storage, "muxin-site-mode") ?? readStorageValue(storage, "muxin-home-mode")));
+    setMode(resolveSiteMode(readStorageValue(storage, "muxin-site-mode"), readStorageValue(storage, "muxin-home-mode")));
     window.addEventListener("muxin:mode-change", (event) => {
       const mode = (event as CustomEvent<string>).detail;
       if (mode) setMode(mode, false);
     });
     window.addEventListener("storage", (event) => {
-      if (event.key === "muxin-site-mode" || event.key === "muxin-home-mode") setMode(event.newValue ?? "career");
+      if (isSiteModeStorageKey(event.key)) setMode(event.newValue ?? "career");
     });
     root.dataset.ready = "true";
   }
