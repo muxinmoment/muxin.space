@@ -78,10 +78,22 @@ if (root && root.dataset.ready !== "true") {
       addBox("radio-panel", [0.72, 0.2, 0.08], [0, 0.62, -0.32], "#fbcfe8", radio);
       addBox("radio-knob", [0.14, 0.14, 0.08], [0.36, 0.25, -0.34], "#fbbf24", radio);
 
+      const dustGeometry = new THREE.BufferGeometry();
+      const dustPositions = new Float32Array(72 * 3);
+      for (let index = 0; index < dustPositions.length; index += 3) {
+        dustPositions[index] = (Math.random() - 0.5) * 8;
+        dustPositions[index + 1] = Math.random() * 4;
+        dustPositions[index + 2] = (Math.random() - 0.5) * 6;
+      }
+      dustGeometry.setAttribute("position", new THREE.BufferAttribute(dustPositions, 3));
+      const dust = new THREE.Points(dustGeometry, new THREE.PointsMaterial({ color: "#fef3c7", size: 0.035, transparent: true, opacity: 0.55 }));
+      scene.add(dust);
+
       const views: Record<string, { position: [number, number, number]; target: [number, number, number]; href: string; label: string }> = {
         center: { position: [0, 3.3, 7.4], target: [0, 1.2, -1], href: "/wander/", label: "逛一圈" },
         anime: { position: [-3.3, 2.5, 2.4], target: [-2.4, 1.4, -2.2], href: "/wander/anime/", label: "进入番剧书架" },
         photo: { position: [0.4, 2.7, 2.6], target: [0, 1.4, -3], href: "/wander/photos/", label: "进入照片墙" },
+        notes: { position: [2.8, 2.2, 2.3], target: [2.1, 1.2, -0.6], href: "/wander/notes/", label: "打开支线随笔" },
         memo: { position: [3.8, 2.4, 3.3], target: [2.5, 1.1, 0.2], href: "/memo/", label: "打开小木电台" },
       };
       let current = views.center;
@@ -104,6 +116,10 @@ if (root && root.dataset.ready !== "true") {
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const animate = () => {
         requestAnimationFrame(animate);
+        const time = performance.now() * 0.001;
+        dust.rotation.y = time * 0.015;
+        radio.position.y = 0.15 + Math.sin(time * 1.4) * 0.025;
+        keyLight.position.x = -4 + Math.sin(time * 0.35) * 0.35;
         const next = new THREE.Vector3(...current.position);
         camera.position.lerp(next, reduce ? 1 : 0.045);
         cameraTarget.lerp(new THREE.Vector3(...current.target), reduce ? 1 : 0.06);
