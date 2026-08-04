@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { readVisitedProgress, recordRecentProgress, writeVisitedProgress } from "../utils/wander-storage";
+import { getWanderStorage, readVisitedProgress, recordRecentProgress, writeVisitedProgress } from "../utils/wander-storage";
 
 const root = document.querySelector<HTMLElement>("[data-wander-3d]");
 if (root && root.dataset.ready !== "true") {
@@ -13,10 +13,11 @@ if (root && root.dataset.ready !== "true") {
   const controls = [...root.querySelectorAll<HTMLButtonElement>("[data-room-camera]")];
   const enter = root.querySelector<HTMLAnchorElement>("[data-room-enter]");
 
+  const storage = getWanderStorage();
   const disable = () => root.classList.add("is-disabled");
-  if (localStorage.getItem("muxin-wander-3d") === "off") disable();
+  if (storage?.getItem("muxin-wander-3d") === "off") disable();
   skip?.addEventListener("click", () => {
-    localStorage.setItem("muxin-wander-3d", "off");
+    storage?.setItem("muxin-wander-3d", "off");
     disable();
   });
 
@@ -105,7 +106,7 @@ if (root && root.dataset.ready !== "true") {
       const dust = new THREE.Points(dustGeometry, dustMaterial);
       scene.add(dust);
 
-      let activeScene: keyof typeof sceneColors = localStorage.getItem("muxin-wander-scene") === "day" ? "day" : "night";
+      let activeScene: keyof typeof sceneColors = storage?.getItem("muxin-wander-scene") === "day" ? "day" : "night";
       const targetBackground = sceneColor.background.clone();
       const targetFog = sceneColor.fog.clone();
       const targetHemisphere = sceneColor.hemisphere.clone();
@@ -157,11 +158,11 @@ if (root && root.dataset.ready !== "true") {
         });
         if (enter) { enter.href = current.href; enter.textContent = `${current.label} →`; }
         if (remember && key !== "center") {
-          localStorage.setItem("muxin-wander-last-room", key);
+          storage?.setItem("muxin-wander-last-room", key);
           const visited = readVisited();
           visited.add(key);
-          writeVisitedProgress(localStorage, visitedStorageKey, visited);
-          recordRecentProgress(localStorage, recentStorageKey, key);
+          writeVisitedProgress(storage, visitedStorageKey, visited);
+          recordRecentProgress(storage, recentStorageKey, key);
           window.dispatchEvent(new CustomEvent("muxin-wander-progress"));
         }
       };
@@ -183,7 +184,7 @@ if (root && root.dataset.ready !== "true") {
       };
       const visitedStorageKey = "muxin-wander-visited";
       const recentStorageKey = "muxin-wander-recent";
-      const readVisited = () => readVisitedProgress(localStorage, visitedStorageKey);
+      const readVisited = () => readVisitedProgress(storage, visitedStorageKey);
       const updateProgress = () => {
         if (progress) progress.textContent = `已探索 ${readVisited().size} / 4`;
       };
@@ -222,7 +223,7 @@ if (root && root.dataset.ready !== "true") {
         const key = findHotspot(raycaster.intersectObjects(hotspots, true)[0]?.object);
         if (key && !dragged) choose(key);
       });
-      const rememberedKey = localStorage.getItem("muxin-wander-last-room");
+      const rememberedKey = storage?.getItem("muxin-wander-last-room");
       if (rememberedKey && views[rememberedKey]) {
         choose(rememberedKey, false);
         if (memory) memory.textContent = `上次停在：${views[rememberedKey].label.replace(/^进入|^打开/, "")}`;

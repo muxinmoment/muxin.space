@@ -21,7 +21,7 @@ const branch = entry.data.type === "anime" ? { key: "anime", label: "番剧书�
 </BaseLayout>
 
 <script>
-  import { readVisitedProgress, recordRecentProgress, writeVisitedProgress } from "../../utils/wander-storage";
+  import { getWanderStorage, readVisitedProgress, recordRecentProgress, writeVisitedProgress } from "../../utils/wander-storage";
 
   function initWanderDetail() {
     const detail = document.querySelector<HTMLElement>("[data-wander-detail]");
@@ -39,10 +39,11 @@ const branch = entry.data.type === "anime" ? { key: "anime", label: "番剧书�
       return new Intl.DateTimeFormat("zh-CN", { month: "numeric", day: "numeric" }).format(visitedDate).replace("/", "月") + "日";
     };
     try {
-      const visited = readVisitedProgress(localStorage, visitedKey);
+      const storage = getWanderStorage();
+      const visited = readVisitedProgress(storage, visitedKey);
       visited.add(key);
-      writeVisitedProgress(localStorage, visitedKey, visited);
-      const recent = recordRecentProgress(localStorage, recentKey, key);
+      writeVisitedProgress(storage, visitedKey, visited);
+      const recent = recordRecentProgress(storage, recentKey, key);
       window.dispatchEvent(new CustomEvent("muxin-wander-progress"));
       footprint.textContent = `当前足迹 · ${detail.dataset.wanderLabel} · ${formatFootprintTime(recent[0].visitedAt)}`;
     } catch {

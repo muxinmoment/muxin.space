@@ -122,7 +122,7 @@ const isActive = (href: string) =>
     </footer>
 
     <script>
-      import { readVisitedProgress, recordRecentProgress, writeVisitedProgress } from "../utils/wander-storage";
+      import { getWanderStorage, readVisitedProgress, recordRecentProgress, writeVisitedProgress } from "../utils/wander-storage";
 
       function initReveal() {
         const targets = document.querySelectorAll<HTMLElement>(".reveal");
@@ -168,12 +168,13 @@ const isActive = (href: string) =>
           links.forEach((link) => {
             link.href = mode === "wander" ? link.dataset.wanderHref ?? link.dataset.careerHref ?? link.href : link.dataset.careerHref ?? link.href;
           });
-          if (localStorage.getItem("muxin-site-mode") !== mode) localStorage.setItem("muxin-site-mode", mode);
+          const storage = getWanderStorage();
+          if (storage?.getItem("muxin-site-mode") !== mode) storage?.setItem("muxin-site-mode", mode);
           window.dispatchEvent(new CustomEvent("muxin:mode-change", { detail: mode }));
         };
 
         buttons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.siteModeButton as "career" | "wander")));
-        setMode((localStorage.getItem("muxin-site-mode") as "career" | "wander") ?? "career");
+        setMode((getWanderStorage()?.getItem("muxin-site-mode") as "career" | "wander") ?? "career");
         document.documentElement.dataset.siteModeReady = "true";
         if (root) root.dataset.ready = "true";
       }
@@ -191,10 +192,11 @@ const isActive = (href: string) =>
         const visitedKey = "muxin-wander-visited";
         const recentKey = "muxin-wander-recent";
         try {
-          const visited = readVisitedProgress(localStorage, visitedKey);
+          const storage = getWanderStorage();
+          const visited = readVisitedProgress(storage, visitedKey);
           visited.add(key);
-          writeVisitedProgress(localStorage, visitedKey, visited);
-          recordRecentProgress(localStorage, recentKey, key);
+          writeVisitedProgress(storage, visitedKey, visited);
+          recordRecentProgress(storage, recentKey, key);
           window.dispatchEvent(new CustomEvent("muxin-wander-progress"));
         } catch {
         }

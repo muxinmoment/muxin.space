@@ -262,6 +262,7 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
 </BaseLayout>
 
 <script>
+  import { getWanderStorage } from "../utils/wander-storage";
   function initModeSwitch() {
     const root = document.querySelector<HTMLElement>('[data-mode-switch]');
     if (!root || root.dataset.ready === "true") return;
@@ -277,11 +278,13 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
       });
       panels.forEach((panel) => panel.classList.toggle("hidden", panel.dataset.modePanel !== mode));
       document.documentElement.dataset.siteMode = mode;
-      localStorage.setItem("muxin-site-mode", mode);
-      localStorage.setItem("muxin-home-mode", mode);
+      const storage = getWanderStorage();
+      storage?.setItem("muxin-site-mode", mode);
+      storage?.setItem("muxin-home-mode", mode);
     };
     buttons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.modeButton ?? "career")));
-    setMode(localStorage.getItem("muxin-site-mode") ?? localStorage.getItem("muxin-home-mode") ?? "career");
+    const storage = getWanderStorage();
+    setMode(storage?.getItem("muxin-site-mode") ?? storage?.getItem("muxin-home-mode") ?? "career");
     root.dataset.ready = "true";
   }
 
