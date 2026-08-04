@@ -264,9 +264,9 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
 <script>
   import { getWanderStorage, readStorageValue, writeStorageValue } from "../utils/wander-storage";
   import { getSiteModeSyncState, isSiteModeStorageKey, resolveSiteMode, syncSiteModeButtons } from "../utils/site-mode";
-  function initModeSwitch() {
+  function initModeSwitch(broadcast = true) {
     const root = document.querySelector<HTMLElement>('[data-mode-switch]');
-    if (!root || root.dataset.ready === "true") return;
+    if (!root) return;
     const buttons = root.querySelectorAll<HTMLButtonElement>("[data-mode-button]");
     const panels = document.querySelectorAll<HTMLElement>("[data-mode-panel]");
     const setMode = (mode: string, broadcast = true) => {
@@ -286,19 +286,25 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
       writeStorageValue(storage, "muxin-home-mode", normalizedMode);
       if (broadcast) window.dispatchEvent(new CustomEvent("muxin:mode-change", { detail: normalizedMode }));
     };
-    buttons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.modeButton ?? "career")));
+    buttons.forEach((button) => {
+      if (button.dataset.modeListener === "true") return;
+      button.addEventListener("click", () => setMode(button.dataset.modeButton ?? "career"));
+      button.dataset.modeListener = "true";
+    });
     const storage = getWanderStorage();
-    setMode(resolveSiteMode(readStorageValue(storage, "muxin-site-mode"), readStorageValue(storage, "muxin-home-mode")));
-    window.addEventListener("muxin:mode-change", (event) => {
-      const mode = (event as CustomEvent<string>).detail;
-      if (mode) setMode(mode, false);
-    });
-    window.addEventListener("storage", (event) => {
-      if (isSiteModeStorageKey(event.key)) setMode(event.newValue ?? "career");
-    });
-    root.dataset.ready = "true";
+    setMode(resolveSiteMode(readStorageValue(storage, "muxin-site-mode"), readStorageValue(storage, "muxin-home-mode")), broadcast);
+    if (document.documentElement.dataset.homeModeListeners !== "true") {
+      window.addEventListener("muxin:mode-change", (event) => {
+        const mode = (event as CustomEvent<string>).detail;
+        if (mode) initModeSwitch(false);
+      });
+      window.addEventListener("storage", (event) => {
+        if (isSiteModeStorageKey(event.key)) initModeSwitch();
+      });
+      document.documentElement.dataset.homeModeListeners = "true";
+    }
   }
 
   initModeSwitch();
-  document.addEventListener("astro:page-load", initModeSwitch);
+  document.addEventListener("astro:page-load", () => initModeSwitch());
 </script>

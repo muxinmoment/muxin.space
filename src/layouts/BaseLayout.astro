@@ -147,12 +147,11 @@ const isActive = (href: string) =>
         });
       }
 
-      function initSiteMode() {
+      function initSiteMode(broadcast = true) {
         const root = document.querySelector<HTMLElement>("[data-site-mode-switch]");
         const buttons = document.querySelectorAll<HTMLButtonElement>("[data-site-mode-button]");
         const labels = document.querySelectorAll<HTMLElement>("[data-site-mode-label]");
         const links = document.querySelectorAll<HTMLAnchorElement>("[data-site-mode-link]");
-        if (document.documentElement.dataset.siteModeReady === "true") return;
 
         const setMode = (mode: string, broadcast = true) => {
           const normalizedMode = getSiteModeSyncState(mode).navigationMode;
@@ -176,17 +175,23 @@ const isActive = (href: string) =>
           if (broadcast) window.dispatchEvent(new CustomEvent("muxin:mode-change", { detail: normalizedMode }));
         };
 
-        buttons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.siteModeButton ?? "career")));
-        window.addEventListener("muxin:mode-change", (event) => {
-          const mode = (event as CustomEvent<string>).detail;
-          if (mode) setMode(mode, false);
+        buttons.forEach((button) => {
+          if (button.dataset.siteModeListener === "true") return;
+          button.addEventListener("click", () => setMode(button.dataset.siteModeButton ?? "career"));
+          button.dataset.siteModeListener = "true";
         });
-        window.addEventListener("storage", (event) => {
-          if (isSiteModeStorageKey(event.key)) setMode(event.newValue ?? "career");
-        });
+        if (document.documentElement.dataset.siteModeListeners !== "true") {
+          window.addEventListener("muxin:mode-change", (event) => {
+            const mode = (event as CustomEvent<string>).detail;
+            if (mode) initSiteMode(false);
+          });
+          window.addEventListener("storage", (event) => {
+            if (isSiteModeStorageKey(event.key)) initSiteMode();
+          });
+          document.documentElement.dataset.siteModeListeners = "true";
+        }
         const storage = getWanderStorage();
-        setMode(resolveSiteMode(readStorageValue(storage, "muxin-site-mode"), readStorageValue(storage, "muxin-home-mode")));
-        document.documentElement.dataset.siteModeReady = "true";
+        setMode(resolveSiteMode(readStorageValue(storage, "muxin-site-mode"), readStorageValue(storage, "muxin-home-mode")), broadcast);
         if (root) root.dataset.ready = "true";
       }
 
@@ -217,7 +222,7 @@ const isActive = (href: string) =>
       initSiteMode();
       initWanderFootprints();
       document.addEventListener("astro:page-load", initReveal);
-      document.addEventListener("astro:page-load", initSiteMode);
+      document.addEventListener("astro:page-load", () => initSiteMode());
       document.addEventListener("astro:page-load", initWanderFootprints);
     </script>
   </body>

@@ -60,6 +60,29 @@ test("clearing either mode storage value falls back to career and syncs aria sta
   assert.equal(navigationButtons[1].getAttribute("aria-pressed"), "false");
 });
 
+test("syncs fresh page controls after repeated page-load initialization", () => {
+  const makeButton = (mode: string) => {
+    const attributes = new Map<string, string>();
+    return {
+      dataset: { modeButton: mode },
+      setAttribute(name: string, value: string) { attributes.set(name, value); },
+      getAttribute(name: string) { return attributes.get(name) ?? null; },
+    };
+  };
+  const firstPage = [makeButton("career"), makeButton("wander")];
+  const secondPage = [makeButton("career"), makeButton("wander")];
+
+  assert.equal(syncSiteModeButtons(firstPage, "wander"), "wander");
+  assert.equal(syncSiteModeButtons(secondPage, "wander"), "wander");
+  assert.equal(firstPage[0].getAttribute("aria-pressed"), "false");
+  assert.equal(firstPage[1].getAttribute("aria-pressed"), "true");
+  assert.equal(secondPage[0].getAttribute("aria-pressed"), "false");
+  assert.equal(secondPage[1].getAttribute("aria-pressed"), "true");
+  assert.equal(syncSiteModeButtons(secondPage, null), "career");
+  assert.equal(secondPage[0].getAttribute("aria-pressed"), "true");
+  assert.equal(secondPage[1].getAttribute("aria-pressed"), "false");
+});
+
 test("initializes each Astro page once while allowing a fresh page", () => {
   assert.equal(shouldInitializeWander(undefined), true);
   assert.equal(shouldInitializeWander("false"), true);
