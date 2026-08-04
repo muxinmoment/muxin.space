@@ -19,11 +19,11 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
 const absoluteImage = new URL(image, Astro.site).toString();
 
 const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/notes", label: "Sharing" },
-  { href: "/portfolio", label: "Portfolio" },
-  { href: "/resume", label: "Resume" },
-  { href: "/memo", label: "🪵 小木" },
+  { href: "/", label: "Home", wanderLabel: "起点" },
+  { href: "/notes", label: "Sharing", wanderLabel: "日志" },
+  { href: "/portfolio", label: "Portfolio", wanderLabel: "主线任务" },
+  { href: "/resume", label: "Resume", wanderLabel: "角色卡" },
+  { href: "/memo", label: "🪵 小木", wanderLabel: "小木电台" },
 ];
 
 const currentPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
@@ -82,13 +82,18 @@ const isActive = (href: string) =>
                       isActive(link.href) ? "bg-zinc-900 text-white hover:text-white" : "",
                     ]}
                   >
-                    {link.label}
+                    <span data-site-mode-label data-career-label={link.label} data-wander-label={link.wanderLabel}>{link.label}</span>
                   </a>
                 </li>
               ))
             }
           </ul>
         </nav>
+
+        <div class="hidden shrink-0 items-center gap-1 rounded-full border border-zinc-200 bg-white p-1 text-[11px] sm:flex" data-site-mode-switch>
+          <button type="button" data-site-mode-button="career" class="rounded-full bg-zinc-900 px-2.5 py-1 font-medium text-white">工作台</button>
+          <button type="button" data-site-mode-button="wander" class="rounded-full px-2.5 py-1 font-medium text-zinc-500 transition hover:text-zinc-900">漫游</button>
+        </div>
       </div>
     </header>
 
@@ -136,8 +141,83 @@ const isActive = (href: string) =>
         });
       }
 
+      function initSiteMode() {
+        const root = document.querySelector<HTMLElement>("[data-site-mode-switch]");
+        const buttons = document.querySelectorAll<HTMLButtonElement>("[data-site-mode-button]");
+        const labels = document.querySelectorAll<HTMLElement>("[data-site-mode-label]");
+        if (!root || !buttons.length || root.dataset.ready === "true") return;
+
+        const setMode = (mode: "career" | "wander") => {
+          document.documentElement.dataset.siteMode = mode;
+          buttons.forEach((button) => {
+            const active = button.dataset.siteModeButton === mode;
+            button.classList.toggle("bg-zinc-900", active && mode === "career");
+            button.classList.toggle("text-white", active && mode === "career");
+            button.classList.toggle("bg-violet-600", active && mode === "wander");
+            button.classList.toggle("text-zinc-500", !active);
+          });
+          labels.forEach((label) => {
+            label.textContent = mode === "wander" ? label.dataset.wanderLabel ?? label.textContent : label.dataset.careerLabel ?? label.textContent;
+          });
+          localStorage.setItem("muxin-site-mode", mode);
+          window.dispatchEvent(new CustomEvent("muxin:mode-change", { detail: mode }));
+        };
+
+        buttons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.siteModeButton as "career" | "wander")));
+        setMode((localStorage.getItem("muxin-site-mode") as "career" | "wander") ?? "career");
+        root.dataset.ready = "true";
+      }
+
       initReveal();
+      initSiteMode();
       document.addEventListener("astro:page-load", initReveal);
+      document.addEventListener("astro:page-load", initSiteMode);
     </script>
   </body>
 </html>
+
+<style is:global>
+  html[data-site-mode="wander"] body {
+    background: #17131f;
+    color: #f4f0ff;
+  }
+
+  html[data-site-mode="wander"] header,
+  html[data-site-mode="wander"] footer {
+    border-color: rgba(139, 92, 246, 0.25);
+    background: rgba(23, 19, 31, 0.92);
+  }
+
+  html[data-site-mode="wander"] .text-zinc-900 { color: #f4f0ff !important; }
+  html[data-site-mode="wander"] .text-zinc-700,
+  html[data-site-mode="wander"] .text-zinc-600 { color: #d8cfea !important; }
+  html[data-site-mode="wander"] .text-zinc-500,
+  html[data-site-mode="wander"] .text-zinc-400 { color: #9d91b5 !important; }
+  html[data-site-mode="wander"] .border-zinc-200,
+  html[data-site-mode="wander"] .border-zinc-300 { border-color: rgba(139, 92, 246, 0.28) !important; }
+  html[data-site-mode="wander"] .bg-white { background: #241d30 !important; }
+  html[data-site-mode="wander"] .bg-zinc-50 { background: #1e1828 !important; }
+  html[data-site-mode="wander"] .bg-zinc-900 { background: #0e0b14 !important; }
+  html[data-site-mode="wander"] .tag { border-color: rgba(167, 139, 250, 0.35); background: #2b2239; color: #d8cfea; }
+  html[data-site-mode="wander"] [data-site-mode-switch] { border-color: rgba(139, 92, 246, 0.35); background: #241d30; }
+  html[data-site-mode="wander"] [data-site-mode-button="career"] { background: transparent; color: #9d91b5; }
+  html[data-site-mode="wander"] [data-site-mode-button="wander"] { background: #7c3aed; color: white; }
+  html[data-site-mode="wander"] [data-site-mode-label] { letter-spacing: 0.01em; }
+
+  @media (max-width: 639px) {
+    html[data-site-mode="wander"] body::before {
+      content: "漫游模式";
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      z-index: 40;
+      border: 1px solid rgba(167, 139, 250, 0.4);
+      border-radius: 999px;
+      background: rgba(36, 29, 48, 0.92);
+      padding: 6px 10px;
+      color: #c4b5fd;
+      font-size: 10px;
+      pointer-events: none;
+    }
+  }
+</style>

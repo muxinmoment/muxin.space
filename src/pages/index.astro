@@ -276,10 +276,12 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
         button.classList.toggle("text-zinc-500", !active);
       });
       panels.forEach((panel) => panel.classList.toggle("hidden", panel.dataset.modePanel !== mode));
+      document.documentElement.dataset.siteMode = mode;
+      localStorage.setItem("muxin-site-mode", mode);
       localStorage.setItem("muxin-home-mode", mode);
     };
     buttons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.modeButton ?? "career")));
-    setMode(localStorage.getItem("muxin-home-mode") ?? "career");
+    setMode(localStorage.getItem("muxin-site-mode") ?? localStorage.getItem("muxin-home-mode") ?? "career");
     root.dataset.ready = "true";
   }
 
