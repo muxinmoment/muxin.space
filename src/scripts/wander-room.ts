@@ -241,8 +241,11 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       resize();
       window.addEventListener("resize", resize);
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let animationFrame: number | null = null;
+      let isVisible = document.visibilityState !== "hidden";
       const animate = () => {
-        requestAnimationFrame(animate);
+        animationFrame = null;
+        if (!isVisible) return;
         const time = performance.now() * 0.001;
         if (!reduce) dust.rotation.y = time * 0.015;
         const blend = reduce ? 1 : 0.035;
@@ -261,7 +264,18 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
         cameraTarget.lerp(new THREE.Vector3(...current.target), reduce ? 1 : 0.06);
         camera.lookAt(cameraTarget);
         renderer.render(scene, camera);
+        animationFrame = requestAnimationFrame(animate);
       };
+      const handleVisibilityChange = () => {
+        isVisible = document.visibilityState !== "hidden";
+        if (!isVisible) {
+          if (animationFrame !== null) cancelAnimationFrame(animationFrame);
+          animationFrame = null;
+          return;
+        }
+        if (animationFrame === null) animate();
+      };
+      document.addEventListener("visibilitychange", handleVisibilityChange);
       animate();
     } catch {
       root.classList.add("is-failed");
