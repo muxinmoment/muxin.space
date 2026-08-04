@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { parseRecentProgress, parseVisitedProgress, readRecentProgress, readVisitedProgress, recordRecentProgress, writeRecentProgress, writeVisitedProgress } from "../src/utils/wander-storage.ts";
+import { getWanderDirectoryState, parseRecentProgress, parseVisitedProgress, readRecentProgress, readStorageValue, readVisitedProgress, recordRecentProgress, writeRecentProgress, writeStorageValue, writeVisitedProgress } from "../src/utils/wander-storage.ts";
 
 test("ignores corrupted JSON instead of throwing", () => {
   assert.deepEqual(parseVisitedProgress("{not-json"), []);
@@ -58,12 +58,29 @@ test("falls back when storage is unavailable or throws", () => {
   };
   assert.deepEqual(readVisitedProgress(unavailable, "muxin-wander-visited"), new Set());
   assert.deepEqual(readRecentProgress(unavailable, "muxin-wander-recent"), []);
+  assert.equal(readStorageValue(throwing, "muxin-wander-scene"), null);
+  assert.equal(writeStorageValue(throwing, "muxin-wander-scene", "day"), false);
   assert.equal(writeVisitedProgress(unavailable, "muxin-wander-visited", ["anime"]), false);
   assert.equal(writeRecentProgress(unavailable, "muxin-wander-recent", []), false);
   assert.deepEqual(readVisitedProgress(throwing, "muxin-wander-visited"), new Set());
   assert.deepEqual(readRecentProgress(throwing, "muxin-wander-recent"), []);
   assert.equal(writeVisitedProgress(throwing, "muxin-wander-visited", ["anime"]), false);
   assert.equal(writeRecentProgress(throwing, "muxin-wander-recent", []), false);
+});
+
+test("derives safe directory progress, explored labels, and recent footprints", () => {
+  const recent = [
+    { key: "memo", visitedAt: 1780000000003 },
+    { key: "unknown", visitedAt: 1780000000002 },
+    { key: "anime", visitedAt: 1780000000001 },
+  ];
+  const state = getWanderDirectoryState(["anime", "photo", "outside"], recent, ["anime", "photo", "notes", "memo"]);
+  assert.equal(state.explored, 2);
+  assert.equal(state.total, 4);
+  assert.equal(state.isComplete, false);
+  assert.deepEqual([...state.visitedKeys], ["anime", "photo"]);
+  assert.deepEqual(state.recent, [recent[0], recent[2]]);
+  assert.equal(getWanderDirectoryState(["anime", "photo", "notes", "memo"], [], ["anime", "photo", "notes", "memo"]).isComplete, true);
 });
 
 test("records one recent footprint per key and caps the timeline", () => {

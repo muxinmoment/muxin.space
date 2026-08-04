@@ -98,7 +98,7 @@ const counts = {
 </BaseLayout>
 
 <script>
-  import { getWanderStorage, readRecentProgress, readVisitedProgress, writeVisitedProgress } from "../../utils/wander-storage";
+  import { getWanderDirectoryState, getWanderStorage, readRecentProgress, readVisitedProgress, readStorageValue, writeStorageValue, writeVisitedProgress } from "../../utils/wander-storage";
 
   function initSceneSwitch() {
     const room = document.querySelector<HTMLElement>("[data-wander-room]");
@@ -117,11 +117,11 @@ const counts = {
         button.setAttribute("aria-pressed", String(active));
       });
       const storage = getWanderStorage();
-      if (storage?.getItem("muxin-wander-scene") !== scene) storage?.setItem("muxin-wander-scene", scene);
+      if (readStorageValue(storage, "muxin-wander-scene") !== scene) writeStorageValue(storage, "muxin-wander-scene", scene);
       window.dispatchEvent(new CustomEvent("muxin-wander-scene", { detail: { scene } }));
     };
     buttons.forEach((button) => button.addEventListener("click", () => setScene(button.dataset.sceneButton ?? "night")));
-    setScene(getWanderStorage()?.getItem("muxin-wander-scene") ?? "night");
+    setScene(readStorageValue(getWanderStorage(), "muxin-wander-scene") ?? "night");
     room.dataset.ready = "true";
   }
   initSceneSwitch();
@@ -144,23 +144,20 @@ const counts = {
     const readVisited = () => readVisitedProgress(storage, storageKey);
     const updateProgress = () => {
       const visited = readVisited();
+      const state = getWanderDirectoryState(visited, readRecentProgress(storage, recentStorageKey), links.map((link) => link.dataset.wanderKey ?? ""));
       links.forEach((link) => {
-        const isVisited = visited.has(link.dataset.wanderKey ?? "");
+        const isVisited = state.visitedKeys.has(link.dataset.wanderKey ?? "");
         link.dataset.visited = isVisited ? "true" : "false";
         const label = link.querySelector<HTMLElement>("[data-wander-visited-label]");
         if (label) label.textContent = isVisited ? "已到访" : "";
       });
-      const explored = links.filter((link) => visited.has(link.dataset.wanderKey ?? "")).length;
-      const isComplete = explored === links.length;
-      if (progress) progress.textContent = `${explored} / ${links.length}`;
-      directory.dataset.complete = isComplete ? "true" : "false";
-      if (roomStatus) roomStatus.textContent = isComplete ? "房间已点亮" : "开放参观";
-      if (roomStatusCopy) roomStatusCopy.textContent = isComplete ? "四条支线都留下过脚印" : "从一个入口开始逛";
-      if (completion) completion.textContent = isComplete ? "四个入口都到访过了。现在回到上面，看看房间亮起来的样子。" : "";
+      if (progress) progress.textContent = `${state.explored} / ${state.total}`;
+      directory.dataset.complete = state.isComplete ? "true" : "false";
+      if (roomStatus) roomStatus.textContent = state.isComplete ? "房间已点亮" : "开放参观";
+      if (roomStatusCopy) roomStatusCopy.textContent = state.isComplete ? "四条支线都留下过脚印" : "从一个入口开始逛";
+      if (completion) completion.textContent = state.isComplete ? "四个入口都到访过了。现在回到上面，看看房间亮起来的样子。" : "";
       if (timeline && timelineList) {
-        const recent = readRecentProgress(storage, recentStorageKey)
-          .filter((item) => labels[item.key])
-          .slice(0, 3);
+        const recent = state.recent.filter((item) => labels[item.key]);
         timeline.hidden = recent.length === 0;
         const formatFootprintTime = (visitedAt: number) => {
           const visitedDate = new Date(visitedAt);

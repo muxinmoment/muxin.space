@@ -17,6 +17,18 @@ export const getWanderStorage = (): StorageLike | null => {
   try { return globalThis.localStorage; } catch { return null; }
 };
 
+export const readStorageValue = (storage: StorageLike | null, key: string): string | null => {
+  try { return storage?.getItem(key) ?? null; } catch { return null; }
+};
+
+export const writeStorageValue = (storage: StorageLike | null, key: string, value: string): boolean => {
+  try {
+    if (!storage) return false;
+    storage.setItem(key, value);
+    return true;
+  } catch { return false; }
+};
+
 const isValidTimestamp = (value: unknown): value is number =>
   typeof value === "number" && Number.isFinite(value) && new Date(value).getTime() === value;
 
@@ -56,28 +68,45 @@ export const parseRecentProgress = (raw: string | null, now = Date.now()): Wande
 };
 
 export const readVisitedProgress = (storage: StorageLike | null, key: string): Set<string> => {
-  try { return storage ? new Set(parseVisitedProgress(storage.getItem(key))) : new Set(); } catch { return new Set(); }
+  return new Set(parseVisitedProgress(readStorageValue(storage, key)));
 };
 
 export const readRecentProgress = (storage: StorageLike | null, key: string, now = Date.now()): WanderRecent[] => {
-  try { return storage ? parseRecentProgress(storage.getItem(key), now) : []; } catch { return []; }
+  return parseRecentProgress(readStorageValue(storage, key), now);
 };
 
 export const writeVisitedProgress = (storage: StorageLike | null, key: string, visited: Iterable<string>): boolean => {
-  try {
-    if (!storage) return false;
-    const values = [...new Set(visited)].filter(isValidKey).slice(0, MAX_VISITED_KEYS);
-    storage.setItem(key, JSON.stringify(values));
-    return true;
-  } catch { return false; }
+  const values = [...new Set(visited)].filter(isValidKey).slice(0, MAX_VISITED_KEYS);
+  return writeStorageValue(storage, key, JSON.stringify(values));
 };
 
 export const writeRecentProgress = (storage: StorageLike | null, key: string, recent: WanderRecent[]): boolean => {
-  try {
-    if (!storage) return false;
-    storage.setItem(key, JSON.stringify(parseRecentProgress(JSON.stringify(recent))));
-    return true;
-  } catch { return false; }
+  return writeStorageValue(storage, key, JSON.stringify(parseRecentProgress(JSON.stringify(recent))));
+};
+
+export type WanderDirectoryState = {
+  explored: number;
+  total: number;
+  isComplete: boolean;
+  visitedKeys: Set<string>;
+  recent: WanderRecent[];
+};
+
+export const getWanderDirectoryState = (
+  visited: Iterable<string>,
+  recent: WanderRecent[],
+  keys: readonly string[],
+): WanderDirectoryState => {
+  const knownKeys = new Set(keys.filter(isValidKey));
+  const visitedKeys = new Set([...visited].filter((key) => knownKeys.has(key)));
+  const visibleRecent = recent.filter((item) => knownKeys.has(item.key)).slice(0, MAX_RECENT_ENTRIES);
+  return {
+    explored: visitedKeys.size,
+    total: knownKeys.size,
+    isComplete: visitedKeys.size === knownKeys.size,
+    visitedKeys,
+    recent: visibleRecent,
+  };
 };
 
 export const recordRecentProgress = (storage: StorageLike | null, storageKey: string, key: string, now = Date.now()): WanderRecent[] => {

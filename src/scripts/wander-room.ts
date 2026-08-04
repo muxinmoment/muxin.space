@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { getWanderStorage, readVisitedProgress, recordRecentProgress, writeVisitedProgress } from "../utils/wander-storage";
+import { getWanderStorage, readStorageValue, readVisitedProgress, recordRecentProgress, writeStorageValue, writeVisitedProgress } from "../utils/wander-storage";
 
 const root = document.querySelector<HTMLElement>("[data-wander-3d]");
 if (root && root.dataset.ready !== "true") {
@@ -15,9 +15,9 @@ if (root && root.dataset.ready !== "true") {
 
   const storage = getWanderStorage();
   const disable = () => root.classList.add("is-disabled");
-  if (storage?.getItem("muxin-wander-3d") === "off") disable();
+  if (readStorageValue(storage, "muxin-wander-3d") === "off") disable();
   skip?.addEventListener("click", () => {
-    storage?.setItem("muxin-wander-3d", "off");
+    writeStorageValue(storage, "muxin-wander-3d", "off");
     disable();
   });
 
@@ -106,7 +106,7 @@ if (root && root.dataset.ready !== "true") {
       const dust = new THREE.Points(dustGeometry, dustMaterial);
       scene.add(dust);
 
-      let activeScene: keyof typeof sceneColors = storage?.getItem("muxin-wander-scene") === "day" ? "day" : "night";
+      let activeScene: keyof typeof sceneColors = readStorageValue(storage, "muxin-wander-scene") === "day" ? "day" : "night";
       const targetBackground = sceneColor.background.clone();
       const targetFog = sceneColor.fog.clone();
       const targetHemisphere = sceneColor.hemisphere.clone();
@@ -158,7 +158,7 @@ if (root && root.dataset.ready !== "true") {
         });
         if (enter) { enter.href = current.href; enter.textContent = `${current.label} →`; }
         if (remember && key !== "center") {
-          storage?.setItem("muxin-wander-last-room", key);
+          writeStorageValue(storage, "muxin-wander-last-room", key);
           const visited = readVisited();
           visited.add(key);
           writeVisitedProgress(storage, visitedStorageKey, visited);
@@ -223,7 +223,7 @@ if (root && root.dataset.ready !== "true") {
         const key = findHotspot(raycaster.intersectObjects(hotspots, true)[0]?.object);
         if (key && !dragged) choose(key);
       });
-      const rememberedKey = storage?.getItem("muxin-wander-last-room");
+      const rememberedKey = readStorageValue(storage, "muxin-wander-last-room");
       if (rememberedKey && views[rememberedKey]) {
         choose(rememberedKey, false);
         if (memory) memory.textContent = `上次停在：${views[rememberedKey].label.replace(/^进入|^打开/, "")}`;
