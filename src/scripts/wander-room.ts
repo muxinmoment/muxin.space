@@ -243,9 +243,15 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       let animationFrame: number | null = null;
       let isVisible = document.visibilityState !== "hidden";
+      let isInViewport = true;
+      const shouldAnimate = () => isVisible && isInViewport;
+      const stopAnimation = () => {
+        if (animationFrame !== null) cancelAnimationFrame(animationFrame);
+        animationFrame = null;
+      };
       const animate = () => {
         animationFrame = null;
-        if (!isVisible) return;
+        if (!shouldAnimate()) return;
         const time = performance.now() * 0.001;
         if (!reduce) dust.rotation.y = time * 0.015;
         const blend = reduce ? 1 : 0.035;
@@ -269,12 +275,22 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       const handleVisibilityChange = () => {
         isVisible = document.visibilityState !== "hidden";
         if (!isVisible) {
-          if (animationFrame !== null) cancelAnimationFrame(animationFrame);
-          animationFrame = null;
+          stopAnimation();
           return;
         }
-        if (animationFrame === null) animate();
+        if (shouldAnimate() && animationFrame === null) animate();
       };
+      const viewportObserver = "IntersectionObserver" in window
+        ? new IntersectionObserver(([entry]) => {
+            isInViewport = entry.isIntersecting;
+            if (!isInViewport) {
+              stopAnimation();
+              return;
+            }
+            if (isVisible && animationFrame === null) animate();
+          }, { threshold: 0 })
+        : null;
+      viewportObserver?.observe(canvas);
       document.addEventListener("visibilitychange", handleVisibilityChange);
       animate();
     } catch {
