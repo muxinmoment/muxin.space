@@ -92,14 +92,24 @@ const isActive = (href: string) =>
       </div>
     </header>
 
-    <main class="mx-auto w-full max-w-[1600px] px-4 py-12 sm:px-6 lg:px-10 lg:py-16">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-zinc-900 focus:px-4 focus:py-2 focus:text-sm focus:text-white">
+      跳到主要内容
+    </a>
+
+    <main id="main-content" class="mx-auto w-full max-w-[1600px] px-4 py-12 sm:px-6 lg:px-10 lg:py-16">
       <slot />
     </main>
 
     <footer class="border-t border-zinc-200/70">
-      <div class="mx-auto flex w-full max-w-[1600px] flex-col gap-2 px-4 py-8 text-sm text-zinc-400 sm:px-6 lg:px-10 md:flex-row md:items-center md:justify-between">
+      <div class="mx-auto flex w-full max-w-[1600px] flex-col gap-5 px-4 py-8 text-sm text-zinc-400 sm:px-6 lg:px-10 md:flex-row md:items-center md:justify-between">
         <p>Built with Astro + Tailwind CSS</p>
-        <p>{new Date().getFullYear()} muxin.space</p>
+        <div class="flex flex-wrap gap-x-4 gap-y-2">
+          <a href="/about/" class="transition hover:text-zinc-900">About</a>
+          <a href="/now/" class="transition hover:text-zinc-900">Now</a>
+          <a href="/projects/" class="transition hover:text-zinc-900">Projects</a>
+          <a href="mailto:hello@muxin-space.top" class="transition hover:text-zinc-900">Contact</a>
+          <span>{new Date().getFullYear()} muxin.space</span>
+        </div>
       </div>
     </footer>
 
