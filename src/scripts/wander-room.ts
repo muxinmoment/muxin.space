@@ -5,6 +5,7 @@ if (root && root.dataset.ready !== "true") {
   root.dataset.ready = "true";
   const canvas = root.querySelector<HTMLCanvasElement>("[data-wander-canvas]");
   const fallback = root.querySelector<HTMLElement>("[data-wander-fallback]");
+  const hint = root.querySelector<HTMLElement>("[data-room-hint]");
   const skip = root.querySelector<HTMLButtonElement>("[data-wander-3d-skip]");
   const controls = [...root.querySelectorAll<HTMLButtonElement>("[data-room-camera]")];
   const enter = root.querySelector<HTMLAnchorElement>("[data-room-enter]");
@@ -48,6 +49,7 @@ if (root && root.dataset.ready !== "true") {
       addBox("left-wall", [0.2, 5, 8], [-4.8, 2.4, 0], "#20182b");
 
       const shelf = new THREE.Group();
+      shelf.userData.roomKey = "anime";
       shelf.position.set(-2.5, 0, -2.8);
       scene.add(shelf);
       addBox("shelf-frame", [2.1, 3.2, 0.45], [0, 1.5, 0], "#4c1d95", shelf);
@@ -55,6 +57,7 @@ if (root && root.dataset.ready !== "true") {
       [[-0.55, 0.75, "#fb7185"], [0.05, 0.75, "#fbbf24"], [0.58, 0.75, "#34d399"], [-0.45, 1.48, "#60a5fa"], [0.38, 1.48, "#f472b6"]].forEach(([x, y, color]) => addBox("book", [0.28, 0.48, 0.5], [x as number, y as number, -0.38], color as string, shelf));
 
       const photo = new THREE.Group();
+      photo.userData.roomKey = "photo";
       photo.position.set(0, 1.5, -3.62);
       scene.add(photo);
       addBox("photo-frame", [2.4, 1.55, 0.12], [0, 0, 0], "#be185d", photo);
@@ -63,6 +66,7 @@ if (root && root.dataset.ready !== "true") {
       addBox("photo-ground", [1.8, 0.25, 0.16], [0, -0.4, 0.16], "#7c3aed", photo);
 
       const desk = new THREE.Group();
+      desk.userData.roomKey = "notes";
       desk.position.set(2.2, 0, -0.7);
       scene.add(desk);
       addBox("desk-top", [2.8, 0.22, 1.25], [0, 1.25, 0], "#7c3aed", desk);
@@ -72,6 +76,7 @@ if (root && root.dataset.ready !== "true") {
       addBox("screen-glow", [0.98, 0.52, 0.13], [0, 2.05, -0.25], "#c4b5fd", desk);
 
       const radio = new THREE.Group();
+      radio.userData.roomKey = "memo";
       radio.position.set(2.8, 0.15, 1.5);
       scene.add(radio);
       addBox("radio-body", [1.15, 0.7, 0.6], [0, 0.45, 0], "#be185d", radio);
@@ -110,6 +115,34 @@ if (root && root.dataset.ready !== "true") {
         if (enter) { enter.href = current.href; enter.textContent = `${current.label} →`; }
       };
       controls.forEach((button) => button.addEventListener("click", () => choose(button.dataset.roomCamera ?? "center")));
+      const raycaster = new THREE.Raycaster();
+      const pointer = new THREE.Vector2();
+      const hotspots = [shelf, photo, desk, radio];
+      const findHotspot = (object: THREE.Object3D | undefined) => {
+        let currentObject = object;
+        while (currentObject) {
+          if (typeof currentObject.userData.roomKey === "string") return currentObject.userData.roomKey;
+          currentObject = currentObject.parent as THREE.Object3D;
+        }
+        return undefined;
+      };
+      const updatePointer = (event: PointerEvent) => {
+        const rect = canvas.getBoundingClientRect();
+        pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+        raycaster.setFromCamera(pointer, camera);
+        const key = findHotspot(raycaster.intersectObjects(hotspots, true)[0]?.object);
+        canvas.style.cursor = key ? "pointer" : "grab";
+        if (hint) hint.textContent = key ? `${views[key].label} · 点击进入` : "点击房间里的物件探索";
+      };
+      canvas.addEventListener("pointermove", updatePointer);
+      canvas.addEventListener("pointerleave", () => { canvas.style.cursor = "grab"; if (hint) hint.textContent = "点击房间里的物件探索"; });
+      canvas.addEventListener("pointerup", (event) => {
+        updatePointer(event);
+        raycaster.setFromCamera(pointer, camera);
+        const key = findHotspot(raycaster.intersectObjects(hotspots, true)[0]?.object);
+        if (key) choose(key);
+      });
       choose("center");
       resize();
       window.addEventListener("resize", resize);
