@@ -22,15 +22,22 @@ if (root && root.dataset.ready !== "true") {
   if (canvas && !root.classList.contains("is-disabled")) {
     try {
       const scene = new THREE.Scene();
-      scene.background = new THREE.Color("#120e19");
-      scene.fog = new THREE.Fog("#120e19", 8, 18);
+      const sceneColors = {
+        night: { background: new THREE.Color("#120e19"), fog: new THREE.Color("#120e19"), hemisphere: new THREE.Color("#c4b5fd"), key: new THREE.Color("#fde68a"), dust: new THREE.Color("#fef3c7") },
+        day: { background: new THREE.Color("#24344a"), fog: new THREE.Color("#24344a"), hemisphere: new THREE.Color("#bae6fd"), key: new THREE.Color("#fff7ed"), dust: new THREE.Color("#fef3c7") },
+      };
+      const sceneColor = sceneColors.night;
+      const background = sceneColor.background.clone();
+      scene.background = background;
+      scene.fog = new THREE.Fog(sceneColor.fog.clone(), 8, 18);
       const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 40);
       const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-      scene.add(new THREE.HemisphereLight("#c4b5fd", "#21152e", 2.2));
-      const keyLight = new THREE.DirectionalLight("#fde68a", 3.2);
+      const hemisphereLight = new THREE.HemisphereLight(sceneColor.hemisphere, "#21152e", 2.2);
+      scene.add(hemisphereLight);
+      const keyLight = new THREE.DirectionalLight(sceneColor.key, 3.2);
       keyLight.position.set(-4, 7, 3);
       keyLight.castShadow = true;
       scene.add(keyLight);
@@ -93,8 +100,37 @@ if (root && root.dataset.ready !== "true") {
         dustPositions[index + 2] = (Math.random() - 0.5) * 6;
       }
       dustGeometry.setAttribute("position", new THREE.BufferAttribute(dustPositions, 3));
-      const dust = new THREE.Points(dustGeometry, new THREE.PointsMaterial({ color: "#fef3c7", size: 0.035, transparent: true, opacity: 0.55 }));
+      const dustMaterial = new THREE.PointsMaterial({ color: sceneColor.dust, size: 0.035, transparent: true, opacity: 0.55 });
+      const dust = new THREE.Points(dustGeometry, dustMaterial);
       scene.add(dust);
+
+      let activeScene: keyof typeof sceneColors = localStorage.getItem("muxin-wander-scene") === "day" ? "day" : "night";
+      const targetBackground = sceneColor.background.clone();
+      const targetFog = sceneColor.fog.clone();
+      const targetHemisphere = sceneColor.hemisphere.clone();
+      const targetKey = sceneColor.key.clone();
+      const targetDust = sceneColor.dust.clone();
+      const syncScene = (sceneKey: string, immediate = false) => {
+        activeScene = sceneKey === "day" ? "day" : "night";
+        const colors = sceneColors[activeScene];
+        targetBackground.copy(colors.background);
+        targetFog.copy(colors.fog);
+        targetHemisphere.copy(colors.hemisphere);
+        targetKey.copy(colors.key);
+        targetDust.copy(colors.dust);
+        if (immediate) {
+          background.copy(targetBackground);
+          scene.fog?.color.copy(targetFog);
+          hemisphereLight.color.copy(targetHemisphere);
+          keyLight.color.copy(targetKey);
+          dustMaterial.color.copy(targetDust);
+        }
+      };
+      syncScene(activeScene, true);
+      window.addEventListener("muxin-wander-scene", (event) => {
+        const sceneKey = (event as CustomEvent<{ scene?: string }>).detail?.scene;
+        if (sceneKey) syncScene(sceneKey);
+      });
 
       const views: Record<string, { position: [number, number, number]; target: [number, number, number]; href: string; label: string }> = {
         center: { position: [0, 3.3, 7.4], target: [0, 1.2, -1], href: "/wander/", label: "逛一圈" },
@@ -195,8 +231,15 @@ if (root && root.dataset.ready !== "true") {
         requestAnimationFrame(animate);
         const time = performance.now() * 0.001;
         dust.rotation.y = time * 0.015;
-        radio.position.y = 0.15 + Math.sin(time * 1.4) * 0.025;
-        keyLight.position.x = -4 + Math.sin(time * 0.35) * 0.35;
+        const blend = reduce ? 1 : 0.035;
+        background.lerp(targetBackground, blend);
+        scene.fog?.color.lerp(targetFog, blend);
+        hemisphereLight.color.lerp(targetHemisphere, blend);
+        keyLight.color.lerp(targetKey, blend);
+        dustMaterial.color.lerp(targetDust, blend);
+        dustMaterial.opacity = activeScene === "day" ? 0.32 : 0.55;
+        radio.position.y = 0.15 + (reduce ? 0 : Math.sin(time * 1.4) * 0.025);
+        keyLight.position.x = -4 + (reduce ? 0 : Math.sin(time * 0.35) * 0.35);
         const next = new THREE.Vector3(...current.position);
         next.x += orbit.x;
         next.y += orbit.y;

@@ -110,6 +110,7 @@ const counts = {
         button.classList.toggle("text-violet-200/60", !active);
       });
       localStorage.setItem("muxin-wander-scene", scene);
+      window.dispatchEvent(new CustomEvent("muxin-wander-scene", { detail: { scene } }));
     };
     buttons.forEach((button) => button.addEventListener("click", () => setScene(button.dataset.sceneButton ?? "night")));
     setScene(localStorage.getItem("muxin-wander-scene") ?? "night");
