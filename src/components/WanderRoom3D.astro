@@ -16,6 +16,7 @@
       <button type="button" data-room-camera="photo">照片墙</button>
       <button type="button" data-room-camera="memo">小木电台</button>
     </div>
+    <a href="/wander/" class="wander-3d-enter" data-room-enter>逛一圈 →</a>
     <button type="button" class="wander-3d-skip" data-wander-3d-skip>关闭 3D</button>
   </div>
 </section>
@@ -31,6 +32,8 @@
   .wander-3d-controls { position: absolute; left: 1rem; bottom: 1rem; display: flex; flex-wrap: wrap; gap: .45rem; }
   .wander-3d-controls button, .wander-3d-skip { border: 1px solid rgba(196, 181, 253, .3); border-radius: 999px; background: rgba(23, 19, 31, .78); padding: .45rem .75rem; color: #ddd6fe; font-size: .72rem; backdrop-filter: blur(10px); transition: background .2s, border-color .2s, transform .2s; }
   .wander-3d-controls button:hover, .wander-3d-controls button[data-active="true"] { border-color: #a78bfa; background: #7c3aed; color: white; transform: translateY(-1px); }
+  .wander-3d-enter { position: absolute; right: 6.5rem; bottom: 1rem; border-radius: 999px; background: #f5f3ff; padding: .45rem .75rem; color: #4c1d95; font-size: .72rem; font-weight: 600; transition: transform .2s, background .2s; }
+  .wander-3d-enter:hover { transform: translateY(-1px); background: white; }
   .wander-3d-skip { position: absolute; right: 1rem; bottom: 1rem; color: #a8a29e; }
   .wander-3d-fallback { position: absolute; inset: 0; display: none; place-items: center; gap: .75rem; color: #c4b5fd; font-size: .875rem; }
   .wander-3d-shell.is-disabled .wander-3d-stage { display: none; }
@@ -39,90 +42,4 @@
   @media (min-width: 640px) { .wander-3d-copy { padding: 2rem 2rem 0; } }
 </style>
 
-<script is:inline>
-  (() => {
-    const root = document.querySelector('[data-wander-3d]');
-    if (!root || root.dataset.ready === 'true') return;
-    root.dataset.ready = 'true';
-    const canvas = root.querySelector('[data-wander-canvas]');
-    const fallback = root.querySelector('[data-wander-fallback]');
-    const skip = root.querySelector('[data-wander-3d-skip]');
-    const controls = [...root.querySelectorAll('[data-room-camera]')];
-    if (!canvas) return;
-
-    const disable = () => root.classList.add('is-disabled');
-    if (localStorage.getItem('muxin-wander-3d') === 'off') disable();
-    skip?.addEventListener('click', () => {
-      localStorage.setItem('muxin-wander-3d', 'off');
-      disable();
-    });
-    if (root.classList.contains('is-disabled')) return;
-
-    import('https://cdn.jsdelivr.net/npm/three@0.178.0/build/three.module.js').then((THREE) => {
-      const scene = new THREE.Scene();
-      scene.background = new THREE.Color('#120e19');
-      scene.fog = new THREE.Fog('#120e19', 8, 18);
-      const camera = new THREE.PerspectiveCamera(42, 1, .1, 40);
-      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-      const ambient = new THREE.HemisphereLight('#c4b5fd', '#21152e', 2.2);
-      scene.add(ambient);
-      const key = new THREE.DirectionalLight('#fde68a', 3.2);
-      key.position.set(-4, 7, 3);
-      key.castShadow = true;
-      scene.add(key);
-
-      const material = (color) => new THREE.MeshStandardMaterial({ color, roughness: .8, metalness: .05 });
-      const addBox = (name, size, position, color, parent = scene) => {
-        const mesh = new THREE.Mesh(new THREE.BoxGeometry(...size), material(color));
-        mesh.name = name;
-        mesh.position.set(...position);
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-        parent.add(mesh);
-        return mesh;
-      };
-      const floor = addBox('floor', [10, .2, 8], [0, -.2, 0], '#292037');
-      floor.receiveShadow = true;
-      addBox('back-wall', [10, 5, .2], [0, 2.4, -3.8], '#20182b');
-      addBox('left-wall', [.2, 5, 8], [-4.8, 2.4, 0], '#20182b');
-      const shelf = new THREE.Group(); shelf.position.set(-2.5, 0, -2.8); scene.add(shelf);
-      addBox('shelf-frame', [2.1, 3.2, .45], [0, 1.5, 0], '#4c1d95', shelf);
-      for (let y = .45; y < 3; y += .72) addBox('shelf-line', [1.75, .12, .6], [0, y, -.32], '#a78bfa', shelf);
-      [[-.55,.75,'#fb7185'],[.05,.75,'#fbbf24'],[.58,.75,'#34d399'],[-.45,1.48,'#60a5fa'],[.38,1.48,'#f472b6']].forEach(([x,y,c]) => addBox('book', [.28,.48,.5], [x,y,-.38], c, shelf));
-      const photo = new THREE.Group(); photo.position.set(0, 1.5, -3.62); scene.add(photo);
-      addBox('photo-frame', [2.4, 1.55, .12], [0, 0, 0], '#be185d', photo);
-      addBox('photo-inner', [2.02, 1.17, .14], [0, 0, .08], '#fbcfe8', photo);
-      addBox('photo-sun', [.5,.5,.16], [.45,.24,.16], '#f59e0b', photo);
-      addBox('photo-ground', [1.8,.25,.16], [0,-.4,.16], '#7c3aed', photo);
-      const desk = new THREE.Group(); desk.position.set(2.2, 0, -.7); scene.add(desk);
-      addBox('desk-top', [2.8,.22,1.25], [0,1.25,0], '#7c3aed', desk);
-      addBox('desk-leg', [.2,1.25,.2], [-1.05,.55,0], '#4c1d95', desk);
-      addBox('desk-leg', [.2,1.25,.2], [1.05,.55,0], '#4c1d95', desk);
-      addBox('screen', [1.25,.8,.12], [0,2.05,-.18], '#312e81', desk);
-      addBox('screen-glow', [.98,.52,.13], [0,2.05,-.25], '#c4b5fd', desk);
-      const radio = new THREE.Group(); radio.position.set(2.8, .15, 1.5); scene.add(radio);
-      addBox('radio-body', [1.15,.7,.6], [0,.45,0], '#be185d', radio);
-      addBox('radio-panel', [.72,.2,.08], [0,.62,-.32], '#fbcfe8', radio);
-      addBox('radio-knob', [.14,.14,.08], [.36,.25,-.34], '#fbbf24', radio);
-
-      const views = {
-        center: { position: [0, 3.3, 7.4], target: [0, 1.2, -1] },
-        anime: { position: [-3.3, 2.5, 2.4], target: [-2.4, 1.4, -2.2] },
-        photo: { position: [.4, 2.7, 2.6], target: [0, 1.4, -3] },
-        memo: { position: [3.8, 2.4, 3.3], target: [2.5, 1.1, .2] },
-      };
-      let current = views.center;
-      let cameraTarget = new THREE.Vector3(...current.target);
-      const resize = () => { const rect = canvas.getBoundingClientRect(); renderer.setSize(rect.width, rect.height, false); camera.aspect = rect.width / rect.height; camera.updateProjectionMatrix(); };
-      const choose = (key) => { current = views[key] || views.center; controls.forEach((button) => button.dataset.active = button.dataset.roomCamera === key ? 'true' : 'false'); };
-      controls.forEach((button) => button.addEventListener('click', () => choose(button.dataset.roomCamera)));
-      choose('center'); resize(); window.addEventListener('resize', resize);
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const animate = () => { requestAnimationFrame(animate); const next = new THREE.Vector3(...current.position); camera.position.lerp(next, reduce ? 1 : .045); cameraTarget.lerp(new THREE.Vector3(...current.target), reduce ? 1 : .06); camera.lookAt(cameraTarget); renderer.render(scene, camera); };
-      animate();
-    }).catch(() => { root.classList.add('is-failed'); if (fallback) fallback.style.display = 'grid'; });
-  })();
-</script>
+<script src="../scripts/wander-room.ts"></script>
