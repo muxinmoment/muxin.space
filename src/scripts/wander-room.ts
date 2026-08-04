@@ -149,7 +149,11 @@ if (root && root.dataset.ready !== "true") {
       };
       const choose = (key: string, remember = true) => {
         current = views[key] ?? views.center;
-        controls.forEach((button) => { button.dataset.active = button.dataset.roomCamera === key ? "true" : "false"; });
+        controls.forEach((button) => {
+          const active = button.dataset.roomCamera === key;
+          button.dataset.active = active ? "true" : "false";
+          button.setAttribute("aria-pressed", String(active));
+        });
         if (enter) { enter.href = current.href; enter.textContent = `${current.label} →`; }
         if (remember && key !== "center") {
           localStorage.setItem("muxin-wander-last-room", key);
@@ -241,7 +245,7 @@ if (root && root.dataset.ready !== "true") {
       const animate = () => {
         requestAnimationFrame(animate);
         const time = performance.now() * 0.001;
-        dust.rotation.y = time * 0.015;
+        if (!reduce) dust.rotation.y = time * 0.015;
         const blend = reduce ? 1 : 0.035;
         background.lerp(targetBackground, blend);
         scene.fog?.color.lerp(targetFog, blend);

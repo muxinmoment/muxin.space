@@ -13,11 +13,11 @@
       <a href="/wander/" class="underline">继续使用房间入口</a>
     </div>
     <div class="wander-3d-controls" aria-label="房间入口">
-      <button type="button" data-room-camera="center">房间</button>
-      <button type="button" data-room-camera="anime">番剧书架</button>
-      <button type="button" data-room-camera="photo">照片墙</button>
-      <button type="button" data-room-camera="notes">支线随笔</button>
-      <button type="button" data-room-camera="memo">小木电台</button>
+      <button type="button" data-room-camera="center" aria-pressed="true">房间</button>
+      <button type="button" data-room-camera="anime" aria-pressed="false">番剧书架</button>
+      <button type="button" data-room-camera="photo" aria-pressed="false">照片墙</button>
+      <button type="button" data-room-camera="notes" aria-pressed="false">支线随笔</button>
+      <button type="button" data-room-camera="memo" aria-pressed="false">小木电台</button>
     </div>
     <a href="/wander/" class="wander-3d-enter" data-room-enter>逛一圈 →</a>
     <button type="button" class="wander-3d-skip" data-wander-3d-skip>关闭 3D</button>
@@ -46,6 +46,8 @@
   .wander-3d-shell.is-disabled .wander-3d-stage { display: none; }
   .wander-3d-shell.is-disabled .wander-3d-copy { padding-bottom: 1.5rem; }
   .wander-3d-shell.is-failed .wander-3d-fallback { display: grid; }
+  @media (max-width: 639px) { .wander-3d-controls { right: 1rem; bottom: 3.6rem; } .wander-3d-enter { right: auto; left: 1rem; } }
+  @media (prefers-reduced-motion: reduce) { .wander-3d-controls button, .wander-3d-enter, .wander-3d-hint { transition: none; } }
   @media (min-width: 640px) { .wander-3d-copy { padding: 2rem 2rem 0; } }
 </style>
 

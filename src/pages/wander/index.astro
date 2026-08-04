@@ -23,8 +23,8 @@ const counts = {
           <p class="mt-5 max-w-xl text-sm leading-8 text-violet-100/70">这里不负责证明我会什么，只负责留下我喜欢什么。番剧、摄影、游戏和一些没有 KPI 的念头，都可以在这里找到位置。</p>
         </div>
         <div class="flex shrink-0 items-center gap-2 rounded-full border border-white/15 bg-white/5 p-1 text-xs">
-          <button type="button" data-scene-button="night" class="rounded-full bg-violet-500 px-3 py-1.5 font-medium text-white">夜航</button>
-          <button type="button" data-scene-button="day" class="rounded-full px-3 py-1.5 text-violet-200/60 transition hover:text-white">晴空</button>
+          <button type="button" data-scene-button="night" aria-pressed="true" class="rounded-full bg-violet-500 px-3 py-1.5 font-medium text-white">夜航</button>
+          <button type="button" data-scene-button="day" aria-pressed="false" class="rounded-full px-3 py-1.5 text-violet-200/60 transition hover:text-white">晴空</button>
         </div>
       </div>
 
@@ -112,6 +112,7 @@ const counts = {
         button.classList.toggle("bg-amber-400", active && scene === "day");
         button.classList.toggle("text-white", active);
         button.classList.toggle("text-violet-200/60", !active);
+        button.setAttribute("aria-pressed", String(active));
       });
       if (localStorage.getItem("muxin-wander-scene") !== scene) localStorage.setItem("muxin-wander-scene", scene);
       window.dispatchEvent(new CustomEvent("muxin-wander-scene", { detail: { scene } }));
