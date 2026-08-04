@@ -175,10 +175,38 @@ const isActive = (href: string) =>
         root.dataset.ready = "true";
       }
 
+      function initWanderFootprints() {
+        const path = window.location.pathname.replace(/\/+$/, "") || "/";
+        const paths: Record<string, string> = {
+          "/wander/anime": "anime",
+          "/wander/photos": "photo",
+          "/wander/notes": "notes",
+          "/memo": "memo",
+        };
+        const key = paths[path];
+        if (!key) return;
+        const visitedKey = "muxin-wander-visited";
+        const recentKey = "muxin-wander-recent";
+        try {
+          const visited = new Set(JSON.parse(localStorage.getItem(visitedKey) ?? "[]") as string[]);
+          visited.add(key);
+          localStorage.setItem(visitedKey, JSON.stringify([...visited]));
+          const recent = (JSON.parse(localStorage.getItem(recentKey) ?? "[]") as { key: string; visitedAt: number }[])
+            .filter((item) => item && typeof item.key === "string" && typeof item.visitedAt === "number" && item.key !== key)
+            .slice(0, 2);
+          recent.unshift({ key, visitedAt: Date.now() });
+          localStorage.setItem(recentKey, JSON.stringify(recent));
+          window.dispatchEvent(new CustomEvent("muxin-wander-progress"));
+        } catch {
+        }
+      }
+
       initReveal();
       initSiteMode();
+      initWanderFootprints();
       document.addEventListener("astro:page-load", initReveal);
       document.addEventListener("astro:page-load", initSiteMode);
+      document.addEventListener("astro:page-load", initWanderFootprints);
     </script>
   </body>
 </html>

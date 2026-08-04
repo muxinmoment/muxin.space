@@ -36,6 +36,10 @@ const counts = {
             <div><p class="text-xs text-violet-100/50">桌面上</p><p class="mt-2 font-serif text-3xl">一台相机</p></div>
           </div>
           <div class="mt-10 flex flex-wrap items-center gap-2 text-xs text-violet-100/60"><span data-room-status class="rounded-full bg-emerald-400/20 px-2.5 py-1 text-emerald-300">开放参观</span><span data-room-status-copy>从一个入口开始逛</span></div>
+          <div class="mt-7 border-t border-white/10 pt-5" data-wander-timeline aria-live="polite">
+            <p class="text-xs uppercase tracking-[0.18em] text-violet-300/70">最近足迹</p>
+            <ol class="mt-3 grid gap-2 text-xs text-violet-100/65" data-wander-timeline-list></ol>
+          </div>
         </div>
         <div class="grid grid-cols-2 gap-4">
           <a href="/wander/anime/" class="group flex min-h-[116px] flex-col justify-between rounded-3xl border border-violet-300/20 bg-violet-400/10 p-5 transition duration-300 hover:-translate-y-1 hover:bg-violet-400/20"><span class="text-3xl">📺</span><span><span class="block text-xs text-violet-200/50">{counts.anime} records</span><strong class="mt-1 block font-serif text-xl text-white group-hover:text-violet-200">番剧书架</strong></span></a>
@@ -126,8 +130,12 @@ const counts = {
     const roomStatus = document.querySelector<HTMLElement>("[data-room-status]");
     const roomStatusCopy = document.querySelector<HTMLElement>("[data-room-status-copy]");
     const completion = document.querySelector<HTMLElement>("[data-wander-complete]");
+    const timeline = document.querySelector<HTMLElement>("[data-wander-timeline]");
+    const timelineList = document.querySelector<HTMLOListElement>("[data-wander-timeline-list]");
     if (!directory || !links.length || directory.dataset.ready === "true") return;
     const storageKey = "muxin-wander-visited";
+    const recentStorageKey = "muxin-wander-recent";
+    const labels: Record<string, string> = { anime: "番剧书架", photo: "照片墙", notes: "支线随笔", memo: "小木电台" };
     const readVisited = () => {
       try { return new Set(JSON.parse(localStorage.getItem(storageKey) ?? "[]") as string[]); } catch { return new Set<string>(); }
     };
@@ -146,6 +154,12 @@ const counts = {
       if (roomStatus) roomStatus.textContent = isComplete ? "房间已点亮" : "开放参观";
       if (roomStatusCopy) roomStatusCopy.textContent = isComplete ? "四条支线都留下过脚印" : "从一个入口开始逛";
       if (completion) completion.textContent = isComplete ? "四个入口都到访过了。现在回到上面，看看房间亮起来的样子。" : "";
+      if (timeline && timelineList) {
+        let recent: { key: string; visitedAt: number }[] = [];
+        try { recent = (JSON.parse(localStorage.getItem(recentStorageKey) ?? "[]") as { key: string; visitedAt: number }[]).filter((item) => labels[item.key] && typeof item.visitedAt === "number").slice(0, 3); } catch { }
+        timeline.hidden = recent.length === 0;
+        timelineList.innerHTML = recent.map((item, index) => `<li class="flex items-center gap-2"><span class="h-1.5 w-1.5 shrink-0 rounded-full ${index === 0 ? "bg-violet-300" : "bg-violet-300/40"}"></span><span>${labels[item.key]}</span><time class="ml-auto text-violet-100/35" datetime="${new Date(item.visitedAt).toISOString()}">${new Intl.DateTimeFormat("zh-CN", { month: "numeric", day: "numeric" }).format(item.visitedAt)}</time></li>`).join("");
+      }
     };
     links.forEach((link) => link.addEventListener("click", () => {
       const visited = readVisited();
