@@ -7,7 +7,7 @@
   <div class="wander-3d-stage">
     <canvas data-wander-canvas aria-label="漫游房间 3D 场景"></canvas>
     <div class="wander-3d-hint" data-room-hint>点击房间里的物件探索</div>
-    <div class="wander-3d-memory" data-room-memory aria-live="polite"></div>
+    <div class="wander-3d-memory" aria-live="polite"><span data-room-memory></span><span data-room-progress></span></div>
     <div class="wander-3d-fallback" data-wander-fallback>
       <span>3D 场景加载失败</span>
       <a href="/wander/" class="underline">继续使用房间入口</a>
@@ -39,7 +39,9 @@
   .wander-3d-enter:hover { transform: translateY(-1px); background: white; }
   .wander-3d-skip { position: absolute; right: 1rem; bottom: 1rem; color: #a8a29e; }
   .wander-3d-hint { position: absolute; top: 1rem; left: 1rem; border: 1px solid rgba(196,181,253,.2); border-radius: 999px; background: rgba(23,19,31,.55); padding: .4rem .7rem; color: rgba(237,233,254,.7); font-size: .68rem; backdrop-filter: blur(10px); transition: opacity .2s; }
-  .wander-3d-memory { position: absolute; top: 1rem; right: 1rem; max-width: 13rem; border: 1px solid rgba(196,181,253,.16); border-radius: 999px; background: rgba(23,19,31,.45); padding: .4rem .7rem; color: rgba(237,233,254,.58); font-size: .68rem; text-align: right; backdrop-filter: blur(10px); }
+  .wander-3d-memory { position: absolute; top: 1rem; right: 1rem; display: grid; gap: .15rem; max-width: 13rem; border: 1px solid rgba(196,181,253,.16); border-radius: .8rem; background: rgba(23,19,31,.45); padding: .45rem .7rem; color: rgba(237,233,254,.58); font-size: .68rem; text-align: right; backdrop-filter: blur(10px); }
+  .wander-3d-memory span:empty { display: none; }
+  .wander-3d-memory span:last-child { color: rgba(196,181,253,.8); }
   .wander-3d-fallback { position: absolute; inset: 0; display: none; place-items: center; gap: .75rem; color: #c4b5fd; font-size: .875rem; }
   .wander-3d-shell.is-disabled .wander-3d-stage { display: none; }
   .wander-3d-shell.is-disabled .wander-3d-copy { padding-bottom: 1.5rem; }

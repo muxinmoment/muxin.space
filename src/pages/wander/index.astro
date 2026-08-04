@@ -143,6 +143,8 @@ const counts = {
       localStorage.setItem(storageKey, JSON.stringify([...visited]));
       updateProgress();
     }));
+    window.addEventListener("muxin-wander-progress", updateProgress);
+    window.addEventListener("storage", updateProgress);
     directory.addEventListener("keydown", (event) => {
       if (!(event instanceof KeyboardEvent) || event.metaKey || event.ctrlKey || event.altKey) return;
       const link = links.find((item) => item.dataset.wanderShortcut === event.key);

@@ -7,6 +7,7 @@ if (root && root.dataset.ready !== "true") {
   const fallback = root.querySelector<HTMLElement>("[data-wander-fallback]");
   const hint = root.querySelector<HTMLElement>("[data-room-hint]");
   const memory = root.querySelector<HTMLElement>("[data-room-memory]");
+  const progress = root.querySelector<HTMLElement>("[data-room-progress]");
   const skip = root.querySelector<HTMLButtonElement>("[data-wander-3d-skip]");
   const controls = [...root.querySelectorAll<HTMLButtonElement>("[data-room-camera]")];
   const enter = root.querySelector<HTMLAnchorElement>("[data-room-enter]");
@@ -114,7 +115,13 @@ if (root && root.dataset.ready !== "true") {
         current = views[key] ?? views.center;
         controls.forEach((button) => { button.dataset.active = button.dataset.roomCamera === key ? "true" : "false"; });
         if (enter) { enter.href = current.href; enter.textContent = `${current.label} →`; }
-        if (remember && key !== "center") localStorage.setItem("muxin-wander-last-room", key);
+        if (remember && key !== "center") {
+          localStorage.setItem("muxin-wander-last-room", key);
+          const visited = readVisited();
+          visited.add(key);
+          localStorage.setItem(visitedStorageKey, JSON.stringify([...visited]));
+          window.dispatchEvent(new CustomEvent("muxin-wander-progress"));
+        }
       };
       controls.forEach((button) => button.addEventListener("click", () => choose(button.dataset.roomCamera ?? "center")));
       const raycaster = new THREE.Raycaster();
@@ -132,6 +139,15 @@ if (root && root.dataset.ready !== "true") {
         }
         return undefined;
       };
+      const visitedStorageKey = "muxin-wander-visited";
+      const readVisited = () => {
+        try { return new Set(JSON.parse(localStorage.getItem(visitedStorageKey) ?? "[]") as string[]); } catch { return new Set<string>(); }
+      };
+      const updateProgress = () => {
+        if (progress) progress.textContent = `已探索 ${readVisited().size} / 4`;
+      };
+      window.addEventListener("muxin-wander-progress", updateProgress);
+      updateProgress();
       const updatePointer = (event: PointerEvent) => {
         const rect = canvas.getBoundingClientRect();
         pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
