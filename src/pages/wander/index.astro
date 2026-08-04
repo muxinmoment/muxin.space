@@ -35,7 +35,7 @@ const counts = {
             <div><p class="text-xs text-violet-100/50">窗外天气</p><p data-scene-text class="mt-2 font-serif text-3xl">深夜，有星星</p></div>
             <div><p class="text-xs text-violet-100/50">桌面上</p><p class="mt-2 font-serif text-3xl">一台相机</p></div>
           </div>
-          <div class="mt-10 flex items-center gap-2 text-xs text-violet-100/60"><span class="rounded-full bg-emerald-400/20 px-2.5 py-1 text-emerald-300">开放参观</span><span>从一个入口开始逛</span></div>
+          <div class="mt-10 flex flex-wrap items-center gap-2 text-xs text-violet-100/60"><span data-room-status class="rounded-full bg-emerald-400/20 px-2.5 py-1 text-emerald-300">开放参观</span><span data-room-status-copy>从一个入口开始逛</span></div>
         </div>
         <div class="grid grid-cols-2 gap-4">
           <a href="/wander/anime/" class="group flex min-h-[116px] flex-col justify-between rounded-3xl border border-violet-300/20 bg-violet-400/10 p-5 transition duration-300 hover:-translate-y-1 hover:bg-violet-400/20"><span class="text-3xl">📺</span><span><span class="block text-xs text-violet-200/50">{counts.anime} records</span><strong class="mt-1 block font-serif text-xl text-white group-hover:text-violet-200">番剧书架</strong></span></a>
@@ -71,7 +71,8 @@ const counts = {
           <span class="flex items-center gap-3"><span class="text-2xl" aria-hidden="true">🪵</span><span><span class="block text-xs text-emerald-600">04 · 小木广播</span><strong class="mt-1 block text-zinc-900">电台</strong></span></span><span class="flex items-center gap-2 text-emerald-500"><span data-wander-visited-label class="text-[.65rem] font-medium"></span><span class="transition group-hover:translate-x-1" aria-hidden="true">→</span></span>
         </a>
       </nav>
-      <p class="mt-4 text-xs text-zinc-400">快捷键只在没有输入文字时生效。进度仅保存在当前浏览器。</p>
+      <p class="mt-4 text-xs text-zinc-400" data-wander-complete aria-live="polite"></p>
+      <p class="mt-1 text-xs text-zinc-400">快捷键只在没有输入文字时生效。进度仅保存在当前浏览器。</p>
     </section>
 
     <section class="mt-8 grid gap-4 lg:grid-cols-[0.8fr_1.2fr]">
@@ -121,6 +122,9 @@ const counts = {
     const directory = document.querySelector<HTMLElement>("[data-wander-directory]");
     const links = [...document.querySelectorAll<HTMLAnchorElement>("[data-wander-link]")];
     const progress = document.querySelector<HTMLElement>("[data-wander-progress]");
+    const roomStatus = document.querySelector<HTMLElement>("[data-room-status]");
+    const roomStatusCopy = document.querySelector<HTMLElement>("[data-room-status-copy]");
+    const completion = document.querySelector<HTMLElement>("[data-wander-complete]");
     if (!directory || !links.length || directory.dataset.ready === "true") return;
     const storageKey = "muxin-wander-visited";
     const readVisited = () => {
@@ -134,7 +138,13 @@ const counts = {
         const label = link.querySelector<HTMLElement>("[data-wander-visited-label]");
         if (label) label.textContent = isVisited ? "已到访" : "";
       });
-      if (progress) progress.textContent = `${links.filter((link) => visited.has(link.dataset.wanderKey ?? "")).length} / ${links.length}`;
+      const explored = links.filter((link) => visited.has(link.dataset.wanderKey ?? "")).length;
+      const isComplete = explored === links.length;
+      if (progress) progress.textContent = `${explored} / ${links.length}`;
+      directory.dataset.complete = isComplete ? "true" : "false";
+      if (roomStatus) roomStatus.textContent = isComplete ? "房间已点亮" : "开放参观";
+      if (roomStatusCopy) roomStatusCopy.textContent = isComplete ? "四条支线都留下过脚印" : "从一个入口开始逛";
+      if (completion) completion.textContent = isComplete ? "四个入口都到访过了。现在回到上面，看看房间亮起来的样子。" : "";
     };
     links.forEach((link) => link.addEventListener("click", () => {
       const visited = readVisited();
@@ -165,4 +175,6 @@ const counts = {
   [data-wander-room][data-scene="day"] [data-scene-button="night"] { background: transparent; color: rgba(224, 231, 255, .6); }
   [data-wander-room][data-scene="day"] [data-scene-button="day"] { background: #f59e0b; color: white; }
   [data-wander-link][data-visited="true"] { box-shadow: inset 0 0 0 1px rgba(82, 82, 91, .12); }
+  [data-wander-directory][data-complete="true"] { border-color: rgba(167, 139, 250, .45); box-shadow: 0 1.5rem 4rem rgba(124, 58, 237, .08); }
+  [data-wander-directory][data-complete="true"] [data-wander-complete] { color: rgb(124 58 237); }
 </style>
