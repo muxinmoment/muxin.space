@@ -21,11 +21,9 @@ const absoluteImage = new URL(image, Astro.site).toString();
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/notes", label: "Sharing" },
-  { href: "/projects", label: "Projects" },
+  { href: "/portfolio", label: "Portfolio" },
   { href: "/resume", label: "Resume" },
-  { href: "/now", label: "Now" },
   { href: "/memo", label: "🪵 小木" },
-  { href: "/about", label: "About" },
 ];
 
 const currentPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
