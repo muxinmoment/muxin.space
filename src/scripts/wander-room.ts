@@ -28,6 +28,8 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
   );
   const disable = () => root.classList.add("is-disabled");
   if (readStorageValue(storage, "muxin-wander-3d") === "off") disable();
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce) disable();
   skip?.addEventListener("click", () => {
     writeStorageValue(storage, "muxin-wander-3d", "off");
     disable();
@@ -48,8 +50,9 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       scene.fog = new THREE.Fog(sceneColor.fog.clone(), 8, 18);
       const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 40);
       const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-      renderer.shadowMap.enabled = true;
+      const narrow = window.matchMedia("(max-width: 639px)").matches;
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, narrow ? 1 : 1.5));
+      renderer.shadowMap.enabled = !narrow;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       const hemisphereLight = new THREE.HemisphereLight(sceneColor.hemisphere, "#21152e", 2.2);
       scene.add(hemisphereLight);
@@ -109,7 +112,7 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       addBox("radio-knob", [0.14, 0.14, 0.08], [0.36, 0.25, -0.34], "#fbbf24", radio);
 
       const dustGeometry = new THREE.BufferGeometry();
-      const dustPositions = new Float32Array(72 * 3);
+      const dustPositions = new Float32Array((narrow ? 0 : 72) * 3);
       for (let index = 0; index < dustPositions.length; index += 3) {
         dustPositions[index] = (Math.random() - 0.5) * 8;
         dustPositions[index + 1] = Math.random() * 4;
@@ -118,6 +121,7 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       dustGeometry.setAttribute("position", new THREE.BufferAttribute(dustPositions, 3));
       const dustMaterial = new THREE.PointsMaterial({ color: sceneColor.dust, size: 0.035, transparent: true, opacity: 0.55 });
       const dust = new THREE.Points(dustGeometry, dustMaterial);
+      dust.visible = !narrow;
       scene.add(dust);
 
       let activeScene: keyof typeof sceneColors = initialState.scene;
@@ -244,7 +248,6 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       }
       resize();
       window.addEventListener("resize", resize, cleanupOptions);
-      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       let animationFrame: number | null = null;
       let isVisible = document.visibilityState !== "hidden";
       const supportsViewportObserver = "IntersectionObserver" in window;
