@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { readVisitedProgress, recordRecentProgress, writeVisitedProgress } from "../utils/wander-storage";
 
 const root = document.querySelector<HTMLElement>("[data-wander-3d]");
 if (root && root.dataset.ready !== "true") {
@@ -159,8 +160,8 @@ if (root && root.dataset.ready !== "true") {
           localStorage.setItem("muxin-wander-last-room", key);
           const visited = readVisited();
           visited.add(key);
-          localStorage.setItem(visitedStorageKey, JSON.stringify([...visited]));
-          recordVisit(key);
+          writeVisitedProgress(localStorage, visitedStorageKey, visited);
+          recordRecentProgress(localStorage, recentStorageKey, key);
           window.dispatchEvent(new CustomEvent("muxin-wander-progress"));
         }
       };
@@ -182,22 +183,7 @@ if (root && root.dataset.ready !== "true") {
       };
       const visitedStorageKey = "muxin-wander-visited";
       const recentStorageKey = "muxin-wander-recent";
-      const readVisited = () => {
-        try {
-          const stored = JSON.parse(localStorage.getItem(visitedStorageKey) ?? "[]");
-          return new Set<string>(Array.isArray(stored) ? stored.filter((item): item is string => typeof item === "string") : []);
-        } catch { return new Set<string>(); }
-      };
-      const recordVisit = (key: string) => {
-        try {
-          const stored = JSON.parse(localStorage.getItem(recentStorageKey) ?? "[]");
-          const recent = (Array.isArray(stored) ? stored : [])
-            .filter((item): item is { key: string; visitedAt: number } => item && typeof item.key === "string" && Number.isFinite(item.visitedAt) && item.key !== key)
-            .slice(0, 2);
-          recent.unshift({ key, visitedAt: Date.now() });
-          localStorage.setItem(recentStorageKey, JSON.stringify(recent));
-        } catch { }
-      };
+      const readVisited = () => readVisitedProgress(localStorage, visitedStorageKey);
       const updateProgress = () => {
         if (progress) progress.textContent = `已探索 ${readVisited().size} / 4`;
       };

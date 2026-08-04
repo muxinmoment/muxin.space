@@ -98,6 +98,8 @@ const counts = {
 </BaseLayout>
 
 <script>
+  import { readRecentProgress, readVisitedProgress, writeVisitedProgress } from "../../utils/wander-storage";
+
   function initSceneSwitch() {
     const room = document.querySelector<HTMLElement>("[data-wander-room]");
     const buttons = document.querySelectorAll<HTMLButtonElement>("[data-scene-button]");
@@ -137,12 +139,7 @@ const counts = {
     const storageKey = "muxin-wander-visited";
     const recentStorageKey = "muxin-wander-recent";
     const labels: Record<string, string> = { anime: "番剧书架", photo: "照片墙", notes: "支线随笔", memo: "小木电台" };
-    const readVisited = () => {
-      try {
-        const stored = JSON.parse(localStorage.getItem(storageKey) ?? "[]");
-        return new Set<string>(Array.isArray(stored) ? stored.filter((item): item is string => typeof item === "string") : []);
-      } catch { return new Set<string>(); }
-    };
+    const readVisited = () => readVisitedProgress(localStorage, storageKey);
     const updateProgress = () => {
       const visited = readVisited();
       links.forEach((link) => {
@@ -159,11 +156,9 @@ const counts = {
       if (roomStatusCopy) roomStatusCopy.textContent = isComplete ? "四条支线都留下过脚印" : "从一个入口开始逛";
       if (completion) completion.textContent = isComplete ? "四个入口都到访过了。现在回到上面，看看房间亮起来的样子。" : "";
       if (timeline && timelineList) {
-        let recent: { key: string; visitedAt: number }[] = [];
-        try {
-          const stored = JSON.parse(localStorage.getItem(recentStorageKey) ?? "[]");
-          recent = (Array.isArray(stored) ? stored : []).filter((item): item is { key: string; visitedAt: number } => item && labels[item.key] && Number.isFinite(item.visitedAt)).slice(0, 3);
-        } catch { }
+        const recent = readRecentProgress(localStorage, recentStorageKey)
+          .filter((item) => labels[item.key])
+          .slice(0, 3);
         timeline.hidden = recent.length === 0;
         const formatFootprintTime = (visitedAt: number) => {
           const visitedDate = new Date(visitedAt);
@@ -192,7 +187,7 @@ const counts = {
       const visited = readVisited();
       const key = link.dataset.wanderKey;
       if (key) visited.add(key);
-      localStorage.setItem(storageKey, JSON.stringify([...visited]));
+      writeVisitedProgress(localStorage, storageKey, visited);
       updateProgress();
     }));
     window.addEventListener("muxin-wander-progress", updateProgress);

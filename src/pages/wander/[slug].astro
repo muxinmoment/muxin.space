@@ -21,6 +21,8 @@ const branch = entry.data.type === "anime" ? { key: "anime", label: "番剧书�
 </BaseLayout>
 
 <script>
+  import { readVisitedProgress, recordRecentProgress, writeVisitedProgress } from "../../utils/wander-storage";
+
   function initWanderDetail() {
     const detail = document.querySelector<HTMLElement>("[data-wander-detail]");
     const footprint = detail?.querySelector<HTMLElement>("[data-wander-detail-footprint]");
@@ -37,14 +39,10 @@ const branch = entry.data.type === "anime" ? { key: "anime", label: "番剧书�
       return new Intl.DateTimeFormat("zh-CN", { month: "numeric", day: "numeric" }).format(visitedDate).replace("/", "月") + "日";
     };
     try {
-      const visited = new Set(JSON.parse(localStorage.getItem(visitedKey) ?? "[]") as string[]);
+      const visited = readVisitedProgress(localStorage, visitedKey);
       visited.add(key);
-      localStorage.setItem(visitedKey, JSON.stringify([...visited]));
-      const recent = (JSON.parse(localStorage.getItem(recentKey) ?? "[]") as { key: string; visitedAt: number }[])
-        .filter((item) => item && typeof item.key === "string" && typeof item.visitedAt === "number" && item.key !== key)
-        .slice(0, 2);
-      recent.unshift({ key, visitedAt: Date.now() });
-      localStorage.setItem(recentKey, JSON.stringify(recent));
+      writeVisitedProgress(localStorage, visitedKey, visited);
+      const recent = recordRecentProgress(localStorage, recentKey, key);
       window.dispatchEvent(new CustomEvent("muxin-wander-progress"));
       footprint.textContent = `当前足迹 · ${detail.dataset.wanderLabel} · ${formatFootprintTime(recent[0].visitedAt)}`;
     } catch {
