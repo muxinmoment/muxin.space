@@ -43,10 +43,10 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       const cleanupOptions = { signal: cleanupController.signal };
       const scene = new THREE.Scene();
       const sceneColors = {
-        dawn: { background: new THREE.Color("#b9c9d9"), fog: new THREE.Color("#b9c9d9"), hemisphere: new THREE.Color("#ffe0c2"), key: new THREE.Color("#fff1d6"), dust: new THREE.Color("#fff7ed"), violet: new THREE.Color("#8b7bb8"), pink: new THREE.Color("#c8797d") },
-        day: { background: new THREE.Color("#b8d4dc"), fog: new THREE.Color("#b8d4dc"), hemisphere: new THREE.Color("#e0f2fe"), key: new THREE.Color("#fffaf0"), dust: new THREE.Color("#fff7ed"), violet: new THREE.Color("#6d9ca3"), pink: new THREE.Color("#d98b83") },
-        dusk: { background: new THREE.Color("#a85f58"), fog: new THREE.Color("#a85f58"), hemisphere: new THREE.Color("#fed7aa"), key: new THREE.Color("#fdba74"), dust: new THREE.Color("#ffedd5"), violet: new THREE.Color("#9b5bb0"), pink: new THREE.Color("#eb766c") },
-        night: { background: new THREE.Color("#211a2d"), fog: new THREE.Color("#211a2d"), hemisphere: new THREE.Color("#c4b5fd"), key: new THREE.Color("#fde68a"), dust: new THREE.Color("#fef3c7"), violet: new THREE.Color("#8b5cf6"), pink: new THREE.Color("#ec4899") },
+        dawn: { background: new THREE.Color("#6e7f94"), fog: new THREE.Color("#6e7f94"), hemisphere: new THREE.Color("#d4c5b0"), key: new THREE.Color("#e8e0d5"), dust: new THREE.Color("#d5cbb8"), violet: new THREE.Color("#8b7bb8"), pink: new THREE.Color("#c8797d") },
+        day: { background: new THREE.Color("#87aec8"), fog: new THREE.Color("#87aec8"), hemisphere: new THREE.Color("#e8eae4"), key: new THREE.Color("#f5f0e5"), dust: new THREE.Color("#e8e6da"), violet: new THREE.Color("#7f9ea3"), pink: new THREE.Color("#cf9594") },
+        dusk: { background: new THREE.Color("#3a2e45"), fog: new THREE.Color("#3a2e45"), hemisphere: new THREE.Color("#fed7aa"), key: new THREE.Color("#ffb347"), dust: new THREE.Color("#ffe2a3"), violet: new THREE.Color("#9b5bb0"), pink: new THREE.Color("#eb766c") },
+        night: { background: new THREE.Color("#1c1935"), fog: new THREE.Color("#1c1935"), hemisphere: new THREE.Color("#6b8cce"), key: new THREE.Color("#bcc7e8"), dust: new THREE.Color("#c8cee4"), violet: new THREE.Color("#8b5cf6"), pink: new THREE.Color("#ec4899") },
       };
       const sceneColor = sceneColors[initialScene];
       const background = sceneColor.background.clone();
@@ -59,93 +59,159 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       renderer.toneMapping = THREE.NoToneMapping;
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.BasicShadowMap;
-      const hemisphereLight = new THREE.HemisphereLight(sceneColor.hemisphere, "#21152e", 2.2);
+      // ── Lights ──
+      const ambient = new THREE.AmbientLight("#4a3b5c", 1);
+      scene.add(ambient);
+      const hemisphereLight = new THREE.HemisphereLight(sceneColor.hemisphere, "#2a1e33", 1.6);
       scene.add(hemisphereLight);
-      const keyLight = new THREE.DirectionalLight(sceneColor.key, 3.2);
-      keyLight.position.set(-4, 7, 3);
+      const keyLight = new THREE.DirectionalLight(sceneColor.key, 3.5);
+      keyLight.position.set(1.5, 4.5, 2);
       keyLight.castShadow = true;
+      keyLight.shadow.mapSize.set(512, 512);
       scene.add(keyLight);
-      const violetGlow = new THREE.PointLight("#8b5cf6", 2.2, 6, 2);
-      violetGlow.position.set(-1.7, 1.6, -2.2);
+      const violetGlow = new THREE.PointLight("#8b5cf6", 1.2, 5, 2);
+      violetGlow.position.set(-2, 1.2, -2.5);
       scene.add(violetGlow);
-      const pinkGlow = new THREE.PointLight("#ec4899", 1.5, 5, 2);
-      pinkGlow.position.set(2.7, 1.2, 0.8);
+      const pinkGlow = new THREE.PointLight("#ec4899", 1, 4, 2);
+      pinkGlow.position.set(2.7, 0.8, 0.8);
       scene.add(pinkGlow);
 
-      const material = (color: string) => new THREE.MeshStandardMaterial({ color, roughness: 1, metalness: 0, flatShading: true });
-      const addBox = (name: string, size: [number, number, number], position: [number, number, number], color: string, parent: THREE.Object3D = scene) => {
-        const mesh = new THREE.Mesh(new THREE.BoxGeometry(...size), material(color));
+      // ── Materials ──
+      const mat = (color: string) => new THREE.MeshStandardMaterial({ color, roughness: 1, metalness: 0, flatShading: true });
+      const addObj = (name: string, w: number, h: number, d: number, x: number, y: number, z: number, color: string, parent: THREE.Object3D = scene) => {
+        const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(color));
         mesh.name = name;
-        mesh.position.set(...position);
+        mesh.position.set(x, y, z);
         mesh.castShadow = true;
         mesh.receiveShadow = true;
         parent.add(mesh);
         return mesh;
       };
 
-      addBox("floor", [10, 0.2, 8], [0, -0.2, 0], "#292037");
-      addBox("back-wall", [10, 5, 0.2], [0, 2.4, -3.8], "#20182b");
-      addBox("left-wall", [0.2, 5, 8], [-4.8, 2.4, 0], "#20182b");
-      addBox("rug", [5.4, 0.035, 3.2], [0, -0.08, 0.7], "#3b245f");
-      addBox("rug-inlay", [4.9, 0.04, 2.7], [0, -0.055, 0.7], "#4c2d75");
+      // ── Room structure ──
+      addObj("floor", 9, 0.18, 6, 0, -0.09, 0, "#524458");
+      addObj("back-wall", 9, 4.5, 0.15, 0, 2.25, -3, "#3a2e45");
+      addObj("left-wall", 0.15, 4.5, 6, -4.4, 2.25, 0, "#30273a");
+      addObj("right-wall", 0.15, 4.5, 6, 4.4, 2.25, 0, "#30273a");
+      // Floor planks
+      for (let px = -3; px < 3; px += 1.2) addObj("plank-v", 1.15, 0.02, 5.8, px + 0.6, 0.01, 0.1, "#6a5b78");
+      for (let pz = -1.5; pz < 1.5; pz += 1.2) addObj("plank-h", 8.6, 0.02, 1.15, 0, 0.02, pz + 0.7, "#6a5b78");
+      // Rug
+      addObj("rug", 4.8, 0.03, 2.6, 0, 0.04, 1.2, "#5c3d4a");
+      addObj("rug-inlay", 4.2, 0.04, 2, 0, 0.06, 1.2, "#7a5460");
+      // Baseboard
+      addObj("base-l", 8.6, 0.15, 0.14, 0, -1.05, -2.85, "#2a1e33");
+      addObj("base-r", 8.6, 0.15, 0.14, 0, -1.05, 2.85, "#2a1e33");
 
-      const windowFrame = new THREE.Group();
-      windowFrame.position.set(1.1, 2.55, -3.68);
-      addBox("window-frame", [2.25, 1.55, 0.12], [0, 0, 0], "#31234c", windowFrame);
-      addBox("window-glass", [1.95, 1.25, 0.14], [0, 0, 0.08], "#312e81", windowFrame);
-      addBox("window-cross-v", [0.08, 1.25, 0.16], [0, 0, 0.16], "#8b5cf6", windowFrame);
-      addBox("window-cross-h", [1.95, 0.08, 0.16], [0, 0, 0.16], "#8b5cf6", windowFrame);
-      addBox("window-sun", [0.42, 0.42, 0.04], [0.55, 0.35, 0.17], "#fbbf24", windowFrame);
-      scene.add(windowFrame);
+      // ── Window + outside ──
+      const skyGeom = new THREE.PlaneGeometry(3.5, 2.8);
+      const skyMat = new THREE.MeshStandardMaterial({ color: "#ffe2a3", side: THREE.DoubleSide, roughness: 1, metalness: 0, flatShading: true });
+      const skyPlane = new THREE.Mesh(skyGeom, skyMat);
+      skyPlane.position.set(1.1, 2.3, -2.92);
+      skyPlane.name = "sky";
+      scene.add(skyPlane);
+      // Tree silhouettes outside
+      [[-0.5, 0.7], [0.8, 0.9], [-1.2, 0.55]].forEach(([tx, th]) => {
+        addObj("tree", 0.3, th, 0.25, 1.1 + tx, 2.05 + th / 2, -2.88, "#2a1e33");
+        if (th > 0.6) addObj("tree-top", 0.6, 0.25, 0.25, 1.1 + tx, 2.05 + th + 0.12, -2.88, "#2a1e33");
+      });
+      const wg = new THREE.Group();
+      wg.position.set(1.1, 2.3, -2.92);
+      addObj("w-top", 2.2, 0.1, 0.14, 0, 0.75, 0, "#6d597a", wg);
+      addObj("w-bottom", 2.2, 0.1, 0.14, 0, -0.75, 0, "#6d597a", wg);
+      addObj("w-left", 0.1, 1.7, 0.14, -1.05, 0, 0, "#6d597a", wg);
+      addObj("w-right", 0.1, 1.7, 0.14, 1.05, 0, 0, "#6d597a", wg);
+      addObj("w-cross-h", 2, 0.06, 0.15, 0, 0, 0, "#6d597a", wg);
+      addObj("w-cross-v", 0.06, 1.6, 0.15, 0, 0, 0, "#6d597a", wg);
+      scene.add(wg);
 
+      // ── Bookshelf (anime) ──
       const shelf = new THREE.Group();
       shelf.userData.roomKey = "anime";
-      shelf.position.set(-2.5, 0, -2.8);
+      shelf.position.set(-2.5, 0, -2.3);
+      const shelfW = 1.8, shelfH = 3, shelfD = 0.4, shelfX = 0, shelfY = 1.5, shelfZ = 0;
+      addObj("sh-left", 0.08, shelfH, shelfD, shelfX - shelfW / 2, shelfY, shelfZ, "#6d597a", shelf);
+      addObj("sh-right", 0.08, shelfH, shelfD, shelfX + shelfW / 2, shelfY, shelfZ, "#6d597a", shelf);
+      addObj("sh-top", shelfW, 0.08, shelfD, shelfX, shelfY + shelfH / 2, shelfZ, "#6d597a", shelf);
+      for (let sy = 0.5; sy < shelfH; sy += 0.75) {
+        addObj("sh-shelf", shelfW - 0.2, 0.06, shelfD, shelfX, 0.3 + sy, shelfZ, "#bea879", shelf);
+        // Books on this shelf
+        const bookColors = [["#e8625c", 0.42], ["#fbb347", 0.55], ["#7ecf9a", 0.32], ["#77aadd", 0.48], ["#c77ddf", 0.38]].slice(0, 3 + (Math.floor(sy / 0.75) % 3));
+        bookColors.forEach(([bcol, bh], bi) => {
+          addObj("book", 0.14, bh as number, 0.42, -0.65 + bi * 0.32, 0.4 + sy, -0.16, bcol as string, shelf);
+        });
+      }
       scene.add(shelf);
-      addBox("shelf-frame", [2.1, 3.2, 0.45], [0, 1.5, 0], "#4c1d95", shelf);
-      for (let y = 0.45; y < 3; y += 0.72) addBox("shelf-line", [1.75, 0.12, 0.6], [0, y, -0.32], "#a78bfa", shelf);
-      [[-0.55, 0.75, "#fb7185"], [0.05, 0.75, "#fbbf24"], [0.58, 0.75, "#34d399"], [-0.45, 1.48, "#60a5fa"], [0.38, 1.48, "#f472b6"]].forEach(([x, y, color]) => addBox("book", [0.28, 0.48, 0.5], [x as number, y as number, -0.38], color as string, shelf));
 
+      // ── Photo wall ──
       const photo = new THREE.Group();
       photo.userData.roomKey = "photo";
-      photo.position.set(0, 1.5, -3.62);
+      photo.position.set(-0.3, 1.5, -2.92);
+      const pf = (px: number, py: number, pw: number, ph: number, frameCol: string, innerCol: string) => {
+        addObj("pf", pw + 0.12, ph + 0.12, 0.08, px, py, 0, frameCol, photo);
+        addObj("pi", pw, ph, 0.1, px, py, 0.06, innerCol, photo);
+      };
+      pf(-0.95, 0.15, 0.7, 0.5, "#7a5460", "#c8a8a8");
+      pf(0.07, 0.15, 0.7, 0.5, "#6d597a", "#b8a8c8");
+      pf(-0.44, -0.42, 1.1, 0.35, "#5c6d7a", "#a8c8d8");
       scene.add(photo);
-      addBox("photo-frame", [2.4, 1.55, 0.12], [0, 0, 0], "#be185d", photo);
-      addBox("photo-inner", [2.02, 1.17, 0.14], [0, 0, 0.08], "#fbcfe8", photo);
-      addBox("photo-sun", [0.5, 0.5, 0.16], [0.45, 0.24, 0.16], "#f59e0b", photo);
-      addBox("photo-ground", [1.8, 0.25, 0.16], [0, -0.4, 0.16], "#7c3aed", photo);
 
+      // ── Desk (notes) ──
       const desk = new THREE.Group();
       desk.userData.roomKey = "notes";
-      desk.position.set(2.2, 0, -0.7);
+      desk.position.set(2.4, 0, -0.5);
+      const dtW = 2.6, dtD = 1.1, dtH = 1.1, dtY = 0.55;
+      addObj("dt-top", dtW, 0.14, dtD, 0, dtH, 0, "#b5845c", desk);
+      addObj("dt-leg-fl", 0.12, dtH - 0.07, 0.12, -dtW / 2 + 0.2, dtY - dtH / 2 + 0.04, -dtD / 2 + 0.2, "#7a5240", desk);
+      addObj("dt-leg-fr", 0.12, dtH - 0.07, 0.12, dtW / 2 - 0.2, dtY - dtH / 2 + 0.04, -dtD / 2 + 0.2, "#7a5240", desk);
+      addObj("dt-leg-bl", 0.12, dtH - 0.07, 0.12, -dtW / 2 + 0.2, dtY - dtH / 2 + 0.04, dtD / 2 - 0.2, "#7a5240", desk);
+      addObj("dt-leg-br", 0.12, dtH - 0.07, 0.12, dtW / 2 - 0.2, dtY - dtH / 2 + 0.04, dtD / 2 - 0.2, "#7a5240", desk);
+      // Monitor
+      const mg = new THREE.Group();
+      mg.position.set(-0.3, 0.82, -0.2);
+      addObj("m-base", 0.5, 0.1, 0.4, 0, 0, 0, "#3a2e45", mg);
+      addObj("m-stand", 0.1, 0.35, 0.1, 0, 0.22, 0, "#3a2e45", mg);
+      addObj("m-screen", 1.2, 0.75, 0.1, 0, 0.7, 0, "#2a1e33", mg);
+      addObj("m-glow", 1, 0.55, 0.12, 0, 0.7, 0.08, "#5c7dba", mg);
+      desk.add(mg);
+      // Desk items
+      addObj("keyboard", 0.85, 0.06, 0.28, 0.3, 0.62, -0.32, "#7a5460", desk);
+      addObj("mug", 0.18, 0.22, 0.18, 0.95, 0.72, 0.15, "#e8625c", desk);
+      addObj("notebook", 0.4, 0.04, 0.3, -0.8, 0.63, 0.15, "#e8d8c0", desk);
+      // Desk lamp
+      const lamp = new THREE.Group();
+      lamp.position.set(0.65, 0.68, -0.5);
+      addObj("lamp-base", 0.22, 0.08, 0.22, 0, 0, 0, "#6d597a", lamp);
+      addObj("lamp-pole", 0.08, 0.45, 0.08, 0, 0.26, 0, "#c8a8a8", lamp);
+      addObj("lamp-shade", 0.4, 0.2, 0.3, 0, 0.52, 0, "#ffb347", lamp);
+      desk.add(lamp);
       scene.add(desk);
-      addBox("desk-top", [2.8, 0.22, 1.25], [0, 1.25, 0], "#7c3aed", desk);
-      addBox("desk-leg", [0.2, 1.25, 0.2], [-1.05, 0.55, 0], "#4c1d95", desk);
-      addBox("desk-leg", [0.2, 1.25, 0.2], [1.05, 0.55, 0], "#4c1d95", desk);
-      addBox("screen", [1.25, 0.8, 0.12], [0, 2.05, -0.18], "#312e81", desk);
-      addBox("screen-glow", [0.98, 0.52, 0.13], [0, 2.05, -0.25], "#c4b5fd", desk);
-      addBox("keyboard", [0.9, 0.07, 0.3], [0, 1.48, -0.36], "#d8b4fe", desk);
-      addBox("notebook", [0.48, 0.04, 0.34], [-0.72, 1.47, 0.12], "#f5d0fe", desk);
-      addBox("mug", [0.2, 0.24, 0.2], [0.83, 1.58, 0.12], "#fb7185", desk);
 
+      // ── Radio (memo) ──
       const radio = new THREE.Group();
       radio.userData.roomKey = "memo";
-      radio.position.set(2.8, 0.15, 1.5);
+      radio.position.set(2.8, 0.15, 1.8);
+      const rg = radio;
+      addObj("r-body", 1.1, 0.58, 0.52, 0, 0.39, 0, "#e8625c", rg);
+      addObj("r-grille", 0.7, 0.32, 0.06, 0, 0.32, -0.3, "#3a2e45", rg);
+      for (let i = 0; i < 5; i++) addObj("r-bar", 0.08, 0.22, 0.08, -0.3 + i * 0.15, 0.32, -0.3, "#524458", rg);
+      addObj("r-knob1", 0.15, 0.15, 0.1, -0.35, 0.52, 0.1, "#fbb347", rg);
+      addObj("r-knob2", 0.15, 0.15, 0.1, -0.1, 0.52, 0.1, "#fbb347", rg);
+      addObj("r-light", 0.12, 0.08, 0.06, 0.25, 0.52, 0.1, "#7ecf9a", rg);
+      addObj("r-antenna", 0.05, 0.55, 0.05, -0.45, 0.93, 0.05, "#c8a8a8", rg);
+      addObj("r-antenna-tip", 0.08, 0.06, 0.08, -0.45, 1.23, 0.05, "#fbb347", rg);
       scene.add(radio);
-      addBox("radio-body", [1.15, 0.7, 0.6], [0, 0.45, 0], "#be185d", radio);
-      addBox("radio-panel", [0.72, 0.2, 0.08], [0, 0.62, -0.32], "#fbcfe8", radio);
-      addBox("radio-knob", [0.14, 0.14, 0.08], [0.36, 0.25, -0.34], "#fbbf24", radio);
-      addBox("radio-antenna", [0.04, 0.52, 0.04], [-0.38, 1.04, 0], "#fbbf24", radio);
 
+      // ── Dust particles ──
       const dustGeometry = new THREE.BufferGeometry();
-      const dustPositions = new Float32Array(72 * 3);
+      const dustPositions = new Float32Array(96 * 3);
       for (let index = 0; index < dustPositions.length; index += 3) {
-        dustPositions[index] = (Math.random() - 0.5) * 8;
-        dustPositions[index + 1] = Math.random() * 4;
-        dustPositions[index + 2] = (Math.random() - 0.5) * 6;
+        dustPositions[index] = (Math.random() - 0.5) * 7;
+        dustPositions[index + 1] = Math.random() * 3.5;
+        dustPositions[index + 2] = (Math.random() - 0.5) * 5;
       }
       dustGeometry.setAttribute("position", new THREE.BufferAttribute(dustPositions, 3));
-      const dustMaterial = new THREE.PointsMaterial({ color: sceneColor.dust, size: 0.06, transparent: true, opacity: 0.55 });
+      const dustMaterial = new THREE.PointsMaterial({ color: sceneColor.dust, size: 0.05, transparent: true, opacity: 0.45 });
       const dust = new THREE.Points(dustGeometry, dustMaterial);
       scene.add(dust);
 
