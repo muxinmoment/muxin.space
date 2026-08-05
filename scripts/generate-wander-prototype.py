@@ -90,7 +90,10 @@ def main():
         l([(160, 111), (x, 180)], "#45394a", 0.55)
 
     # Contact shadows anchor shelf, desk and chair.
-    r(5, 150, 72, 6, (24, 23, 39, 110))
+    # The bookshelf's real base (sampled from objects.webp) sits at y~126, not
+    # y~150 - the old shadow position floated 24px below the shelf, landing in
+    # empty floor space and reading as "missing"/disconnected grounding.
+    r(14, 124, 60, 5, (18, 16, 30, 150))
     r(194, 148, 112, 7, (24, 23, 39, 130))
     r(145, 159, 38, 5, (24, 23, 39, 125))
 
