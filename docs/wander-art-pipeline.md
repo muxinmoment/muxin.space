@@ -1,188 +1,159 @@
 # Wander Room 高分辨率美术流水线
 
-> 版本：v1.0
-> 状态：实施约定
-> 来源：Agent Sprite Forge 的资产契约、Parallax Background Generation 的分层思路、Pixelorama 的图层编辑能力
+> 版本：v2.0
+> 状态：实施约定（替代 v1.0 的六层透明分离契约）
+> 来源：与 gpt-image-2（经中转站 slb-v1.api.fan）的实测结果；Agent Sprite Forge / Parallax
+> Background Generation / Pixelorama 仍作为方法论参考，不再作为分层导出的强制依赖
+
+## 0. v1 → v2 变更说明（为什么放弃六层分离）
+
+v1.0 的契约要求每个时间状态导出六个独立透明层（sky/outside/room/objects/light/
+foreground），假设美术资产可以像素级干净分层。实测发现：
+
+- **文字生成（text-to-image）无法保证跨图几何一致性**：同一份构图 prompt，只改光照描述，
+  gpt-image-2 每次都会重新渲染窗框款式、书架比例、镜头幅度，产出四张"氛围相似但布局不同"
+  的图，跨状态切换时家具会明显"变形"，比像素风滤镜切换更突兀。
+- **img2img 编辑（image edit）可以锁定几何**：以已有图作为参考图，只描述"改光照/开关灯/
+  换天空颜色，其余不变"，模型会保留原图的窗框、家具形状和位置，只重新渲染光照相关像素。
+  这是实测验证通过的方法，见下文 §2。
+- **模型不产出干净的六层透明资产**：无论文字生成还是图片编辑，输出都是一张扁平合成图，
+  没有透明通道分离的天空/家具/前景层。六层契约在当前生图能力下不可执行。
+- **接口不支持真4K输出**：请求 3840×2160 会被静默降级到约 2048×1152（无报错提示），
+  这是该接口在16:9比例下的实测上限，不要假设"要多大就能生成多大"。
+
+结论：**放弃六层分离，改用"每个时间状态一张扁平高清底图 + 全屏图片作为场景入口
+（不做按钮式UI）+ 少量独立透明动效贴片 + CSS transform 相机"**。这个新契约不影响已有的
+镜头系统、书架小游戏的坐标逻辑——它们本来就是架构无关的 DOM/CSS/TS 逻辑，只是从
+"针对六层做定位"变成"针对一张底图做定位"，交互形式从"可见按钮"改成"图片上的隐形
+可点击区域 + hover 高亮"。
 
 ## 1. 目标
 
-`/wander/` 的美术原型必须先达到完整的 `1920×1080` 画面，再拆分成运行时图层。不能先画低分辨率色块，再把放大后的尺寸当作画质。
+`/wander/` 的美术资产以四张底图为核心，分别对应 dawn / day / dusk / night 四个时间
+状态，同一构图、同一家具布局，只有光照/天空/灯光状态不同。用户明确要求这些图片
+**直接全屏作为场景入口**，不叠加按钮式UI控件——热点交互要做成图片上的隐形可点击区域
+配合 hover 高亮/light 提示，保持沉浸感。
 
-运行时图层统一使用 `2048×1152` 16:9 WebP，主视觉原型统一使用 `1920×1080`。
+已验证四态定稿图（2026-08-05）：
+
+| 状态 | 尺寸 | 方法 |
+| --- | --- | --- |
+| dusk（基准图） | 1536×1024 | text-to-image |
+| day（意外产物，用户认可当日间变体） | 1536×1024 | image-edit（基于 dusk） |
+| dawn | 2496×1664 | image-edit（基于 dusk，第二版才达标） |
+| night | 1536×1024 | image-edit（基于 dusk） |
+
+尺寸不统一，落盘前必须裁剪/缩放对齐（建议统一到 1920×1080 或以四张中的较大公约尺寸
+为准，具体在整合阶段结合实际显示效果决定，不做无意义的机械放大）。
+
+**4K 重新生成的尝试已放弃**：用户明确认为4K测试版（2048×1152，构图重画）效果不好，
+不要求重新生图，直接使用原有四张定稿图进入下一步。
 
 ## 2. 资产契约
 
-### 2.1 主视觉原型
-
-主视觉原型是完整合成图，只用于构图、光影和视觉回归，不直接作为交互运行时背景。
+### 2.1 时间状态底图
 
 ```text
-public/wander/prototype-dusk-1920.webp
+public/wander/bedroom-dusk.webp   # 基准图
+public/wander/bedroom-dawn.webp
+public/wander/bedroom-day.webp
+public/wander/bedroom-night.webp
 ```
 
-原型必须包含：
+生成方法（已验证，2026-08-05 实测四态全部产出，见上表）：
 
-- 窗外远景、中景建筑和室内窗框；
-- 房间墙面、地板、家具和前景遮挡；
-- 四个内容区域的可识别物件；
-- 主要光源、投影和受光边；
-- 不少于一个能表达生活感的小物件群。
+1. **基准图（dusk）**：文字生成一次，确定房间布局，之后不再用文字重新生成。
+2. **其余三个时间状态**：以基准图为参考图做 image edit，prompt 必须明确列出"保持不变"
+   的项，明确描述目标光照并**显式排除错误方向**（例如生成 dawn 要写
+   "NOT bright daylight, NOT green trees, all lights OFF including bedside lamp"，
+   否则模型倾向输出偏暖的默认日光——第一版 dawn 就因未排除而失败，第二版加上明确排除项
+   才达标）。
+3. 每张编辑结果要人工/vision 模型核对几何是否锁定，不接受"凑合能用"的几何漂移。
+4. 落盘前统一尺寸并转 WebP。
 
-### 2.2 运行时图层
+### 2.2 全屏入口与热点
 
-每个时间状态必须提供同名的六层资产：
+与 v1.0 假设的"卡片背景图+可见按钮"不同，用户要求的实际形态是：
+
+- 底图**全屏铺满**作为 `/wander/` 的场景入口，没有额外的按钮式UI框住画面；
+- 热点区域仍以矩形/多边形百分比坐标标注在底图上，但视觉呈现改为**隐形可点击区域**，
+  仅在 hover/focus 时出现轻微高亮（例如目标物件的柔光描边或亮度提升），点击后触发
+  CSS transform 镜头推进；
+- 键盘可达性：隐形热点仍需要 `tabindex`/`aria-label`，聚焦态要有可见的焦点指示（不能
+  因为"隐形"而牺牲无障碍访问，聚焦框可以做得克制但不能没有）；
+- TypeScript 负责镜头、进度和小游戏状态，逻辑不变；
+- 热点坐标标注一次即可跨四个时间状态复用（前提是四张图裁剪缩放对齐到同一坐标系）。
+
+### 2.3 动效贴片（替代原六层中的 light/foreground 动态部分）
 
 ```text
-public/wander/<scene>/
-├── sky.webp
-├── outside.webp
-├── room.webp
-├── objects.webp
-├── light.webp
-├── foreground.webp
-└── scene.prompt.txt 或 scene.source.json
+public/wander/effects/
+├── dust-motes.webp       # 浮尘颗粒，小尺寸重复贴图，CSS 位移动画
+├── lamp-glow.webp        # 灯光光晕，CSS opacity 呼吸动画
+├── curtain.webp          # 窗帘（如需要独立于底图摆动，否则用 CSS 直接对底图局部做 skew）
+└── monitor-glow.webp     # 屏幕光晕，CSS opacity 闪烁动画
 ```
 
-| 层 | 允许内容 | 禁止内容 |
-| --- | --- | --- |
-| `sky` | 天空、云、太阳、月亮 | 室内家具、文字、热点 |
-| `outside` | 城市、远山、树影、街灯 | 可点击室内物件 |
-| `room` | 墙、窗框、地板、固定结构 | 书架内容、桌面杂物 |
-| `objects` | 书架、照片墙、书桌、收音机 | UI、热点标签、页面文字 |
-| `light` | 窗光、灯光、反射、尘埃 | 不透明背景、主体轮廓 |
-| `foreground` | 椅背、植物、桌沿、散落物件 | 覆盖全部热点的遮挡 |
+先以最小成本（纯 CSS 渐变/box-shadow/opacity 动画）实现，效果不够再补生成贴片。
+这部分资产不要求随时间状态变化，一套贴片可跨四个时间状态复用。
 
-运行时图层必须保持透明通道，不能把六层重新合成后作为唯一交互资产。
+### 2.4 相机
 
-### 2.3 对象和热点
-
-视觉对象与交互对象分离：
-
-- 图片负责物件外观；
-- DOM/SVG 按钮负责可访问交互；
-- TypeScript 负责镜头、进度和小游戏；
-- 不通过图片像素坐标推断点击结果；
-- 每个热点必须有稳定的 `data-room-camera` 和可读名称。
+镜头推近/切换使用 CSS `transform: scale() translate()`，`transform-origin` 设置在
+被点击热点的坐标上，配合 `transition`。全屏底图用 `object-fit: cover` 配合容器裁剪，
+使推近时不露出画布边界。
 
 ## 3. 工具分工
 
-### Agent Sprite Forge
+### 生图（gpt-image-2，经中转站 slb-v1.api.fan）
 
-借鉴其 `generate2dmap` 的分层契约和 `generate2dsprite` 的资产 QA 思路：
+- 基准图：文字生成，`quality: high`；
+- 其余状态：图片编辑（image edit），以基准图为输入，只改光照描述；
+- 成本（2026-08-05 实测）：`high` 档单张 **$0.16**；一套四态含试错迭代总花费约
+  **$0.6-0.8**；4K 测试额外花费一张，效果不理想已放弃该方向。
+- **接口限制**：不支持真4K，16:9 比例下实测上限约 2048×1152，超出请求会静默降级
+  不报错，规划尺寸预期时按此上限考虑。
 
-- 先生成/绘制主视觉参考；
-- 再拆分基础层、物件层和前景层；
-- 为每个资产保存来源、尺寸、调色板和处理记录；
-- 对运行时资源做尺寸、透明度、边界和命名检查。
+### Agent Sprite Forge / Parallax Background Generation
 
-当前环境没有可调用的内置图像生成器，因此不执行它依赖的图像生成步骤；程序绘制只作为原型和处理工具，不冒充最终插画来源。
-
-### Parallax Background Generation
-
-只吸收以下方法，不直接复制其未明确授权的代码：
-
-- 远景/中景/近景分离；
-- 统一画布、地平线和锚点；
-- 限定色板和像素化输出；
-- 视差层独立导出；
-- 合成预览与尺寸验证。
-
-该仓库没有发现明确许可证，不得将其源代码并入项目。
+不再用于运行时资产分层导出，继续作为方法论参考（空间层次评估、命名/QA思路）。
 
 ### Pixelorama
 
-作为高质量原型的可编辑工具约定：
-
-- 主视觉优先在 `1920×1080` 画布上完成；
-- 使用独立图层对应 `sky/outside/room/objects/light/foreground`；
-- 使用固定调色板和像素对齐工具；
-- 导出运行时 WebP 前保留原始工程文件；
-- Pixelorama 源码和工程目录放在工作区工具目录，不复制进博客仓库。
-
-Pixelorama 当前没有独立的图片导出 CLI，但仓库自己的 CI 已验证 Godot headless
-导入和项目导出路径：
-
-```bash
-godot --headless --path tools/Pixelorama --import
-godot --headless --path tools/Pixelorama --export-release "Linux 64-bit" <output>
-```
-
-这条命令导出的是 Pixelorama 应用本身，不等于自动打开一个 `.pxo` 并导出 WebP。
-要实现 Wander 的批处理，需要在 Pixelorama 工程中增加一个只负责加载工程、合成指定图层、
-导出 PNG/WebP 的 Godot automation entrypoint；运行时使用 Godot 4.6.3 headless，
-不依赖桌面显示器。当前服务器尚未安装 Godot，因此这条链路保留为下一步实验，不把 GUI
-可用性误认为自动化能力。
-
-### ✅ 已验证的 headless 工作流（2026-08-05）
-
-服务器上的 Godot 4.6.3 与 Pixelorama v1.2 正式版源码均已就位并验证：
-
-- 工具目录：`tools/godot-4.6.3/Godot_v4.6.3-stable_linux.x86_64`
-- Pixelorama 源码：`tools/Pixelorama-1.2/`（v1.2 正式版，与 Godot 4.6.3 匹配；
-  `tools/Pixelorama/` 是 master 开发分支，语法超前于 4.6.3，不能直接用于导入）
-- 自动化入口：`tools/Pixelorama-1.2/wander_build_export.{gd,tscn}`
-  （加载 6 层资产 → 构建多图层工程 → 逐层导出 PNG → 生成 .pxo 供手工编辑）
-
-已验证命令：
-
-```bash
-# 1. 首次导入（建立资源缓存）
-Godot_v4.6.3-stable_linux.x86_64 --headless --path ../Pixelorama-1.2 --import
-
-# 2. CLI 版本/导出（单图）
-Godot_v4.6.3-stable_linux.x86_64 --headless --path ../Pixelorama-1.2 --quit -- \
-  input.png --export --output out.png
-
-# 3. 多层工程构建 + 逐层导出 + 生成 .pxo
-Godot_v4.6.3-stable_linux.x86_64 --headless --path ../Pixelorama-1.2 \
-  res://wander_build_export.tscn
-```
-
-验证结果：
-
-- 6 层资产全部加载为命名图层（sky/outside/room/objects/light/foreground），
-  index 正确（需手动设置 `layer.index`，否则 `BaseLayer.serialize()` 的 assert 会失败）；
-- 逐层导出 PNG 全部成功（2048×1152 RGBA）；
-- 生成的 `.pxo` 可被 Pixelorama CLI 重新打开（`--size` 输出正确），并能重新导出混合图；
-- 注意：`save_pxo_file` 在 headless 下返回 `false` 但文件完整可用（UI 相关返回值问题）；
-- 注意：Pixelorama 内置 `--split-layers` 导出循环在 headless 下会在首层后中断
-  （UI 空引用），所以逐层导出走 automation 脚本直接保存 cel 图像，更可靠。
-
-下载经验：GitHub/SourceForge 直连限速严重（几十 KB/s），用 GitHub 代理镜像
-（如 `ghfast.top`、`gh-proxy.com` 前缀）可满速下载 Godot 与 Pixelorama 发布包。
+不再是主线必经环节，仍可用于动效贴片手绘/局部修图。已验证的 headless 工作流
+（`tools/godot-4.6.3/` + `tools/Pixelorama-1.2/`）保留备用。
 
 ## 4. 来源记录
 
-每个被接受的主视觉或图层必须附带来源记录：
-
 ```json
 {
-  "canvas": "1920x1080",
-  "runtimeSize": "2048x1152",
-  "scene": "dusk",
-  "source": "pixelorama|image-generation|procedural-prototype|existing-art",
-  "palette": ["#1d2038", "#51466b", "#e17b58", "#ffb45f"],
-  "layers": ["sky", "outside", "room", "objects", "light", "foreground"],
+  "scene": "dawn",
+  "baseImage": "bedroom-dusk.webp",
+  "method": "image-edit",
+  "model": "openai/gpt-image-2",
+  "quality": "high",
+  "prompt": "手写的完整 prompt 原文",
+  "geometryCheck": "pass|fail",
   "review": "pending|accepted|rejected"
 }
 ```
 
-如果使用图像生成，必须保存手写 prompt；如果使用 Pixelorama，必须记录工程文件路径和导出版本；如果使用程序原型，必须明确标记为 `procedural-prototype`。
-
 ## 5. QA 门槛
 
-资产进入页面前必须通过：
-
-1. 文件数量和命名检查；
-2. 每张图尺寸检查；
-3. RGBA 通道检查；
-4. 四个时间状态图层完整性检查；
-5. 合成预览检查；
-6. 浏览器真实加载检查；
-7. 桌面端和移动端截图回归。
+1. 四个时间状态底图文件齐全、命名正确、尺寸统一；
+2. 四张图几何一致性核对（窗框/家具/镜头角度）通过；
+3. 全屏铺满效果检查（无明显放大发虚、无按钮式UI残留）；
+4. 隐形热点在四个时间状态下点击/hover/键盘聚焦均准确可达；
+5. 动效贴片加载和动画效果检查；
+6. 合成预览检查（底图 + 贴片叠加后的视觉效果）；
+7. 浏览器真实加载检查；
+8. 桌面端和移动端截图回归；
+9. `prefers-reduced-motion` 下动效降级检查。
 
 任何一项失败都不能把该轮称为完成。当前项目使用：
 
 ```bash
 python3 scripts/validate-wander-assets.py
 ```
+
+该脚本的校验逻辑需要同步更新以匹配新契约，不再校验六层文件结构。
