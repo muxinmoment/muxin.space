@@ -93,6 +93,15 @@ def add_high_res_detail(image, name, night=False, scene="dusk"):
         line(((171, 85), (244, 94), (319, 104)), "#3a3048")
         for x, y in ((18, 101), (96, 105), (204, 98), (282, 104)):
             rect((x, y, x + 10, y + 1), "#875467")
+        # façade depth: awnings, balconies, rooftop rails and a tiny street sign
+        for x, y, width in ((9, 88, 14), (34, 96, 10), (55, 80, 11), (113, 91, 9), (162, 85, 13), (213, 78, 12), (241, 91, 14), (273, 82, 10)):
+            rect((x, y, x + width, y + 1), "#744e61" if not night else "#47476e")
+            line(((x + 1, y + 2), (x + 1, y + 6)), "#5a435c" if not night else "#3a3b60")
+            line(((x + width - 1, y + 2), (x + width - 1, y + 6)), "#5a435c" if not night else "#3a3b60")
+        rect((145, 106, 157, 108), "#a35b67" if not night else "#555278")
+        rect((148, 103, 154, 106), "#e09b72" if not night else "#9c7690")
+        line(((236, 62), (236, 77)), "#29283f" if not night else "#20233c")
+        line(((233, 65), (241, 65)), "#29283f" if not night else "#20233c")
     elif name == "room":
         # window mullion highlights, wall seams and floor plank grain
         rect((87, 25, 235, 27), "#d18b67" if not night else "#5e557b")
@@ -103,6 +112,16 @@ def add_high_res_detail(image, name, night=False, scene="dusk"):
             line(((x, y), (x + length, y + 1)), "#7c5a66" if not night else "#4b4767")
         for x, y in ((14, 20), (47, 37), (68, 82), (251, 45), (299, 31)):
             rect((x, y, x + 1, y + 1), "#756070" if not night else "#4f4c6d")
+        # a wall clock, taped print and small cable hooks
+        rect((75, 35, 89, 49), "#24223c" if not night else "#1c2038")
+        rect((77, 37, 87, 47), "#d6b075" if not night else "#656486")
+        rect((81, 39, 82, 43), "#47364c" if not night else "#292943")
+        line(((82, 43), (85, 45)), "#47364c" if not night else "#292943")
+        rect((70, 67, 83, 82), "#a55666" if not night else "#4f476b")
+        rect((72, 69, 81, 79), "#d6b075" if not night else "#7880a0")
+        rect((74, 71, 79, 73), "#668897" if not night else "#485a80")
+        for x in (72, 79, 86):
+            rect((x, 95, x + 1, 97), "#d6b075" if not night else "#5f5e83")
     elif name == "objects":
         # books: title bars, page edges, photo subjects, keyboard and radio hardware
         books = ((25, 52, 29, 66), (31, 49, 35, 66), (37, 54, 42, 66), (44, 50, 48, 66), (50, 53, 55, 66), (57, 51, 61, 66), (25, 72, 31, 85), (34, 70, 39, 85), (42, 74, 47, 85), (50, 70, 55, 85), (58, 73, 63, 85), (26, 91, 30, 104), (33, 89, 38, 104), (41, 93, 46, 104), (50, 90, 55, 104), (58, 92, 63, 104))
@@ -120,6 +139,17 @@ def add_high_res_detail(image, name, night=False, scene="dusk"):
             rect((x, 120, x + 1, 129), "#a48391" if not night else "#5f6088")
         rect((296, 119, 299, 122), "#ffbd68" if not night else "#ffbb60")
         line(((261, 108), (267, 112), (273, 112)), "#302942")
+        # anime poster and desk organizers in the unused gaps
+        rect((75, 49, 95, 78), "#292640" if not night else "#20233c")
+        rect((78, 52, 92, 75), "#a55666" if not night else "#51557d")
+        rect((80, 54, 90, 62), "#e17b58" if not night else "#7987a3")
+        rect((82, 56, 88, 60), "#ffe0a0" if not night else "#bdc9cd")
+        line(((79, 66), (91, 66)), "#f0c47c" if not night else "#7a7698", width=1)
+        rect((198, 93, 211, 101), "#6d4d5d" if not night else "#3a3b5d")
+        rect((200, 89, 204, 96), "#d6b075" if not night else "#82769a")
+        rect((206, 91, 210, 97), "#7e9a81" if not night else "#566b80")
+        rect((294, 103, 302, 108), "#a26c54" if not night else "#5a4d72")
+        rect((296, 100, 300, 104), "#d6b075" if not night else "#877c99")
     elif name == "foreground":
         # leaf veins, desk grain, camera controls and scattered page marks
         for x, y, end_x, end_y in ((17, 136, 11, 128), (25, 138, 23, 123), (29, 139, 37, 130), (21, 143, 12, 143), (28, 142, 39, 120)):
@@ -128,6 +158,15 @@ def add_high_res_detail(image, name, night=False, scene="dusk"):
             rect((x, y, x + 2, y + 1), "#b77b61" if not night else "#665270")
         rect((114, 149, 118, 151), "#dca36b" if not night else "#776783")
         rect((122, 153, 124, 155), "#dca36b" if not night else "#776783")
+        # chair slats, rug weave, loose cable and page corners
+        rect((149, 143, 175, 146), "#4a4057" if not night else "#292b47")
+        for x in (153, 160, 167, 173):
+            line(((x, 146), (x, 161)), "#716073" if not night else "#454668", width=1)
+        for x, y in ((34, 160), (58, 161), (82, 159), (102, 164), (132, 158)):
+            line(((x, y), (x + 8, y)), "#b27b68" if not night else "#5b506e")
+        line(((104, 160), (121, 166), (139, 164), (148, 169)), "#2a2942" if not night else "#1f223b", width=1)
+        rect((42, 156, 45, 158), "#fff0c9" if not night else "#8b8399")
+        rect((65, 158, 68, 160), "#fff0c9" if not night else "#8b8399")
     elif name == "light":
         # high-resolution broken window-light flecks
         for x, y, w, h in ((96, 116, 7, 2), (110, 130, 3, 4), (128, 146, 8, 2), (148, 133, 3, 5), (176, 158, 9, 2), (205, 125, 4, 4), (231, 153, 7, 2), (256, 166, 3, 4)):
