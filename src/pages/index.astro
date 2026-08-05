@@ -96,13 +96,6 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
             看经历
           </a>
         </div>
-
-        <div class="mt-8 rounded-2xl border border-zinc-200 bg-zinc-50 p-1.5" data-mode-switch>
-          <div class="grid grid-cols-2 gap-1.5">
-            <button type="button" data-mode-button="career" aria-pressed="true" class="rounded-xl bg-white px-3 py-2.5 text-sm font-medium text-zinc-900 shadow-sm transition">求职模式</button>
-            <button type="button" data-mode-button="wander" aria-pressed="false" class="rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-500 transition hover:text-zinc-900">漫游模式</button>
-          </div>
-        </div>
       </section>
 
       <section data-mode-panel="career" class="rounded-2xl border border-zinc-200 bg-white p-6 sm:p-7">
@@ -266,8 +259,7 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
   import { getSiteModeSyncState, isSiteModeStorageKey, resolveSiteMode, syncSiteModeButtons } from "../utils/site-mode";
   function initModeSwitch(broadcast = true) {
     const root = document.querySelector<HTMLElement>('[data-mode-switch]');
-    if (!root) return;
-    const buttons = root.querySelectorAll<HTMLButtonElement>("[data-mode-button]");
+    const buttons = root ? root.querySelectorAll<HTMLButtonElement>("[data-mode-button]") : [];
     const panels = document.querySelectorAll<HTMLElement>("[data-mode-panel]");
     const setMode = (mode: string, broadcast = true) => {
       const normalizedMode = getSiteModeSyncState(mode).mode;
