@@ -3,8 +3,9 @@
     <p class="eyebrow">Pixel wander room · 2.5D studio</p>
     <h2>欢迎来到会变化的像素工作室。</h2>
     <p>拖动镜头看看。靠近书架、照片墙、书桌或收音机，选择你想先发现的那条支线。</p>
+    <p class="wander-sr-only" id="wander-scene-description">一间黄昏像素工作室：中央窗外是城市和晚霞，左侧是番剧书架与照片墙，右侧是书桌和收音机。可以使用下方按钮探索四个区域。</p>
   </div>
-  <div class="wander-diorama-stage" data-diorama-stage>
+  <div class="wander-diorama-stage" data-diorama-stage aria-describedby="wander-scene-description">
     <div class="wander-diorama-art" data-diorama-art>
       <div class="wander-pixel-layers" aria-hidden="true">
         <img class="wander-pixel-layer pixel-layer-sky" data-diorama-layer="sky" data-layer-depth="0.1" style="--layer-depth: .1" data-wander-art="sky" src="/wander/dusk/sky.webp" alt="" width="320" height="180" />
@@ -14,60 +15,10 @@
         <img class="wander-pixel-layer pixel-layer-light" data-diorama-layer="light" data-layer-depth="0.72" style="--layer-depth: .72" data-wander-art="light" src="/wander/dusk/light.webp" alt="" width="320" height="180" />
         <img class="wander-pixel-layer pixel-layer-foreground" data-diorama-layer="foreground" data-layer-depth="0.9" style="--layer-depth: .9" data-wander-art="foreground" src="/wander/dusk/foreground.webp" alt="" width="320" height="180" />
       </div>
-      <svg class="wander-diorama-svg" viewBox="0 0 960 540" role="img" aria-label="夕阳中的像素工作室">
-        <defs>
-          <linearGradient id="diorama-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b96b75"/><stop offset="1" stop-color="#ffd17d"/></linearGradient>
-          <linearGradient id="diorama-floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#75566b"/><stop offset="1" stop-color="#493952"/></linearGradient>
-          <filter id="pixel-shadow"><feGaussianBlur stdDeviation="0"/></filter>
-        </defs>
-        <g data-diorama-layer="back" class="diorama-layer">
-          <rect width="960" height="540" fill="#2a2038"/>
-          <rect x="90" y="58" width="780" height="300" fill="#3a2e45"/>
-          <rect x="130" y="92" width="700" height="230" fill="url(#diorama-sky)"/>
-          <rect x="130" y="266" width="700" height="56" fill="#665064"/>
-          <path d="M130 281h700v41H130z" fill="#4d3b55"/>
-          <g fill="#30253d"><path d="M170 278h38v-40h20v40h34v-62h22v62h42v-28h18v28h34v-54h22v54h42v-35h18v35h74v-70h22v70h42v-35h18v35h76v44H170z"/></g>
-          <rect x="112" y="76" width="736" height="18" fill="#6d597a"/><rect x="112" y="322" width="736" height="18" fill="#6d597a"/>
-          <rect x="112" y="76" width="18" height="264" fill="#6d597a"/><rect x="830" y="76" width="18" height="264" fill="#6d597a"/>
-          <rect x="470" y="94" width="18" height="228" fill="#6d597a"/><rect x="130" y="205" width="700" height="18" fill="#6d597a"/>
-          <circle cx="725" cy="157" r="34" fill="#ffe2a3"/><circle cx="725" cy="157" r="24" fill="#ffd166"/>
-        </g>
-        <g data-diorama-layer="room" class="diorama-layer">
-          <path d="M0 340h960v200H0z" fill="url(#diorama-floor)"/>
-          <path d="M0 340h960" stroke="#2a2038" stroke-width="14"/>
-          <g stroke="#8b6c79" stroke-width="3" opacity=".65"><path d="M0 405h960"/><path d="M0 470h960"/><path d="M120 340v200"/><path d="M360 340v200"/><path d="M600 340v200"/><path d="M840 340v200"/></g>
-          <path d="M230 385h420v120H230z" fill="#5a3c55"/><path d="M250 400h380v90H250z" fill="#795366"/><path d="M270 415h340v60H270z" fill="#8b6070"/>
-          <path d="M0 340h960v16H0z" fill="#241b31"/>
-        </g>
-        <g data-diorama-layer="shelf" class="diorama-layer" data-room-art="anime">
-          <path d="M112 112h190v245H112z" fill="#4b354c"/><path d="M126 124h162v218H126z" fill="#75566b"/>
-          <rect x="126" y="124" width="162" height="14" fill="#d1a06e"/><rect x="126" y="190" width="162" height="12" fill="#d1a06e"/><rect x="126" y="258" width="162" height="12" fill="#d1a06e"/><rect x="126" y="326" width="162" height="12" fill="#d1a06e"/>
-          <g stroke="#2a2038" stroke-width="4"><path d="M143 181V149h19v32z" fill="#e8625c"/><path d="M169 181V143h18v38z" fill="#fbb347"/><path d="M194 181V151h20v30z" fill="#7ecf9a"/><path d="M221 181V146h18v35z" fill="#77aadd"/><path d="M247 181V154h20v27z" fill="#c77ddf"/><path d="M145 248v-37h18v37z" fill="#e8625c"/><path d="M171 248v-47h18v47z" fill="#77aadd"/><path d="M198 248v-31h18v31z" fill="#fbb347"/><path d="M226 248v-40h18v40z" fill="#7ecf9a"/><path d="M252 248v-34h18v34z" fill="#c77ddf"/><path d="M143 316v-34h19v34z" fill="#77aadd"/><path d="M170 316v-42h18v42z" fill="#e8625c"/><path d="M196 316v-30h18v30z" fill="#fbb347"/><path d="M223 316v-38h18v38z" fill="#c77ddf"/></g>
-          <rect x="102" y="350" width="210" height="16" fill="#2a2038"/>
-        </g>
-        <g data-diorama-layer="photos" class="diorama-layer" data-room-art="photo">
-          <g stroke="#2a2038" stroke-width="7"><rect x="390" y="135" width="126" height="86" fill="#d6a5a0"/><rect x="548" y="135" width="126" height="86" fill="#aebbd4"/><rect x="458" y="244" width="150" height="72" fill="#d9c08e"/></g>
-          <path d="M402 205h102v-24l-25-22-20 18-18-10-39 38z" fill="#6d597a"/><circle cx="486" cy="157" r="12" fill="#ffd166"/>
-          <path d="M560 205h102v-32l-26 20-20-14-56 26z" fill="#6f9db1"/><circle cx="635" cy="156" r="13" fill="#fbb347"/>
-          <path d="M470 306h126v-28l-30-18-26 20-20-12-50 38z" fill="#7a5460"/><circle cx="570" cy="264" r="12" fill="#e8625c"/>
-        </g>
-        <g data-diorama-layer="desk" class="diorama-layer" data-room-art="notes">
-          <path d="M630 305h245v22H630z" fill="#d09b70"/><path d="M648 327h18v110h-18zM839 327h18v110h-18z" fill="#7a5240"/>
-          <rect x="687" y="228" width="126" height="78" fill="#2a2038" stroke="#b5845c" stroke-width="8"/><rect x="700" y="241" width="100" height="52" fill="#5c7dba"/>
-          <rect x="715" y="307" width="70" height="8" fill="#3a2e45"/><path d="M740 315h18v20h-18z" fill="#3a2e45"/>
-          <path d="M702 335h78v14h-78z" fill="#7a5460"/><path d="M665 337h48v8h-48z" fill="#e8d8c0"/><rect x="818" y="319" width="20" height="26" fill="#e8625c"/>
-          <g><rect x="808" y="260" width="12" height="60" fill="#c8a8a8"/><path d="M790 254h48l-12 24h-24z" fill="#ffb347"/><rect x="785" y="316" width="58" height="10" fill="#6d597a"/></g>
-        </g>
-        <g data-diorama-layer="radio" class="diorama-layer" data-room-art="memo">
-          <rect x="770" y="368" width="126" height="68" fill="#e8625c" stroke="#2a2038" stroke-width="7"/><rect x="790" y="384" width="70" height="28" fill="#3a2e45"/>
-          <g fill="#8b6c79"><rect x="800" y="389" width="8" height="18"/><rect x="814" y="389" width="8" height="18"/><rect x="828" y="389" width="8" height="18"/><rect x="842" y="389" width="8" height="18"/></g>
-          <circle cx="785" cy="420" r="9" fill="#fbb347"/><circle cx="810" cy="420" r="9" fill="#fbb347"/><rect x="860" y="414" width="10" height="8" fill="#7ecf9a"/><path d="M780 370V325h8v45z" fill="#c8a8a8"/><circle cx="784" cy="321" r="6" fill="#fbb347"/>
-        </g>
-        <g data-diorama-layer="front" class="diorama-layer">
-          <path d="M44 505h150v20H44z" fill="#2a2038"/><path d="M82 505v-82h16v82z" fill="#5f735e"/><path d="M138 505v-105h16v105z" fill="#5f735e"/><path d="M55 440h70v20H55zM126 415h75v20h-75zM75 392h60v18H75z" fill="#7ecf9a"/>
-          <g fill="#ffe2a3" opacity=".65"><rect x="340" y="385" width="5" height="5"/><rect x="412" y="430" width="5" height="5"/><rect x="570" y="370" width="5" height="5"/><rect x="720" y="455" width="5" height="5"/></g>
-        </g>
-      </svg>
+      <div class="wander-art-fallback" data-wander-art-fallback hidden>
+        <strong>像素房间暂时没有加载出来。</strong>
+        <span>你仍然可以从下面的文字入口继续浏览。</span>
+      </div>
       <div class="wander-diorama-hotspots" aria-label="房间热点">
         <button type="button" data-room-camera="anime" class="diorama-hotspot hotspot-anime">书架</button>
         <button type="button" data-room-camera="photo" class="diorama-hotspot hotspot-photo">照片墙</button>
@@ -78,6 +29,7 @@
     </div>
     <div class="wander-3d-hint" data-room-hint>拖动看看 · 点击物件开始漫游</div>
     <div class="wander-3d-memory" aria-live="polite"><span data-room-memory></span><span data-room-progress>已探索 0 / 4</span></div>
+    <p class="wander-room-finale" data-wander-room-finale hidden>窗外的灯一盏盏亮起来了。这里的每条支线，都已经留下了你的脚印。</p>
     <div class="wander-3d-controls" aria-label="房间入口">
       <button type="button" data-room-camera="center" aria-pressed="true">回到房间</button>
       <button type="button" data-room-camera="anime" aria-pressed="false">番剧书架</button>
@@ -102,14 +54,14 @@
 <style>
   .wander-diorama-shell { position: relative; margin-top: 2rem; overflow: hidden; border: 3px solid #2d1e3e; border-radius: 1rem; background: #211a35; color: #fff7ed; box-shadow: 5px 5px 0 #171225, 0 1.5rem 3rem rgba(45, 30, 62, .2); }
   .wander-diorama-copy { padding: 1.5rem 1.5rem 0; }
+  .wander-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
   .wander-diorama-copy h2 { margin-top: .5rem; font-family: var(--font-serif); font-size: 1.8rem; letter-spacing: -.03em; text-shadow: 3px 3px 0 #2d1e3e; }
   .wander-diorama-copy p:last-child { max-width: 38rem; margin-top: .65rem; color: #e6d6e6; font-size: .875rem; line-height: 1.75rem; }
   .wander-diorama-stage { position: relative; min-height: 500px; overflow: hidden; background: #3a2e45; }
   .wander-diorama-art { position: absolute; inset: 0; }
+  .wander-art-fallback { position: absolute; inset: 0; z-index: 8; display: grid; place-content: center; gap: .5rem; background: #211a35; padding: 2rem; color: #fff1bd; text-align: center; }.wander-art-fallback[hidden] { display: none; }.wander-art-fallback span { color: #d9c8e5; font-size: .8rem; }
   .wander-pixel-layers { position: absolute; inset: 0; overflow: hidden; background: #34304b; }
   .wander-pixel-layer { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; transition: transform .45s cubic-bezier(.22,.8,.28,1), opacity .3s, filter .5s; transform: translate3d(calc(var(--parallax-x, 0px) * var(--layer-depth, 1) + var(--focus-x, 0px) * var(--layer-depth, 1)), calc(var(--parallax-y, 0px) * var(--layer-depth, 1) + var(--focus-y, 0px) * var(--layer-depth, 1)), 0); transform-origin: center; }
-  .wander-diorama-svg { display: none; }
-  .diorama-layer { transition: transform .45s cubic-bezier(.22,.8,.28,1), opacity .3s; transform-origin: center; }
   .wander-pixel-layer[data-diorama-layer="sky"] { z-index: 1; }
   .wander-pixel-layer[data-diorama-layer="outside"] { z-index: 2; }
   .wander-pixel-layer[data-diorama-layer="room"] { z-index: 3; }
@@ -140,9 +92,9 @@
   .wander-game-panel { border-top: 3px solid #332449; background: #211a35; padding: 1.25rem 1.5rem 1.5rem; color: #fff7ed; }
   .wander-game-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }.wander-game-kicker { color: #ffd166; font-size: .65rem; letter-spacing: .16em; }.wander-game-heading h3 { margin-top: .35rem; font-family: var(--font-serif); font-size: 1.35rem; }.wander-game-close { border: 2px solid #5b4378; border-radius: .4rem; padding: .15rem .55rem; color: #f4d8ff; font-size: 1.25rem; line-height: 1; }.wander-game-copy { margin-top: .5rem; color: #d9c8e5; font-size: .8rem; line-height: 1.5rem; }
   .wander-book-slots, .wander-book-tray { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }.wander-book-slots { margin-top: 1rem; }.wander-book-tray { margin-top: .75rem; min-height: 3.5rem; }.wander-book-slot, .wander-book { min-height: 3.5rem; border: 2px solid #76568a; border-radius: .35rem; padding: .55rem .45rem; font-size: .75rem; box-shadow: 3px 3px 0 #0f0d1a; transition: transform .15s, border-color .15s, background .15s; }.wander-book-slot { background: #302146; color: #cdb8dc; }.wander-book-slot[data-selected="true"], .wander-book[data-selected="true"] { border-color: #ffd166; transform: translate(-1px, -1px); }.wander-book { background: #704c9e; color: #fff7ed; cursor: pointer; }.wander-book:hover, .wander-book-slot:hover { border-color: #ffd166; transform: translate(-1px, -1px); }.wander-game-status { min-height: 1.25rem; margin-top: .8rem; color: #e7c6ff; font-size: .75rem; }.wander-game-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-top: .5rem; font-size: .72rem; }.wander-game-actions button, .wander-game-actions a, .wander-game-complete a { border: 2px solid #5b4378; border-radius: .35rem; padding: .4rem .65rem; color: #f4d8ff; }.wander-game-actions button:hover, .wander-game-actions a:hover, .wander-game-complete a:hover { border-color: #ffd166; color: #fff7ed; }.wander-game-complete { display: grid; gap: .3rem; margin-top: 1rem; border: 2px solid #d59b37; border-radius: .4rem; background: #4d3a30; padding: .8rem; color: #fff1bd; font-size: .78rem; }.wander-game-complete span { color: #f7dfac; }.wander-game-complete a { width: fit-content; margin-top: .3rem; border-color: #d59b37; color: #fff1bd; }
-  .wander-diorama-shell[data-scene="dawn"] .wander-diorama-svg { filter: saturate(.8) brightness(.85); }.wander-diorama-shell[data-scene="day"] .wander-diorama-svg { filter: saturate(.9) brightness(1.05); }.wander-diorama-shell[data-scene="night"] .wander-diorama-svg { filter: saturate(.8) brightness(.7); }
   .wander-diorama-shell[data-scene="dawn"] .wander-pixel-layers { filter: saturate(.78) brightness(.88) hue-rotate(8deg); }.wander-diorama-shell[data-scene="day"] .wander-pixel-layers { filter: saturate(.86) brightness(1.08); }.wander-diorama-shell[data-scene="night"] .wander-pixel-layers { filter: saturate(.72) brightness(.62) hue-rotate(12deg); }
   .wander-diorama-shell[data-revealed~="anime"] .pixel-layer-objects { filter: saturate(1.1) brightness(1.04); }.wander-diorama-shell[data-revealed~="photo"] .pixel-layer-objects { filter: saturate(1.05) brightness(1.03); }.wander-diorama-shell[data-revealed~="notes"] .pixel-layer-light { opacity: .9; }.wander-diorama-shell[data-revealed~="memo"] .pixel-layer-objects { filter: contrast(1.04) saturate(1.08); }
+  .wander-room-finale { position: absolute; left: 50%; bottom: 4.1rem; z-index: 7; width: min(30rem, calc(100% - 2rem)); transform: translateX(-50%); border: 2px solid #d59b37; border-radius: .35rem; background: rgba(45, 30, 62, .92); padding: .55rem .8rem; color: #fff1bd; font-size: .7rem; text-align: center; box-shadow: 3px 3px 0 #171225; }.wander-room-finale[hidden] { display: none; }
   @media (prefers-reduced-motion: reduce) { .wander-pixel-layer[data-diorama-layer="light"], .wander-pixel-layer[data-diorama-layer="outside"] { animation: none; } .wander-diorama-art, .wander-pixel-layer { transition: none; } }
   @media (max-width: 639px) { .wander-diorama-copy { padding: 1rem 1rem 0; }.wander-diorama-copy h2 { font-size: 1.5rem; }.wander-diorama-stage { min-height: 390px; }.wander-3d-controls { right: 1rem; bottom: 3.8rem; }.wander-3d-enter { left: 1rem; right: auto; }.hotspot-anime { left: 8%; }.hotspot-notes { left: 68%; }.wander-book-slots, .wander-book-tray { gap: .4rem; }.wander-book-slot, .wander-book { min-height: 3.25rem; font-size: .68rem; } }
 </style>

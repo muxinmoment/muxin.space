@@ -12,6 +12,8 @@ if (root && root.dataset.dioramaReady !== "true") {
   const enter = root.querySelector<HTMLAnchorElement>("[data-room-enter]");
   const skip = root.querySelector<HTMLButtonElement>("[data-wander-3d-skip]");
   const easterEgg = root.querySelector<HTMLButtonElement>("[data-wander-easter-egg]");
+  const fallback = root.querySelector<HTMLElement>("[data-wander-art-fallback]");
+  const finale = root.querySelector<HTMLElement>("[data-wander-room-finale]");
   const controls = [...root.querySelectorAll<HTMLButtonElement>("[data-room-camera]")];
   const hotspots = [...root.querySelectorAll<HTMLButtonElement>(".diorama-hotspot")];
   const pixelLayers = [...root.querySelectorAll<HTMLImageElement>("[data-wander-art]")];
@@ -38,11 +40,12 @@ if (root && root.dataset.dioramaReady !== "true") {
     const visited = readVisitedProgress(storage, visitedKey);
     if (progress) progress.textContent = `已探索 ${visited.size} / 4`;
     root.dataset.revealed = [...visited].join(" ");
+    if (finale) finale.hidden = visited.size < 4;
   };
 
   const updateScene = (scene: string) => {
     if (root.dataset.scene !== scene) root.dataset.scene = scene;
-    const assetScene = scene === "night" ? "night" : "dusk";
+    const assetScene = scene === "auto" ? "dusk" : scene;
     pixelLayers.forEach((layer) => {
       const asset = layer.dataset.wanderArt;
       if (asset) layer.src = `/wander/${assetScene}/${asset}.webp`;
@@ -103,6 +106,9 @@ if (root && root.dataset.dioramaReady !== "true") {
     if (memory) memory.textContent = "窗边彩蛋：今天的光刚好落在这里";
     if (hint) hint.textContent = "你发现了一枚藏在窗边的小星星";
   });
+  pixelLayers.forEach((layer) => layer.addEventListener("error", () => {
+    if (fallback) fallback.hidden = false;
+  }, { once: true }));
   window.addEventListener("muxin-wander-scene", (event) => {
     const detail = (event as CustomEvent<{ scene?: string }>).detail;
     if (detail.scene) updateScene(detail.scene);

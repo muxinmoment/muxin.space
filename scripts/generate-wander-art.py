@@ -37,6 +37,12 @@ def save_night(layer, name):
     layer.save(NIGHT_OUT / f"{name}.webp", "WEBP", lossless=True, method=6)
 
 
+def save_variant(layer, scene, name):
+    target = Path(__file__).resolve().parents[1] / "public" / "wander" / scene
+    target.mkdir(parents=True, exist_ok=True)
+    layer.save(target / f"{name}.webp", "WEBP", lossless=True, method=6)
+
+
 def draw_sky():
     image = new_layer()
     draw = ImageDraw.Draw(image)
@@ -271,6 +277,35 @@ def make_night_layers():
     save_night(light, "light")
 
 
+def make_day_variants():
+    """Make real dawn/day assets so time states are not only CSS filters."""
+    for scene in ("dawn", "day"):
+        for source in sorted(OUT.glob("*.webp")):
+            image = Image.open(source).convert("RGBA")
+            if scene == "dawn":
+                image = ImageEnhance.Color(image).enhance(.82)
+                image = ImageEnhance.Brightness(image).enhance(.92)
+                overlay = Image.new("RGBA", image.size, (94, 128, 158, 24))
+            else:
+                image = ImageEnhance.Color(image).enhance(.9)
+                image = ImageEnhance.Brightness(image).enhance(1.12)
+                overlay = Image.new("RGBA", image.size, (255, 232, 178, 16))
+            image = Image.alpha_composite(image, overlay)
+            save_variant(image, scene, source.stem)
+        sky_path = Path(__file__).resolve().parents[1] / "public" / "wander" / scene / "sky.webp"
+        sky = Image.open(sky_path).convert("RGBA")
+        draw = ImageDraw.Draw(sky)
+        if scene == "dawn":
+            draw.rectangle((245, 36, 261, 52), fill="#ffd19b")
+            draw.rectangle((248, 32, 258, 55), fill="#f0b98e")
+            draw.rectangle((20, 70, 75, 72), fill="#9d93af")
+        else:
+            draw.rectangle((239, 29, 264, 54), fill="#fff0b5")
+            draw.rectangle((244, 25, 260, 58), fill="#ffe3a2")
+            draw.rectangle((31, 38, 88, 42), fill="#d4d0c0")
+        save_variant(sky, scene, "sky")
+
+
 def main():
     save(draw_sky(), "sky")
     save(draw_outside(), "outside")
@@ -279,6 +314,7 @@ def main():
     save(draw_light(), "light")
     save(draw_foreground(), "foreground")
     make_night_layers()
+    make_day_variants()
     print(f"Generated {len(list(OUT.glob('*.webp')))} layers in {OUT}")
 
 
