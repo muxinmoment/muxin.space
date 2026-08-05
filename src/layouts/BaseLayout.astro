@@ -177,7 +177,17 @@ const isActive = (href: string) =>
 
         buttons.forEach((button) => {
           if (button.dataset.siteModeListener === "true") return;
-          button.addEventListener("click", () => setMode(button.dataset.siteModeButton ?? "career"));
+          button.addEventListener("click", () => {
+            const mode = button.dataset.siteModeButton ?? "career";
+            const normalizedMode = getSiteModeSyncState(mode).navigationMode;
+            const storage = getWanderStorage();
+            const current = resolveSiteMode(readStorageValue(storage, "muxin-site-mode"), readStorageValue(storage, "muxin-home-mode"));
+            if (current !== normalizedMode) {
+              writeStorageValue(storage, "muxin-site-mode", normalizedMode);
+              writeStorageValue(storage, "muxin-home-mode", normalizedMode);
+              window.location.reload();
+            }
+          });
           button.dataset.siteModeListener = "true";
         });
         if (document.documentElement.dataset.siteModeListeners !== "true") {
