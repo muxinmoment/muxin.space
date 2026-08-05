@@ -1,4 +1,4 @@
-import { completeWanderGame, getWanderStorage, readWanderGameProgress, shouldInitializeWander } from "../utils/wander-storage";
+import { completeWanderGame, getWanderStorage, readWanderGameProgress } from "../utils/wander-storage";
 
 interface Book {
   label: string;
@@ -16,7 +16,7 @@ const GAME_STORAGE_KEY = "muxin-wander-games";
 
 function initShelfGame() {
   const root = document.querySelector<HTMLElement>("[data-wander-3d]");
-  if (!root || !shouldInitializeWander(root.dataset.ready)) return;
+  if (!root || root.dataset.gameReady === "true") return;
 
   const panel = root.querySelector<HTMLElement>("[data-wander-game-panel]");
   const slotsContainer = root.querySelector<HTMLElement>("[data-wander-book-slots]");

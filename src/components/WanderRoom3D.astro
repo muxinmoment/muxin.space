@@ -1,17 +1,74 @@
-<section class="wander-3d-shell" data-wander-3d>
-  <div class="wander-3d-copy">
-    <p class="eyebrow">Pixel wander room · interactive space</p>
+<section class="wander-diorama-shell" data-wander-3d data-wander-2d>
+  <div class="wander-diorama-copy">
+    <p class="eyebrow">Pixel wander room · 2.5D studio</p>
     <h2>欢迎来到会变化的像素工作室。</h2>
-    <p>这里没有导航栏。拖动镜头看看，靠近一件物品，选择你想先发现的那条支线。</p>
+    <p>拖动镜头看看。靠近书架、照片墙、书桌或收音机，选择你想先发现的那条支线。</p>
   </div>
-  <div class="wander-3d-stage">
-    <canvas data-wander-canvas aria-label="漫游房间 3D 场景"></canvas>
-    <div class="wander-3d-hint" data-room-hint>拖动看看 · 点击物件开始漫游</div>
-    <div class="wander-3d-memory" aria-live="polite"><span data-room-memory></span><span data-room-progress></span></div>
-    <div class="wander-3d-fallback" data-wander-fallback>
-      <span>3D 场景加载失败</span>
-      <a href="/wander/" class="underline">继续使用房间入口</a>
+  <div class="wander-diorama-stage" data-diorama-stage>
+    <div class="wander-diorama-art" data-diorama-art>
+      <svg class="wander-diorama-svg" viewBox="0 0 960 540" role="img" aria-label="夕阳中的像素工作室">
+        <defs>
+          <linearGradient id="diorama-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b96b75"/><stop offset="1" stop-color="#ffd17d"/></linearGradient>
+          <linearGradient id="diorama-floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#75566b"/><stop offset="1" stop-color="#493952"/></linearGradient>
+          <filter id="pixel-shadow"><feGaussianBlur stdDeviation="0"/></filter>
+        </defs>
+        <g data-diorama-layer="back" class="diorama-layer">
+          <rect width="960" height="540" fill="#2a2038"/>
+          <rect x="90" y="58" width="780" height="300" fill="#3a2e45"/>
+          <rect x="130" y="92" width="700" height="230" fill="url(#diorama-sky)"/>
+          <rect x="130" y="266" width="700" height="56" fill="#665064"/>
+          <path d="M130 281h700v41H130z" fill="#4d3b55"/>
+          <g fill="#30253d"><path d="M170 278h38v-40h20v40h34v-62h22v62h42v-28h18v28h34v-54h22v54h42v-35h18v35h74v-70h22v70h42v-35h18v35h76v44H170z"/></g>
+          <rect x="112" y="76" width="736" height="18" fill="#6d597a"/><rect x="112" y="322" width="736" height="18" fill="#6d597a"/>
+          <rect x="112" y="76" width="18" height="264" fill="#6d597a"/><rect x="830" y="76" width="18" height="264" fill="#6d597a"/>
+          <rect x="470" y="94" width="18" height="228" fill="#6d597a"/><rect x="130" y="205" width="700" height="18" fill="#6d597a"/>
+          <circle cx="725" cy="157" r="34" fill="#ffe2a3"/><circle cx="725" cy="157" r="24" fill="#ffd166"/>
+        </g>
+        <g data-diorama-layer="room" class="diorama-layer">
+          <path d="M0 340h960v200H0z" fill="url(#diorama-floor)"/>
+          <path d="M0 340h960" stroke="#2a2038" stroke-width="14"/>
+          <g stroke="#8b6c79" stroke-width="3" opacity=".65"><path d="M0 405h960"/><path d="M0 470h960"/><path d="M120 340v200"/><path d="M360 340v200"/><path d="M600 340v200"/><path d="M840 340v200"/></g>
+          <path d="M230 385h420v120H230z" fill="#5a3c55"/><path d="M250 400h380v90H250z" fill="#795366"/><path d="M270 415h340v60H270z" fill="#8b6070"/>
+          <path d="M0 340h960v16H0z" fill="#241b31"/>
+        </g>
+        <g data-diorama-layer="shelf" class="diorama-layer" data-room-art="anime">
+          <path d="M112 112h190v245H112z" fill="#4b354c"/><path d="M126 124h162v218H126z" fill="#75566b"/>
+          <rect x="126" y="124" width="162" height="14" fill="#d1a06e"/><rect x="126" y="190" width="162" height="12" fill="#d1a06e"/><rect x="126" y="258" width="162" height="12" fill="#d1a06e"/><rect x="126" y="326" width="162" height="12" fill="#d1a06e"/>
+          <g stroke="#2a2038" stroke-width="4"><path d="M143 181V149h19v32z" fill="#e8625c"/><path d="M169 181V143h18v38z" fill="#fbb347"/><path d="M194 181V151h20v30z" fill="#7ecf9a"/><path d="M221 181V146h18v35z" fill="#77aadd"/><path d="M247 181V154h20v27z" fill="#c77ddf"/><path d="M145 248v-37h18v37z" fill="#e8625c"/><path d="M171 248v-47h18v47z" fill="#77aadd"/><path d="M198 248v-31h18v31z" fill="#fbb347"/><path d="M226 248v-40h18v40z" fill="#7ecf9a"/><path d="M252 248v-34h18v34z" fill="#c77ddf"/><path d="M143 316v-34h19v34z" fill="#77aadd"/><path d="M170 316v-42h18v42z" fill="#e8625c"/><path d="M196 316v-30h18v30z" fill="#fbb347"/><path d="M223 316v-38h18v38z" fill="#c77ddf"/></g>
+          <rect x="102" y="350" width="210" height="16" fill="#2a2038"/>
+        </g>
+        <g data-diorama-layer="photos" class="diorama-layer" data-room-art="photo">
+          <g stroke="#2a2038" stroke-width="7"><rect x="390" y="135" width="126" height="86" fill="#d6a5a0"/><rect x="548" y="135" width="126" height="86" fill="#aebbd4"/><rect x="458" y="244" width="150" height="72" fill="#d9c08e"/></g>
+          <path d="M402 205h102v-24l-25-22-20 18-18-10-39 38z" fill="#6d597a"/><circle cx="486" cy="157" r="12" fill="#ffd166"/>
+          <path d="M560 205h102v-32l-26 20-20-14-56 26z" fill="#6f9db1"/><circle cx="635" cy="156" r="13" fill="#fbb347"/>
+          <path d="M470 306h126v-28l-30-18-26 20-20-12-50 38z" fill="#7a5460"/><circle cx="570" cy="264" r="12" fill="#e8625c"/>
+        </g>
+        <g data-diorama-layer="desk" class="diorama-layer" data-room-art="notes">
+          <path d="M630 305h245v22H630z" fill="#d09b70"/><path d="M648 327h18v110h-18zM839 327h18v110h-18z" fill="#7a5240"/>
+          <rect x="687" y="228" width="126" height="78" fill="#2a2038" stroke="#b5845c" stroke-width="8"/><rect x="700" y="241" width="100" height="52" fill="#5c7dba"/>
+          <rect x="715" y="307" width="70" height="8" fill="#3a2e45"/><path d="M740 315h18v20h-18z" fill="#3a2e45"/>
+          <path d="M702 335h78v14h-78z" fill="#7a5460"/><path d="M665 337h48v8h-48z" fill="#e8d8c0"/><rect x="818" y="319" width="20" height="26" fill="#e8625c"/>
+          <g><rect x="808" y="260" width="12" height="60" fill="#c8a8a8"/><path d="M790 254h48l-12 24h-24z" fill="#ffb347"/><rect x="785" y="316" width="58" height="10" fill="#6d597a"/></g>
+        </g>
+        <g data-diorama-layer="radio" class="diorama-layer" data-room-art="memo">
+          <rect x="770" y="368" width="126" height="68" fill="#e8625c" stroke="#2a2038" stroke-width="7"/><rect x="790" y="384" width="70" height="28" fill="#3a2e45"/>
+          <g fill="#8b6c79"><rect x="800" y="389" width="8" height="18"/><rect x="814" y="389" width="8" height="18"/><rect x="828" y="389" width="8" height="18"/><rect x="842" y="389" width="8" height="18"/></g>
+          <circle cx="785" cy="420" r="9" fill="#fbb347"/><circle cx="810" cy="420" r="9" fill="#fbb347"/><rect x="860" y="414" width="10" height="8" fill="#7ecf9a"/><path d="M780 370V325h8v45z" fill="#c8a8a8"/><circle cx="784" cy="321" r="6" fill="#fbb347"/>
+        </g>
+        <g data-diorama-layer="front" class="diorama-layer">
+          <path d="M44 505h150v20H44z" fill="#2a2038"/><path d="M82 505v-82h16v82z" fill="#5f735e"/><path d="M138 505v-105h16v105z" fill="#5f735e"/><path d="M55 440h70v20H55zM126 415h75v20h-75zM75 392h60v18H75z" fill="#7ecf9a"/>
+          <g fill="#ffe2a3" opacity=".65"><rect x="340" y="385" width="5" height="5"/><rect x="412" y="430" width="5" height="5"/><rect x="570" y="370" width="5" height="5"/><rect x="720" y="455" width="5" height="5"/></g>
+        </g>
+      </svg>
+      <div class="wander-diorama-hotspots" aria-label="房间热点">
+        <button type="button" data-room-camera="anime" class="diorama-hotspot hotspot-anime">书架</button>
+        <button type="button" data-room-camera="photo" class="diorama-hotspot hotspot-photo">照片墙</button>
+        <button type="button" data-room-camera="notes" class="diorama-hotspot hotspot-notes">书桌</button>
+        <button type="button" data-room-camera="memo" class="diorama-hotspot hotspot-memo">收音机</button>
+      </div>
     </div>
+    <div class="wander-3d-hint" data-room-hint>拖动看看 · 点击物件开始漫游</div>
+    <div class="wander-3d-memory" aria-live="polite"><span data-room-memory></span><span data-room-progress>已探索 0 / 4</span></div>
     <div class="wander-3d-controls" aria-label="房间入口">
       <button type="button" data-room-camera="center" aria-pressed="true">回到房间</button>
       <button type="button" data-room-camera="anime" aria-pressed="false">番剧书架</button>
@@ -23,77 +80,45 @@
     <button type="button" class="wander-3d-skip" data-wander-3d-skip>使用文字目录</button>
   </div>
   <div class="wander-game-panel" data-wander-game-panel hidden aria-live="polite">
-    <div class="wander-game-heading">
-      <div>
-        <p class="wander-game-kicker">MINIGAME 01 · ANIME SHELF</p>
-        <h3>整理书架，找回这一格记忆。</h3>
-      </div>
-      <button type="button" class="wander-game-close" data-wander-game-close aria-label="关闭小游戏">×</button>
-    </div>
+    <div class="wander-game-heading"><div><p class="wander-game-kicker">MINIGAME 01 · ANIME SHELF</p><h3>整理书架，找回这一格记忆。</h3></div><button type="button" class="wander-game-close" data-wander-game-close aria-label="关闭小游戏">×</button></div>
     <p class="wander-game-copy">选一本书，再选一个位置。把三本书放回正确顺序，不限时间。</p>
     <div class="wander-book-slots" data-wander-book-slots aria-label="书架位置"></div>
     <div class="wander-book-tray" data-wander-book-tray aria-label="待整理的书"></div>
     <p class="wander-game-status" data-wander-game-status>先选一本书。</p>
-    <div class="wander-game-actions">
-      <button type="button" data-wander-game-reset>重新打乱</button>
-      <a href="/wander/anime/" data-wander-game-skip>跳过，直接进入书架 →</a>
-    </div>
-    <div class="wander-game-complete" data-wander-game-complete hidden>
-      <strong>书架亮起来了。</strong>
-      <span>你找到了一条番剧支线，继续往里面看看。</span>
-      <a href="/wander/anime/">进入番剧书架 →</a>
-    </div>
+    <div class="wander-game-actions"><button type="button" data-wander-game-reset>重新打乱</button><a href="/wander/anime/" data-wander-game-skip>跳过，直接进入书架 →</a></div>
+    <div class="wander-game-complete" data-wander-game-complete hidden><strong>书架亮起来了。</strong><span>你找到了一条番剧支线，继续往里面看看。</span><a href="/wander/anime/">进入番剧书架 →</a></div>
   </div>
 </section>
 
 <style>
-  .wander-3d-shell { margin-top: 2rem; overflow: hidden; border: 3px solid #332449; border-radius: 1.25rem; background: #1c1830; color: #fff7ed; box-shadow: 0 1.25rem 0 #0f0d1a, 0 2rem 3rem rgba(31, 21, 55, .22); }
-  .wander-3d-copy { padding: 1.5rem 1.5rem 0; }
-  .wander-3d-copy h2 { margin-top: .5rem; font-family: var(--font-serif); font-size: 1.8rem; letter-spacing: -.03em; }
-  .wander-3d-copy p:last-child { max-width: 38rem; margin-top: .65rem; color: #b9adcf; font-size: .875rem; line-height: 1.75rem; }
-  .wander-3d-stage { position: relative; min-height: 500px; }
-  .wander-3d-stage canvas { display: block; width: 100%; height: 500px; cursor: grab; touch-action: none; image-rendering: pixelated; image-rendering: crisp-edges; }
-  .wander-3d-stage canvas:active { cursor: grabbing; }
+  .wander-diorama-shell { margin-top: 2rem; overflow: hidden; border: 3px solid #2d1e3e; border-radius: 1rem; background: #211a35; color: #fff7ed; box-shadow: 5px 5px 0 #171225, 0 1.5rem 3rem rgba(45, 30, 62, .2); }
+  .wander-diorama-copy { padding: 1.5rem 1.5rem 0; }
+  .wander-diorama-copy h2 { margin-top: .5rem; font-family: var(--font-serif); font-size: 1.8rem; letter-spacing: -.03em; text-shadow: 3px 3px 0 #2d1e3e; }
+  .wander-diorama-copy p:last-child { max-width: 38rem; margin-top: .65rem; color: #e6d6e6; font-size: .875rem; line-height: 1.75rem; }
+  .wander-diorama-stage { position: relative; min-height: 500px; overflow: hidden; background: #3a2e45; }
+  .wander-diorama-art { position: absolute; inset: 0; transform: translate3d(var(--parallax-x, 0px), var(--parallax-y, 0px), 0); transition: transform .18s ease-out; }
+  .wander-diorama-svg { display: block; width: 100%; height: 100%; shape-rendering: crispEdges; image-rendering: pixelated; }
+  .diorama-layer { transition: transform .45s cubic-bezier(.22,.8,.28,1), opacity .3s; transform-origin: center; }
+  .wander-diorama-art[data-focus="anime"] [data-diorama-layer="shelf"], .wander-diorama-art[data-focus="photo"] [data-diorama-layer="photos"], .wander-diorama-art[data-focus="notes"] [data-diorama-layer="desk"], .wander-diorama-art[data-focus="memo"] [data-diorama-layer="radio"] { transform: scale(1.08); }
+  .wander-diorama-art[data-focus="anime"] [data-diorama-layer="photos"], .wander-diorama-art[data-focus="anime"] [data-diorama-layer="desk"], .wander-diorama-art[data-focus="anime"] [data-diorama-layer="radio"], .wander-diorama-art[data-focus="photo"] [data-diorama-layer="shelf"], .wander-diorama-art[data-focus="photo"] [data-diorama-layer="desk"], .wander-diorama-art[data-focus="photo"] [data-diorama-layer="radio"], .wander-diorama-art[data-focus="notes"] [data-diorama-layer="shelf"], .wander-diorama-art[data-focus="notes"] [data-diorama-layer="photos"], .wander-diorama-art[data-focus="notes"] [data-diorama-layer="radio"], .wander-diorama-art[data-focus="memo"] [data-diorama-layer="shelf"], .wander-diorama-art[data-focus="memo"] [data-diorama-layer="photos"], .wander-diorama-art[data-focus="memo"] [data-diorama-layer="desk"] { opacity: .55; }
+  .wander-diorama-hotspots { position: absolute; inset: 0; }
+  .diorama-hotspot { position: absolute; border: 2px solid #ffd166; border-radius: .35rem; background: rgba(45, 30, 62, .82); padding: .45rem .65rem; color: #fff1bd; font-size: .72rem; box-shadow: 3px 3px 0 #171225; transition: transform .18s, background .18s; }
+  .diorama-hotspot:hover, .diorama-hotspot[data-active="true"] { transform: translate(-2px, -2px); background: #704c9e; }
+  .hotspot-anime { left: 12%; top: 48%; }.hotspot-photo { left: 43%; top: 45%; }.hotspot-notes { left: 72%; top: 54%; }.hotspot-memo { right: 7%; top: 72%; }
+  .wander-3d-hint { position: absolute; top: 1rem; left: 1rem; border: 2px solid #5b4378; border-radius: .35rem; background: #211a35; padding: .4rem .7rem; color: #f4d8ff; font-size: .68rem; box-shadow: 2px 2px 0 #171225; }
+  .wander-3d-memory { position: absolute; top: 1rem; right: 1rem; display: grid; gap: .15rem; max-width: 13rem; border: 2px solid #5b4378; border-radius: .35rem; background: #211a35; padding: .45rem .7rem; color: #f0dff7; font-size: .68rem; text-align: right; box-shadow: 2px 2px 0 #171225; }
+  .wander-3d-memory span:empty { display: none; }.wander-3d-memory span:last-child { color: #ffd166; }
   .wander-3d-controls { position: absolute; left: 1rem; bottom: 1rem; display: flex; flex-wrap: wrap; gap: .45rem; }
-  .wander-3d-controls button, .wander-3d-skip { border: 2px solid #5b4378; border-radius: .45rem; background: #211a35; padding: .45rem .75rem; color: #f4d8ff; font-size: .72rem; box-shadow: 2px 2px 0 #0f0d1a; transition: background .2s, border-color .2s, transform .2s; }
+  .wander-3d-controls button, .wander-3d-skip, .wander-3d-enter { border: 2px solid #5b4378; border-radius: .35rem; background: #211a35; padding: .45rem .75rem; color: #f4d8ff; font-size: .72rem; box-shadow: 2px 2px 0 #171225; transition: transform .18s, background .18s, border-color .18s; }
   .wander-3d-controls button:hover, .wander-3d-controls button[data-active="true"] { border-color: #ffd166; background: #704c9e; color: white; transform: translate(-1px, -1px); }
-  .wander-3d-enter { position: absolute; right: 6.5rem; bottom: 1rem; border: 2px solid #fff0c2; border-radius: .45rem; background: #ffd166; padding: .45rem .75rem; color: #38254f; font-size: .72rem; font-weight: 700; box-shadow: 2px 2px 0 #0f0d1a; transition: transform .2s, background .2s; }
-  .wander-3d-enter:hover { transform: translate(-1px, -1px); background: #ffe29a; }
-  .wander-3d-skip { position: absolute; right: 1rem; bottom: 1rem; color: #a8a29e; }
-  .wander-3d-hint { position: absolute; top: 1rem; left: 1rem; border: 2px solid #5b4378; border-radius: .45rem; background: #211a35; padding: .4rem .7rem; color: #f4d8ff; font-size: .68rem; box-shadow: 2px 2px 0 #0f0d1a; transition: opacity .2s; }
-  .wander-3d-memory { position: absolute; top: 1rem; right: 1rem; display: grid; gap: .15rem; max-width: 13rem; border: 2px solid #5b4378; border-radius: .45rem; background: #211a35; padding: .45rem .7rem; color: #f0dff7; font-size: .68rem; text-align: right; box-shadow: 2px 2px 0 #0f0d1a; }
-  .wander-3d-memory span:empty { display: none; }
-  .wander-3d-memory span:last-child { color: rgba(196,181,253,.8); }
-  .wander-3d-fallback { position: absolute; inset: 0; display: none; place-items: center; gap: .75rem; color: #c4b5fd; font-size: .875rem; }
+  .wander-3d-enter { position: absolute; right: 7rem; bottom: 1rem; background: #ffd166; color: #38254f; font-weight: 700; }.wander-3d-enter:hover { transform: translate(-1px, -1px); background: #ffe29a; }
+  .wander-3d-skip { position: absolute; right: 1rem; bottom: 1rem; color: #d0bed8; }
   .wander-game-panel { border-top: 3px solid #332449; background: #211a35; padding: 1.25rem 1.5rem 1.5rem; color: #fff7ed; }
-  .wander-game-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
-  .wander-game-kicker { color: #ffd166; font-size: .65rem; letter-spacing: .16em; }
-  .wander-game-heading h3 { margin-top: .35rem; font-family: var(--font-serif); font-size: 1.35rem; }
-  .wander-game-close { border: 2px solid #5b4378; border-radius: .4rem; padding: .15rem .55rem; color: #f4d8ff; font-size: 1.25rem; line-height: 1; }
-  .wander-game-copy { margin-top: .5rem; color: #d9c8e5; font-size: .8rem; line-height: 1.5rem; }
-  .wander-book-slots, .wander-book-tray { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }
-  .wander-book-slots { margin-top: 1rem; }
-  .wander-book-tray { margin-top: .75rem; min-height: 3.5rem; }
-  .wander-book-slot, .wander-book { min-height: 3.5rem; border: 2px solid #76568a; border-radius: .35rem; padding: .55rem .45rem; font-size: .75rem; box-shadow: 3px 3px 0 #0f0d1a; transition: transform .15s, border-color .15s, background .15s; }
-  .wander-book-slot { background: #302146; color: #cdb8dc; }
-  .wander-book-slot[data-selected="true"], .wander-book[data-selected="true"] { border-color: #ffd166; transform: translate(-1px, -1px); }
-  .wander-book { background: #704c9e; color: #fff7ed; cursor: pointer; }
-  .wander-book:hover, .wander-book-slot:hover { border-color: #ffd166; transform: translate(-1px, -1px); }
-  .wander-game-status { min-height: 1.25rem; margin-top: .8rem; color: #e7c6ff; font-size: .75rem; }
-  .wander-game-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-top: .5rem; font-size: .72rem; }
-  .wander-game-actions button, .wander-game-actions a, .wander-game-complete a { border: 2px solid #5b4378; border-radius: .35rem; padding: .4rem .65rem; color: #f4d8ff; }
-  .wander-game-actions button:hover, .wander-game-actions a:hover, .wander-game-complete a:hover { border-color: #ffd166; color: #fff7ed; }
-  .wander-game-complete { display: grid; gap: .3rem; margin-top: 1rem; border: 2px solid #d59b37; border-radius: .4rem; background: #4d3a30; padding: .8rem; color: #fff1bd; font-size: .78rem; }
-  .wander-game-complete span { color: #f7dfac; }
-  .wander-game-complete a { width: fit-content; margin-top: .3rem; border-color: #d59b37; color: #fff1bd; }
-  .wander-3d-shell.is-disabled .wander-3d-stage { display: none; }
-  .wander-3d-shell.is-disabled .wander-3d-copy { padding-bottom: 1.5rem; }
-  .wander-3d-shell.is-failed .wander-3d-fallback { display: grid; }
-  @media (max-width: 639px) { .wander-3d-stage, .wander-3d-stage canvas { min-height: 430px; height: 430px; } .wander-3d-controls { right: 1rem; bottom: 3.6rem; } .wander-3d-enter { right: auto; left: 1rem; } }
-  @media (max-width: 639px) { .wander-game-panel { padding: 1rem; } .wander-book-slots, .wander-book-tray { gap: .4rem; } .wander-book-slot, .wander-book { min-height: 3.25rem; font-size: .68rem; } }
-  @media (prefers-reduced-motion: reduce) { .wander-3d-controls button, .wander-3d-enter, .wander-3d-hint { transition: none; } }
-  @media (min-width: 640px) { .wander-3d-copy { padding: 2rem 2rem 0; } }
+  .wander-game-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }.wander-game-kicker { color: #ffd166; font-size: .65rem; letter-spacing: .16em; }.wander-game-heading h3 { margin-top: .35rem; font-family: var(--font-serif); font-size: 1.35rem; }.wander-game-close { border: 2px solid #5b4378; border-radius: .4rem; padding: .15rem .55rem; color: #f4d8ff; font-size: 1.25rem; line-height: 1; }.wander-game-copy { margin-top: .5rem; color: #d9c8e5; font-size: .8rem; line-height: 1.5rem; }
+  .wander-book-slots, .wander-book-tray { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }.wander-book-slots { margin-top: 1rem; }.wander-book-tray { margin-top: .75rem; min-height: 3.5rem; }.wander-book-slot, .wander-book { min-height: 3.5rem; border: 2px solid #76568a; border-radius: .35rem; padding: .55rem .45rem; font-size: .75rem; box-shadow: 3px 3px 0 #0f0d1a; transition: transform .15s, border-color .15s, background .15s; }.wander-book-slot { background: #302146; color: #cdb8dc; }.wander-book-slot[data-selected="true"], .wander-book[data-selected="true"] { border-color: #ffd166; transform: translate(-1px, -1px); }.wander-book { background: #704c9e; color: #fff7ed; cursor: pointer; }.wander-book:hover, .wander-book-slot:hover { border-color: #ffd166; transform: translate(-1px, -1px); }.wander-game-status { min-height: 1.25rem; margin-top: .8rem; color: #e7c6ff; font-size: .75rem; }.wander-game-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-top: .5rem; font-size: .72rem; }.wander-game-actions button, .wander-game-actions a, .wander-game-complete a { border: 2px solid #5b4378; border-radius: .35rem; padding: .4rem .65rem; color: #f4d8ff; }.wander-game-actions button:hover, .wander-game-actions a:hover, .wander-game-complete a:hover { border-color: #ffd166; color: #fff7ed; }.wander-game-complete { display: grid; gap: .3rem; margin-top: 1rem; border: 2px solid #d59b37; border-radius: .4rem; background: #4d3a30; padding: .8rem; color: #fff1bd; font-size: .78rem; }.wander-game-complete span { color: #f7dfac; }.wander-game-complete a { width: fit-content; margin-top: .3rem; border-color: #d59b37; color: #fff1bd; }
+  .wander-diorama-shell[data-scene="dawn"] .wander-diorama-svg { filter: saturate(.8) brightness(.85); }.wander-diorama-shell[data-scene="day"] .wander-diorama-svg { filter: saturate(.9) brightness(1.05); }.wander-diorama-shell[data-scene="night"] .wander-diorama-svg { filter: saturate(.8) brightness(.7); }
+  @media (max-width: 639px) { .wander-diorama-copy { padding: 1rem 1rem 0; }.wander-diorama-copy h2 { font-size: 1.5rem; }.wander-diorama-stage { min-height: 390px; }.wander-3d-controls { right: 1rem; bottom: 3.8rem; }.wander-3d-enter { left: 1rem; right: auto; }.hotspot-anime { left: 8%; }.hotspot-notes { left: 68%; }.wander-book-slots, .wander-book-tray { gap: .4rem; }.wander-book-slot, .wander-book { min-height: 3.25rem; font-size: .68rem; } }
 </style>
 
-<script src="../scripts/wander-room.ts"></script>
+<script src="../scripts/wander-diorama.ts"></script>
 <script src="../scripts/wander-book-game.ts"></script>
