@@ -1,8 +1,22 @@
+---
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  intro?: string;
+}
+
+const {
+  eyebrow = "Wander bedroom · full-screen entrance",
+  title = "欢迎来到会随时间变化的房间。",
+  intro = "把鼠标移到书架、书桌、墙上的画或床头灯附近，点一下就能推进去看看那条支线。",
+} = Astro.props;
+---
+
 <section class="wander-diorama-shell" data-wander-3d data-wander-2d>
   <div class="wander-diorama-copy">
-    <p class="eyebrow">Wander bedroom · full-screen entrance</p>
-    <h2>欢迎来到会随时间变化的房间。</h2>
-    <p>把鼠标移到书架、书桌、墙上的画或床头灯附近，点一下就能推进去看看那条支线。</p>
+    <p class="eyebrow">{eyebrow}</p>
+    <h2>{title}</h2>
+    <p>{intro}</p>
     <p class="wander-sr-only" id="wander-scene-description">一间会随时间变化光线的卧室：左侧是装满书的书架，右侧是带电脑的书桌，墙上挂着一幅风景画，床头有一盏暖灯。可以使用下方按钮探索四个区域。</p>
   </div>
   <div class="wander-diorama-stage" data-diorama-stage aria-describedby="wander-scene-description">
@@ -48,7 +62,7 @@
 </section>
 
 <style>
-  .wander-diorama-shell { position: relative; margin-top: 2rem; overflow: hidden; border: 3px solid #2d1e3e; border-radius: 1rem; background: #211a35; color: #fff7ed; box-shadow: 5px 5px 0 #171225, 0 1.5rem 3rem rgba(45, 30, 62, .2); }
+  .wander-diorama-shell { position: relative; margin-top: 1.5rem; overflow: hidden; border: 1px solid rgba(139, 92, 246, .25); border-radius: 1.25rem; background: #211a35; color: #fff7ed; box-shadow: 0 1.5rem 4rem rgba(124, 58, 237, .12); }
   .wander-diorama-copy { padding: 1.5rem 1.5rem 0; }
   .wander-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
   .wander-diorama-copy h2 { margin-top: .5rem; font-family: var(--font-serif); font-size: 1.8rem; letter-spacing: -.03em; text-shadow: 3px 3px 0 #2d1e3e; }
@@ -82,19 +96,19 @@
   .hotspot-memo { left: 2%; top: 68%; width: 12%; height: 20%; }
   .wander-easter-egg { position: absolute; left: 46%; top: 12%; width: 1.5rem; height: 1.5rem; border: 0; border-radius: 50%; background: transparent; color: #ffe0a0; font-size: .9rem; opacity: .55; transition: transform .2s, opacity .2s, text-shadow .2s; z-index: 6; }.wander-easter-egg:hover, .wander-easter-egg:focus-visible { opacity: 1; transform: scale(1.2); text-shadow: 0 0 8px #ffb45f; outline: none; }.wander-easter-egg[data-found="true"] { color: #ffb45f; opacity: 1; }
 
-  .wander-3d-hint { position: absolute; top: 1rem; left: 1rem; z-index: 7; border: 2px solid #5b4378; border-radius: .35rem; background: #211a35; padding: .4rem .7rem; color: #f4d8ff; font-size: .68rem; box-shadow: 2px 2px 0 #171225; }
-  .wander-3d-memory { position: absolute; top: 1rem; right: 1rem; z-index: 7; display: grid; gap: .15rem; max-width: 13rem; border: 2px solid #5b4378; border-radius: .35rem; background: #211a35; padding: .45rem .7rem; color: #f0dff7; font-size: .68rem; text-align: right; box-shadow: 2px 2px 0 #171225; }
+  .wander-3d-hint { position: absolute; top: 1rem; left: 1rem; z-index: 7; border: 1px solid rgba(139, 92, 246, .35); border-radius: .5rem; background: rgba(23, 19, 31, .72); padding: .4rem .7rem; color: #f4d8ff; font-size: .68rem; backdrop-filter: blur(6px); }
+  .wander-3d-memory { position: absolute; top: 1rem; right: 1rem; z-index: 7; display: grid; gap: .15rem; max-width: 13rem; border: 1px solid rgba(139, 92, 246, .35); border-radius: .5rem; background: rgba(23, 19, 31, .72); padding: .45rem .7rem; color: #f0dff7; font-size: .68rem; text-align: right; backdrop-filter: blur(6px); }
   .wander-3d-memory span:empty { display: none; }.wander-3d-memory span:last-child { color: #ffd166; }
   .wander-3d-controls { position: absolute; left: 1rem; bottom: 1rem; z-index: 7; display: flex; flex-wrap: wrap; gap: .45rem; }
-  .wander-3d-controls button, .wander-3d-skip, .wander-3d-enter { border: 2px solid #5b4378; border-radius: .35rem; background: #211a35; padding: .45rem .75rem; color: #f4d8ff; font-size: .72rem; box-shadow: 2px 2px 0 #171225; transition: transform .18s, background .18s, border-color .18s; }
+  .wander-3d-controls button, .wander-3d-skip, .wander-3d-enter { border: 1px solid rgba(139, 92, 246, .35); border-radius: .5rem; background: rgba(23, 19, 31, .72); padding: .45rem .75rem; color: #f4d8ff; font-size: .72rem; backdrop-filter: blur(6px); transition: transform .18s, background .18s, border-color .18s; }
   .wander-3d-controls button:hover, .wander-3d-controls button[data-active="true"] { border-color: #ffd166; background: #704c9e; color: white; transform: translate(-1px, -1px); }
   .wander-3d-enter { position: absolute; right: 7rem; bottom: 1rem; z-index: 7; background: #ffd166; color: #38254f; font-weight: 700; }.wander-3d-enter:hover { transform: translate(-1px, -1px); background: #ffe29a; }
   .wander-3d-skip { position: absolute; right: 1rem; bottom: 1rem; z-index: 7; color: #d0bed8; }
-  .wander-game-panel { border-top: 3px solid #332449; background: #211a35; padding: 1.25rem 1.5rem 1.5rem; color: #fff7ed; }
-  .wander-game-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }.wander-game-kicker { color: #ffd166; font-size: .65rem; letter-spacing: .16em; }.wander-game-heading h3 { margin-top: .35rem; font-family: var(--font-serif); font-size: 1.35rem; }.wander-game-close { border: 2px solid #5b4378; border-radius: .4rem; padding: .15rem .55rem; color: #f4d8ff; font-size: 1.25rem; line-height: 1; }.wander-game-copy { margin-top: .5rem; color: #d9c8e5; font-size: .8rem; line-height: 1.5rem; }
-  .wander-book-slots, .wander-book-tray { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }.wander-book-slots { margin-top: 1rem; }.wander-book-tray { margin-top: .75rem; min-height: 3.5rem; }.wander-book-slot, .wander-book { min-height: 3.5rem; border: 2px solid #76568a; border-radius: .35rem; padding: .55rem .45rem; font-size: .75rem; box-shadow: 3px 3px 0 #0f0d1a; transition: transform .15s, border-color .15s, background .15s; }.wander-book-slot { background: #302146; color: #cdb8dc; }.wander-book-slot[data-selected="true"], .wander-book[data-selected="true"] { border-color: #ffd166; transform: translate(-1px, -1px); }.wander-book { background: #704c9e; color: #fff7ed; cursor: pointer; }.wander-book:hover, .wander-book-slot:hover { border-color: #ffd166; transform: translate(-1px, -1px); }.wander-game-status { min-height: 1.25rem; margin-top: .8rem; color: #e7c6ff; font-size: .75rem; }.wander-game-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-top: .5rem; font-size: .72rem; }.wander-game-actions button, .wander-game-actions a, .wander-game-complete a { border: 2px solid #5b4378; border-radius: .35rem; padding: .4rem .65rem; color: #f4d8ff; }.wander-game-actions button:hover, .wander-game-actions a:hover, .wander-game-complete a:hover { border-color: #ffd166; color: #fff7ed; }.wander-game-complete { display: grid; gap: .3rem; margin-top: 1rem; border: 2px solid #d59b37; border-radius: .4rem; background: #4d3a30; padding: .8rem; color: #fff1bd; font-size: .78rem; }.wander-game-complete span { color: #f7dfac; }.wander-game-complete a { width: fit-content; margin-top: .3rem; border-color: #d59b37; color: #fff1bd; }
+  .wander-game-panel { border-top: 1px solid rgba(139, 92, 246, .3); background: #211a35; padding: 1.25rem 1.5rem 1.5rem; color: #fff7ed; }
+  .wander-game-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }.wander-game-kicker { color: #ffd166; font-size: .65rem; letter-spacing: .16em; }.wander-game-heading h3 { margin-top: .35rem; font-family: var(--font-serif); font-size: 1.35rem; }.wander-game-close { border: 1px solid rgba(139, 92, 246, .4); border-radius: .5rem; padding: .15rem .55rem; color: #f4d8ff; font-size: 1.25rem; line-height: 1; }.wander-game-copy { margin-top: .5rem; color: #d9c8e5; font-size: .8rem; line-height: 1.5rem; }
+  .wander-book-slots, .wander-book-tray { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }.wander-book-slots { margin-top: 1rem; }.wander-book-tray { margin-top: .75rem; min-height: 3.5rem; }.wander-book-slot, .wander-book { min-height: 3.5rem; border: 1px solid #76568a; border-radius: .5rem; padding: .55rem .45rem; font-size: .75rem; box-shadow: 3px 3px 0 #0f0d1a; transition: transform .15s, border-color .15s, background .15s; }.wander-book-slot { background: #302146; color: #cdb8dc; }.wander-book-slot[data-selected="true"], .wander-book[data-selected="true"] { border-color: #ffd166; transform: translate(-1px, -1px); }.wander-book { background: #704c9e; color: #fff7ed; cursor: pointer; }.wander-book:hover, .wander-book-slot:hover { border-color: #ffd166; transform: translate(-1px, -1px); }.wander-game-status { min-height: 1.25rem; margin-top: .8rem; color: #e7c6ff; font-size: .75rem; }.wander-game-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-top: .5rem; font-size: .72rem; }.wander-game-actions button, .wander-game-actions a, .wander-game-complete a { border: 1px solid rgba(139, 92, 246, .4); border-radius: .5rem; padding: .4rem .65rem; color: #f4d8ff; }.wander-game-actions button:hover, .wander-game-actions a:hover, .wander-game-complete a:hover { border-color: #ffd166; color: #fff7ed; }.wander-game-complete { display: grid; gap: .3rem; margin-top: 1rem; border: 1px solid #d59b37; border-radius: .6rem; background: #4d3a30; padding: .8rem; color: #fff1bd; font-size: .78rem; }.wander-game-complete span { color: #f7dfac; }.wander-game-complete a { width: fit-content; margin-top: .3rem; border-color: #d59b37; color: #fff1bd; }
 
-  .wander-room-finale { position: absolute; left: 50%; bottom: 4.1rem; z-index: 7; width: min(30rem, calc(100% - 2rem)); transform: translateX(-50%); border: 2px solid #d59b37; border-radius: .35rem; background: rgba(45, 30, 62, .92); padding: .55rem .8rem; color: #fff1bd; font-size: .7rem; text-align: center; box-shadow: 3px 3px 0 #171225; }.wander-room-finale[hidden] { display: none; }
+  .wander-room-finale { position: absolute; left: 50%; bottom: 4.1rem; z-index: 7; width: min(30rem, calc(100% - 2rem)); transform: translateX(-50%); border: 1px solid #d59b37; border-radius: .6rem; background: rgba(45, 30, 62, .92); padding: .55rem .8rem; color: #fff1bd; font-size: .7rem; text-align: center; box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, .35); }.wander-room-finale[hidden] { display: none; }
   @media (prefers-reduced-motion: reduce) { .wander-dust { animation: none; } .wander-room-photo, .room-hotspot-label, .room-hotspot::after { transition: none; } }
   @media (max-width: 639px) { .wander-diorama-copy { padding: 1rem 1rem 0; }.wander-diorama-copy h2 { font-size: 1.5rem; }.wander-diorama-stage { min-height: 320px; }.wander-3d-controls { right: 1rem; bottom: 3.8rem; }.wander-3d-enter { left: 1rem; right: auto; }.room-hotspot-label { font-size: .62rem; }.wander-book-slots, .wander-book-tray { gap: .4rem; }.wander-book-slot, .wander-book { min-height: 3.25rem; font-size: .68rem; } }
 </style>
