@@ -319,9 +319,11 @@ def draw_objects():
         draw.rectangle((x + 3, y + 6, x + 7, y + 8), fill="#536477")
         draw.line((x + 3, y + 3, x + 9, y + 3), fill="#fff0c9", width=1)
     # desk and monitor
+    # A dark separator line reads as the boundary between the window sill above
+    # and the desk surface below, so the two planes never blend into one shape.
+    draw.rectangle((196, 98, 307, 101), fill="#161428")
     draw.rectangle((198, 101, 305, 108), fill=PALETTE["wood_light"])
-    draw.rectangle((207, 108, 213, 153), fill=PALETTE["wood"])
-    draw.rectangle((287, 108, 293, 153), fill=PALETTE["wood"])
+    draw.rectangle((198, 106, 305, 108), fill="#6f4a3f")
     draw.rectangle((224, 73, 270, 101), fill=PALETTE["deep"])
     draw.rectangle((228, 77, 266, 96), fill="#416b7b")
     draw.rectangle((233, 81, 257, 84), fill="#7fb6a0")
@@ -359,6 +361,20 @@ def draw_objects():
     draw.rectangle((260, 90, 264, 91), fill="#9bc0ae")
     draw.line((253, 96, 256, 98), fill="#c77b5e", width=1)
     draw.line((253, 97, 257, 97), fill="#c77b5e", width=1)
+    # Desk legs: drawn last so radio/lamp/monitor never clip them. Left leg
+    # sits clear of all clutter; right leg is pushed past the radio's right
+    # edge (302) into open floor space. Highlight/shadow edges read as a
+    # solid post rather than a flat silhouette blending into the void below.
+    draw.rectangle((207, 108, 213, 151), fill=PALETTE["wood"])
+    draw.rectangle((207, 108, 208, 151), fill="#c08a6e")
+    draw.rectangle((211, 108, 213, 151), fill="#4a3630")
+    draw.rectangle((305, 108, 311, 151), fill=PALETTE["wood"])
+    draw.rectangle((305, 108, 306, 151), fill="#c08a6e")
+    draw.rectangle((309, 108, 311, 151), fill="#4a3630")
+    # Narrow contact-shadow slivers right at floor level only, so the leg's
+    # highlight/shadow gradient stays visible above the shadow.
+    draw.ellipse((204, 150, 216, 153), fill=(10, 8, 20, 130))
+    draw.ellipse((302, 150, 314, 153), fill=(10, 8, 20, 130))
     pixel_specks(draw, (24, 49, 64, 116), ["#c77b5e", "#d6b075", "#6f957c"], 18, 31)
     return image
 
