@@ -14,6 +14,7 @@ if (root && root.dataset.dioramaReady !== "true") {
   const easterEgg = root.querySelector<HTMLButtonElement>("[data-wander-easter-egg]");
   const controls = [...root.querySelectorAll<HTMLButtonElement>("[data-room-camera]")];
   const hotspots = [...root.querySelectorAll<HTMLButtonElement>(".diorama-hotspot")];
+  const pixelLayers = [...root.querySelectorAll<HTMLImageElement>("[data-wander-art]")];
   const focusOffsets: Record<string, [number, number]> = {
     center: [0, 0],
     anime: [12, -4],
@@ -41,6 +42,11 @@ if (root && root.dataset.dioramaReady !== "true") {
 
   const updateScene = (scene: string) => {
     if (root.dataset.scene !== scene) root.dataset.scene = scene;
+    const assetScene = scene === "night" ? "night" : "dusk";
+    pixelLayers.forEach((layer) => {
+      const asset = layer.dataset.wanderArt;
+      if (asset) layer.src = `/wander/${assetScene}/${asset}.webp`;
+    });
   };
 
   const focus = (key: string, remember = true) => {

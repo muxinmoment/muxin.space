@@ -7,12 +7,12 @@
   <div class="wander-diorama-stage" data-diorama-stage>
     <div class="wander-diorama-art" data-diorama-art>
       <div class="wander-pixel-layers" aria-hidden="true">
-        <img class="wander-pixel-layer pixel-layer-sky" data-diorama-layer="sky" data-layer-depth="0.1" style="--layer-depth: .1" src="/wander/dusk/sky.webp" alt="" width="320" height="180" />
-        <img class="wander-pixel-layer pixel-layer-outside" data-diorama-layer="outside" data-layer-depth="0.18" style="--layer-depth: .18" src="/wander/dusk/outside.webp" alt="" width="320" height="180" />
-        <img class="wander-pixel-layer pixel-layer-room" data-diorama-layer="room" data-layer-depth="0.3" style="--layer-depth: .3" src="/wander/dusk/room.webp" alt="" width="320" height="180" />
-        <img class="wander-pixel-layer pixel-layer-objects" data-diorama-layer="objects" data-layer-depth="0.55" style="--layer-depth: .55" src="/wander/dusk/objects.webp" alt="" width="320" height="180" />
-        <img class="wander-pixel-layer pixel-layer-light" data-diorama-layer="light" data-layer-depth="0.72" style="--layer-depth: .72" src="/wander/dusk/light.webp" alt="" width="320" height="180" />
-        <img class="wander-pixel-layer pixel-layer-foreground" data-diorama-layer="foreground" data-layer-depth="0.9" style="--layer-depth: .9" src="/wander/dusk/foreground.webp" alt="" width="320" height="180" />
+        <img class="wander-pixel-layer pixel-layer-sky" data-diorama-layer="sky" data-layer-depth="0.1" style="--layer-depth: .1" data-wander-art="sky" src="/wander/dusk/sky.webp" alt="" width="320" height="180" />
+        <img class="wander-pixel-layer pixel-layer-outside" data-diorama-layer="outside" data-layer-depth="0.18" style="--layer-depth: .18" data-wander-art="outside" src="/wander/dusk/outside.webp" alt="" width="320" height="180" />
+        <img class="wander-pixel-layer pixel-layer-room" data-diorama-layer="room" data-layer-depth="0.3" style="--layer-depth: .3" data-wander-art="room" src="/wander/dusk/room.webp" alt="" width="320" height="180" />
+        <img class="wander-pixel-layer pixel-layer-objects" data-diorama-layer="objects" data-layer-depth="0.55" style="--layer-depth: .55" data-wander-art="objects" src="/wander/dusk/objects.webp" alt="" width="320" height="180" />
+        <img class="wander-pixel-layer pixel-layer-light" data-diorama-layer="light" data-layer-depth="0.72" style="--layer-depth: .72" data-wander-art="light" src="/wander/dusk/light.webp" alt="" width="320" height="180" />
+        <img class="wander-pixel-layer pixel-layer-foreground" data-diorama-layer="foreground" data-layer-depth="0.9" style="--layer-depth: .9" data-wander-art="foreground" src="/wander/dusk/foreground.webp" alt="" width="320" height="180" />
       </div>
       <svg class="wander-diorama-svg" viewBox="0 0 960 540" role="img" aria-label="夕阳中的像素工作室">
         <defs>
@@ -122,7 +122,6 @@
   .wander-diorama-shell::after { content: ""; position: absolute; inset: auto 0 0; height: 2px; background: #ffb45f; opacity: .3; pointer-events: none; }
   .wander-pixel-layer[data-diorama-layer="outside"] { animation: wander-dust-drift 18s ease-in-out alternate infinite; }
   .wander-pixel-layer[data-diorama-layer="sky"], .wander-pixel-layer[data-diorama-layer="outside"] { will-change: transform; }
-  .wander-diorama-art[data-focus="anime"] .wander-pixel-layer, .wander-diorama-art[data-focus="photo"] .wander-pixel-layer, .wander-diorama-art[data-focus="notes"] .wander-pixel-layer, .wander-diorama-art[data-focus="memo"] .wander-pixel-layer { transform: translate3d(calc(var(--focus-x, 0px) * var(--layer-depth, 0)), calc(var(--focus-y, 0px) * var(--layer-depth, 0)), 0); }
   .wander-diorama-art[data-focus="anime"] .wander-pixel-layer[data-diorama-layer="objects"], .wander-diorama-art[data-focus="photo"] .wander-pixel-layer[data-diorama-layer="objects"], .wander-diorama-art[data-focus="notes"] .wander-pixel-layer[data-diorama-layer="objects"], .wander-diorama-art[data-focus="memo"] .wander-pixel-layer[data-diorama-layer="objects"] { transform: translate3d(calc(var(--parallax-x, 0px) * var(--layer-depth, 1) + var(--focus-x, 0px) * var(--layer-depth, 1)), calc(var(--parallax-y, 0px) * var(--layer-depth, 1) + var(--focus-y, 0px) * var(--layer-depth, 1)), 0) scale(1.08); }
   .wander-diorama-art[data-focus="anime"] .wander-pixel-layer[data-diorama-layer="light"], .wander-diorama-art[data-focus="photo"] .wander-pixel-layer[data-diorama-layer="light"], .wander-diorama-art[data-focus="notes"] .wander-pixel-layer[data-diorama-layer="light"], .wander-diorama-art[data-focus="memo"] .wander-pixel-layer[data-diorama-layer="light"] { opacity: .72; }
   .wander-diorama-hotspots { position: absolute; inset: 0; }

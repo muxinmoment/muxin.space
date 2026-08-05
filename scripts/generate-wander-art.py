@@ -1,9 +1,10 @@
 from pathlib import Path
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageEnhance
 
 
 WIDTH, HEIGHT = 320, 180
 OUT = Path(__file__).resolve().parents[1] / "public" / "wander" / "dusk"
+NIGHT_OUT = Path(__file__).resolve().parents[1] / "public" / "wander" / "night"
 
 PALETTE = {
     "deep": "#1d2038",
@@ -31,6 +32,11 @@ def save(layer, name):
     layer.save(OUT / f"{name}.webp", "WEBP", lossless=True, method=6)
 
 
+def save_night(layer, name):
+    NIGHT_OUT.mkdir(parents=True, exist_ok=True)
+    layer.save(NIGHT_OUT / f"{name}.webp", "WEBP", lossless=True, method=6)
+
+
 def draw_sky():
     image = new_layer()
     draw = ImageDraw.Draw(image)
@@ -49,6 +55,13 @@ def draw_sky():
     draw.rectangle((20, 61, 47, 71), fill="#9f5d6b")
     draw.rectangle((178, 70, 226, 73), fill="#a95c68")
     draw.rectangle((188, 66, 214, 76), fill="#a95c68")
+    # pixel cloud wisps and distant birds add depth without noisy texture
+    draw.rectangle((92, 51, 121, 53), fill="#a95c68")
+    draw.rectangle((98, 48, 114, 55), fill="#a95c68")
+    draw.rectangle((273, 76, 286, 78), fill="#8f5268")
+    draw.rectangle((277, 74, 282, 80), fill="#8f5268")
+    draw.line((154, 57, 158, 55), fill="#51405c", width=1)
+    draw.line((158, 55, 162, 57), fill="#51405c", width=1)
     return image
 
 
@@ -73,6 +86,13 @@ def draw_outside():
     draw.rectangle((14, 108, 29, 112), fill="#24223c")
     draw.rectangle((284, 107, 291, 127), fill="#24223c")
     draw.rectangle((280, 104, 295, 108), fill="#24223c")
+    # balcony rails, rooftop antennae and a tiny warm street crossing
+    draw.line((96, 104, 96, 122), fill="#24223c", width=1)
+    draw.line((96, 108, 126, 108), fill="#8c5862", width=1)
+    draw.rectangle((201, 92, 204, 113), fill="#24223c")
+    draw.line((202, 92, 207, 85), fill="#24223c", width=1)
+    draw.rectangle((117, 117, 123, 119), fill="#f0a15d")
+    draw.rectangle((126, 117, 132, 119), fill="#d27a63")
     return image
 
 
@@ -103,6 +123,11 @@ def draw_room():
     draw.rectangle((276, 25, 284, 80), fill="#2b2944")
     draw.rectangle((272, 25, 288, 29), fill=PALETTE["gold"])
     draw.rectangle((273, 72, 287, 77), fill=PALETTE["gold"])
+    # wall grain and a tiny pinned note keep the room from reading as flat blocks
+    for x, y in ((11, 18), (46, 31), (67, 78), (252, 44), (302, 28), (12, 91)):
+        draw.rectangle((x, y, x + 2, y + 1), fill="#423952")
+    draw.rectangle((67, 49, 73, 60), fill="#d6b075")
+    draw.rectangle((68, 50, 72, 52), fill="#a55666")
     return image
 
 
@@ -120,6 +145,8 @@ def draw_objects():
         draw.rectangle((left, top, right, bottom), fill=color)
         draw.line((left + 1, top + 2, right - 1, top + 2), fill="#f6c67a")
     draw.rectangle((22, 111, 64, 119), fill=PALETTE["wood_light"])
+    draw.rectangle((26, 43, 62, 46), fill="#a26c54")
+    draw.rectangle((29, 44, 39, 45), fill="#d6b075")
     # photo wall
     draw.line((102, 43, 190, 43), fill="#d6b075", width=1)
     for x, y, color in ((108, 48, "#d78369"), (137, 54, "#8ca5a0"), (166, 46, "#cfaa70"), (122, 76, "#9d6d83")):
@@ -154,6 +181,12 @@ def draw_objects():
     draw.rectangle((294, 128, 299, 132), fill="#c77b5e")
     draw.rectangle((274, 109, 276, 115), fill=PALETTE["wood_light"])
     draw.rectangle((273, 106, 277, 110), fill=PALETTE["gold"])
+    # cable, cup and a small note on the desk
+    draw.line((261, 108, 267, 112), fill="#28263f", width=1)
+    draw.rectangle((246, 96, 253, 101), fill="#c77b5e")
+    draw.rectangle((247, 94, 252, 96), fill="#ead7b4")
+    draw.rectangle((201, 96, 211, 100), fill="#ead7b4")
+    draw.line((203, 98, 209, 98), fill="#a55666", width=1)
     return image
 
 
@@ -195,7 +228,47 @@ def draw_foreground():
     # foreground light specks
     for x, y in ((190, 155), (219, 172), (267, 159), (302, 146)):
         draw.rectangle((x, y, x + 1, y + 1), fill=PALETTE["gold"])
+    draw.rectangle((132, 169, 139, 171), fill="#6f5364")
+    draw.rectangle((136, 166, 143, 169), fill="#a26c54")
     return image
+
+
+def make_night_layers():
+    """Derive a genuinely separate night palette, then add local light sources."""
+    NIGHT_OUT.mkdir(parents=True, exist_ok=True)
+    for source in sorted(OUT.glob("*.webp")):
+        image = Image.open(source).convert("RGBA")
+        pixels = image.load()
+        for y in range(HEIGHT):
+            for x in range(WIDTH):
+                r, g, b, a = pixels[x, y]
+                if a == 0:
+                    continue
+                # blue-violet night grade while retaining warm objects
+                pixels[x, y] = (int(r * .34 + b * .16), int(g * .38 + b * .12), int(b * .72 + r * .08), a)
+        image = ImageEnhance.Contrast(image).enhance(1.08)
+        save_night(image, source.stem)
+    sky = Image.open(NIGHT_OUT / "sky.webp").convert("RGBA")
+    draw = ImageDraw.Draw(sky)
+    draw.rectangle((244, 34, 263, 53), fill="#d8e8ed")
+    draw.rectangle((248, 30, 259, 57), fill="#b8d9e3")
+    draw.rectangle((241, 39, 266, 49), fill="#d8e8ed")
+    for x, y in ((38, 35), (71, 52), (106, 27), (151, 41), (212, 30), (286, 48)):
+        draw.rectangle((x, y, x + 1, y + 1), fill="#d8e8ed")
+    save_night(sky, "sky")
+    outside = Image.open(NIGHT_OUT / "outside.webp").convert("RGBA")
+    draw = ImageDraw.Draw(outside)
+    for x, y in ((13, 88), (37, 96), (59, 79), (116, 87), (166, 80), (216, 73), (246, 90), (276, 81), (301, 96)):
+        draw.rectangle((x, y, x + 3, y + 2), fill="#ffc36f")
+    draw.rectangle((201, 117, 210, 119), fill="#f07c64")
+    draw.rectangle((214, 117, 223, 119), fill="#f6b85e")
+    save_night(outside, "outside")
+    light = Image.open(NIGHT_OUT / "light.webp").convert("RGBA")
+    draw = ImageDraw.Draw(light)
+    draw.rectangle((265, 59, 287, 74), fill=(255, 184, 95, 38))
+    draw.rectangle((294, 119, 299, 124), fill=(255, 190, 95, 180))
+    draw.rectangle((228, 77, 266, 96), fill=(92, 185, 190, 35))
+    save_night(light, "light")
 
 
 def main():
@@ -205,6 +278,7 @@ def main():
     save(draw_objects(), "objects")
     save(draw_light(), "light")
     save(draw_foreground(), "foreground")
+    make_night_layers()
     print(f"Generated {len(list(OUT.glob('*.webp')))} layers in {OUT}")
 
 
