@@ -82,20 +82,12 @@ def main():
     # NOTE: this opaque redraw covers the full floor rectangle (y=111-180), which
     # would erase the lower half of any furniture leg drawn in the "objects"
     # layer (desk legs, shelf base, chair legs all reach down to the floor).
-    # Re-composite "objects" on top afterwards so furniture stays visible.
     draw.polygon([p(0, 111), p(320, 111), p(320, 180), p(0, 180)], fill="#332e44")
     draw.polygon([p(74, 111), p(246, 111), p(320, 180), p(0, 180)], fill="#4a4150")
     for y, x1, x2 in ((121, 59, 261), (132, 44, 276), (145, 26, 294), (160, 4, 316), (174, 0, 320)):
         l([(x1, y), (x2, y)], "#645064", 0.65)
     for x in (35, 72, 111, 151, 190, 229, 269, 306):
         l([(160, 111), (x, 180)], "#45394a", 0.55)
-    objects_layer = (
-        Image.open(source_root / "objects.webp")
-        .convert("RGBA")
-        .resize(SIZE, Image.Resampling.NEAREST)
-    )
-    scene.alpha_composite(objects_layer)
-    draw = ImageDraw.Draw(scene)
 
     # Contact shadows anchor shelf, desk and chair.
     r(5, 150, 72, 6, (24, 23, 39, 110))
@@ -134,6 +126,21 @@ def main():
         r(x + 7, y + 4, 2, 3, "#536477")
         r(x + 5, y - 2, 1, 2, "#d6b075")
 
+    # Re-composite the "objects" layer (bookshelf, hanging photo wall, desk,
+    # legs, radio, lamp) LAST among the room-scale overlays. The curtain fold
+    # lines and city-facade window grid above are drawn at the same y-range as
+    # the hanging photos (y=43-86); drawing objects first meant those strokes
+    # sliced straight across the photo frames, shredding them into confetti.
+    # Compositing objects after those overlays keeps every framed photo intact
+    # and legible, sitting cleanly in front of the window/curtain backdrop.
+    objects_layer = (
+        Image.open(source_root / "objects.webp")
+        .convert("RGBA")
+        .resize(SIZE, Image.Resampling.NEAREST)
+    )
+    scene.alpha_composite(objects_layer)
+    draw = ImageDraw.Draw(scene)
+
     # Desk surface: keyboard, cup, notes, cable.
     for row, count in ((110, 8), (113, 7), (116, 6)):
         for index in range(count):
@@ -164,6 +171,10 @@ def main():
         l([(fx, 140), (fx - 1, 132)], "#55643f", 0.5)
     for fx in (315, 318):
         l([(fx, 139), (fx + 1, 131)], "#66754a", 0.5)
+    # Dedicated contact shadow for the cabinet, aligned to the same floor
+    # perspective as the desk/chair shadows above (previously missing, which
+    # made the cabinet look pasted on top of the floor instead of resting on it).
+    r(309, 174, 13, 4, (24, 23, 39, 130))
 
     # Foreground composited last.
     foreground = (
