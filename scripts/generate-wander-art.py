@@ -32,12 +32,14 @@ def new_layer(color=(0, 0, 0, 0)):
 def save(layer, name):
     OUT.mkdir(parents=True, exist_ok=True)
     export = layer.resize((OUTPUT_WIDTH, OUTPUT_HEIGHT), Image.Resampling.NEAREST)
+    add_high_res_detail(export, name)
     export.save(OUT / f"{name}.webp", "WEBP", lossless=True, method=6)
 
 
 def save_night(layer, name):
     NIGHT_OUT.mkdir(parents=True, exist_ok=True)
     export = layer.resize((OUTPUT_WIDTH, OUTPUT_HEIGHT), Image.Resampling.NEAREST)
+    add_high_res_detail(export, name, night=True)
     export.save(NIGHT_OUT / f"{name}.webp", "WEBP", lossless=True, method=6)
 
 
@@ -45,11 +47,91 @@ def save_variant(layer, scene, name):
     target = Path(__file__).resolve().parents[1] / "public" / "wander" / scene
     target.mkdir(parents=True, exist_ok=True)
     export = layer.resize((OUTPUT_WIDTH, OUTPUT_HEIGHT), Image.Resampling.NEAREST)
+    add_high_res_detail(export, name, scene=scene)
     export.save(target / f"{name}.webp", "WEBP", lossless=True, method=6)
 
 
 def load_base(path):
     return Image.open(path).convert("RGBA").resize((WIDTH, HEIGHT), Image.Resampling.NEAREST)
+
+
+def add_high_res_detail(image, name, night=False, scene="dusk"):
+    """Add deliberate 2K-scale pixel clusters instead of merely enlarging a low-res image."""
+    draw = ImageDraw.Draw(image)
+    scale = OUTPUT_WIDTH / WIDTH
+
+    def p(value):
+        return round(value * scale)
+
+    def rect(box, fill):
+        draw.rectangle(tuple(p(value) for value in box), fill=fill)
+
+    def line(points, fill, width=1):
+        draw.line(tuple(p(value) for pair in points for value in pair), fill=fill, width=max(1, p(width)))
+
+    if name == "sky":
+        # fine cloud bands, sun bloom pixels and distant birds
+        for x, y, w in ((8, 27, 28), (42, 31, 18), (94, 58, 31), (184, 45, 25), (270, 66, 20)):
+            rect((x, y, x + w, y + 1), "#b7626e" if not night else "#353554")
+            rect((x + 4, y - 2, x + w - 7, y), "#d17870" if not night else "#403b62")
+        for x, y in ((147, 22), (158, 24), (169, 21), (178, 25), (188, 23)):
+            rect((x, y, x + 1, y + 1), "#ffdca0" if not night else "#a9d4e0")
+        line(((121, 39), (125, 37), (129, 39)), "#55405a")
+        line(((133, 45), (137, 43), (141, 45)), "#55405a")
+    elif name == "outside":
+        # individual windows, balconies, roof equipment and cable lines
+        buildings = ((7, 75, 25, 113), (29, 84, 47, 113), (52, 68, 70, 113), (75, 82, 91, 113), (110, 76, 126, 113), (135, 84, 153, 113), (159, 71, 181, 113), (187, 80, 202, 113), (208, 64, 229, 113), (237, 79, 258, 113), (266, 70, 286, 113), (291, 86, 319, 113))
+        for index, (left, top, right, bottom) in enumerate(buildings):
+            for row in range(top + 7, bottom - 3, 10):
+                for col in range(left + 4, right - 1, 7):
+                    if (col + row + index) % 4 != 0:
+                        rect((col, row, col + 2, row + 2), "#e69470" if not night else "#e6a35f")
+                    if (col + row) % 7 == 0:
+                        rect((col + 3, row, col + 4, row + 1), "#9a6c78" if not night else "#66739e")
+            line(((left + 2, top + 4), (right - 2, top + 4)), "#51415a")
+        line(((0, 96), (67, 104), (124, 103)), "#3a3048")
+        line(((171, 85), (244, 94), (319, 104)), "#3a3048")
+        for x, y in ((18, 101), (96, 105), (204, 98), (282, 104)):
+            rect((x, y, x + 10, y + 1), "#875467")
+    elif name == "room":
+        # window mullion highlights, wall seams and floor plank grain
+        rect((87, 25, 235, 27), "#d18b67" if not night else "#5e557b")
+        rect((88, 102, 234, 104), "#d6a06d" if not night else "#65587a")
+        for x in (104, 128, 181, 207, 222):
+            line(((x, 29), (x, 99)), "#695267" if not night else "#343550")
+        for x, y, length in ((9, 120, 18), (49, 133, 11), (79, 151, 22), (121, 128, 14), (162, 145, 17), (214, 119, 26), (265, 140, 13), (292, 157, 20)):
+            line(((x, y), (x + length, y + 1)), "#7c5a66" if not night else "#4b4767")
+        for x, y in ((14, 20), (47, 37), (68, 82), (251, 45), (299, 31)):
+            rect((x, y, x + 1, y + 1), "#756070" if not night else "#4f4c6d")
+    elif name == "objects":
+        # books: title bars, page edges, photo subjects, keyboard and radio hardware
+        books = ((25, 52, 29, 66), (31, 49, 35, 66), (37, 54, 42, 66), (44, 50, 48, 66), (50, 53, 55, 66), (57, 51, 61, 66), (25, 72, 31, 85), (34, 70, 39, 85), (42, 74, 47, 85), (50, 70, 55, 85), (58, 73, 63, 85), (26, 91, 30, 104), (33, 89, 38, 104), (41, 93, 46, 104), (50, 90, 55, 104), (58, 92, 63, 104))
+        for index, (left, top, right, bottom) in enumerate(books):
+            rect((left + 1, top + 4, right - 1, top + 4.5), "#f4d7a0" if not night else "#76759a")
+            if index % 3 == 0:
+                rect((left + 1, top + 8, right - 1, top + 8.5), "#47364c" if not night else "#282743")
+        for x, y, color in ((108, 48, "#d78369"), (137, 54, "#8ca5a0"), (166, 46, "#cfaa70"), (122, 76, "#9d6d83")):
+            rect((x + 3, y + 3, x + 5, y + 5), color)
+            rect((x + 7, y + 4, x + 9, y + 7), "#536477")
+        for row, count in ((110, 8), (113, 7), (116, 6)):
+            for index in range(count):
+                rect((220 + index * 3, row, 221 + index * 3, row + 1), "#b08a8b" if not night else "#5d5b83")
+        for x in (271, 275, 279, 283, 287):
+            rect((x, 120, x + 1, 129), "#a48391" if not night else "#5f6088")
+        rect((296, 119, 299, 122), "#ffbd68" if not night else "#ffbb60")
+        line(((261, 108), (267, 112), (273, 112)), "#302942")
+    elif name == "foreground":
+        # leaf veins, desk grain, camera controls and scattered page marks
+        for x, y, end_x, end_y in ((17, 136, 11, 128), (25, 138, 23, 123), (29, 139, 37, 130), (21, 143, 12, 143), (28, 142, 39, 120)):
+            line(((x, y), (end_x, end_y)), "#91a078" if not night else "#526179")
+        for x, y in ((45, 168), (71, 168), (132, 169), (180, 174), (219, 172), (267, 159), (302, 146)):
+            rect((x, y, x + 2, y + 1), "#b77b61" if not night else "#665270")
+        rect((114, 149, 118, 151), "#dca36b" if not night else "#776783")
+        rect((122, 153, 124, 155), "#dca36b" if not night else "#776783")
+    elif name == "light":
+        # high-resolution broken window-light flecks
+        for x, y, w, h in ((96, 116, 7, 2), (110, 130, 3, 4), (128, 146, 8, 2), (148, 133, 3, 5), (176, 158, 9, 2), (205, 125, 4, 4), (231, 153, 7, 2), (256, 166, 3, 4)):
+            rect((x, y, x + w, y + h), (255, 224, 160, 125 if not night else 70))
 
 
 def pixel_specks(draw, box, colors, count, seed):
