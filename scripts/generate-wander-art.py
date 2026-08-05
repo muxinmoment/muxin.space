@@ -1,4 +1,5 @@
 from pathlib import Path
+import random
 from PIL import Image, ImageDraw, ImageEnhance
 
 
@@ -43,6 +44,17 @@ def save_variant(layer, scene, name):
     layer.save(target / f"{name}.webp", "WEBP", lossless=True, method=6)
 
 
+def pixel_specks(draw, box, colors, count, seed):
+    rng = random.Random(seed)
+    left, top, right, bottom = box
+    for _ in range(count):
+        x = rng.randrange(left, max(left + 1, right))
+        y = rng.randrange(top, max(top + 1, bottom))
+        color = colors[rng.randrange(len(colors))]
+        size = 1 if rng.random() < .86 else 2
+        draw.rectangle((x, y, x + size, y + size), fill=color)
+
+
 def draw_sky():
     image = new_layer()
     draw = ImageDraw.Draw(image)
@@ -68,6 +80,7 @@ def draw_sky():
     draw.rectangle((277, 74, 282, 80), fill="#8f5268")
     draw.line((154, 57, 158, 55), fill="#51405c", width=1)
     draw.line((158, 55, 162, 57), fill="#51405c", width=1)
+    pixel_specks(draw, (0, 22, WIDTH, 112), ["#9f5d6b", "#c96562", "#e17b58"], 32, 11)
     return image
 
 
@@ -99,6 +112,14 @@ def draw_outside():
     draw.line((202, 92, 207, 85), fill="#24223c", width=1)
     draw.rectangle((117, 117, 123, 119), fill="#f0a15d")
     draw.rectangle((126, 117, 132, 119), fill="#d27a63")
+    # rooftop water tanks, balconies and irregular window clusters
+    for x, y in ((54, 70), (160, 75), (214, 69), (271, 76)):
+        draw.rectangle((x, y, x + 5, y + 3), fill="#51466b")
+        draw.rectangle((x + 1, y - 2, x + 4, y), fill="#51466b")
+    for x, y in ((33, 91), (56, 76), (114, 90), (165, 82), (217, 78), (271, 83), (300, 95)):
+        draw.line((x, y, x + 9, y), fill="#6a5265", width=1)
+        draw.line((x, y + 4, x + 9, y + 4), fill="#6a5265", width=1)
+    pixel_specks(draw, (0, 73, WIDTH, 119), ["#5c4a63", "#7a5263", "#d27a63"], 26, 19)
     return image
 
 
@@ -114,8 +135,7 @@ def draw_room():
     draw.rectangle((0, 108, WIDTH, 114), fill=PALETTE["deep"])
     draw.rectangle((76, 16, 246, 113), fill=PALETTE["wood"])
     draw.rectangle((82, 21, 240, 108), fill=PALETTE["deep"])
-    draw.rectangle((87, 25, 235, 104), fill="#6f5364")
-    draw.rectangle((91, 29, 231, 100), fill="#9f5d68")
+    image.paste((0, 0, 0, 0), (87, 25, 235, 104))
     draw.rectangle((87, 25, 235, 29), fill=PALETTE["wood_light"])
     draw.rectangle((87, 100, 235, 106), fill=PALETTE["wood_light"])
     draw.rectangle((87, 25, 91, 106), fill=PALETTE["wood_light"])
@@ -134,6 +154,12 @@ def draw_room():
         draw.rectangle((x, y, x + 2, y + 1), fill="#423952")
     draw.rectangle((67, 49, 73, 60), fill="#d6b075")
     draw.rectangle((68, 50, 72, 52), fill="#a55666")
+    # wall panels and floor grain
+    for x, y in ((5, 23), (39, 52), (58, 92), (252, 86), (300, 57)):
+        draw.line((x, y, x + 7, y), fill="#4a4057", width=1)
+    for x, y in ((7, 126), (48, 142), (92, 121), (173, 136), (221, 124), (280, 151)):
+        draw.line((x, y, x + 12, y + 1), fill="#745465", width=1)
+    pixel_specks(draw, (0, 0, WIDTH, 106), ["#403852", "#49405a", "#5b4a60"], 22, 23)
     return image
 
 
@@ -150,6 +176,8 @@ def draw_objects():
     for left, top, right, bottom, color in books:
         draw.rectangle((left, top, right, bottom), fill=color)
         draw.line((left + 1, top + 2, right - 1, top + 2), fill="#f6c67a")
+        if right - left >= 4:
+            draw.line((left + 1, top + 5, right - 1, top + 5), fill="#3b3149", width=1)
     draw.rectangle((22, 111, 64, 119), fill=PALETTE["wood_light"])
     draw.rectangle((26, 43, 62, 46), fill="#a26c54")
     draw.rectangle((29, 44, 39, 45), fill="#d6b075")
@@ -160,6 +188,7 @@ def draw_objects():
         draw.rectangle((x, y, x + 12, y + 10), fill="#efdfbf")
         draw.rectangle((x + 2, y + 2, x + 10, y + 8), fill=color)
         draw.rectangle((x + 3, y + 6, x + 7, y + 8), fill="#536477")
+        draw.line((x + 3, y + 3, x + 9, y + 3), fill="#fff0c9", width=1)
     # desk and monitor
     draw.rectangle((198, 101, 305, 108), fill=PALETTE["wood_light"])
     draw.rectangle((207, 108, 213, 153), fill=PALETTE["wood"])
@@ -193,6 +222,15 @@ def draw_objects():
     draw.rectangle((247, 94, 252, 96), fill="#ead7b4")
     draw.rectangle((201, 96, 211, 100), fill="#ead7b4")
     draw.line((203, 98, 209, 98), fill="#a55666", width=1)
+    # keyboard keys, monitor pixels and a cup handle
+    for row, count in ((110, 8), (113, 7), (116, 6)):
+        for index in range(count):
+            draw.rectangle((220 + index * 3, row, 221 + index * 3, row + 1), fill="#92727a")
+    draw.rectangle((252, 84, 258, 85), fill="#b8d0bd")
+    draw.rectangle((260, 90, 264, 91), fill="#9bc0ae")
+    draw.line((253, 96, 256, 98), fill="#c77b5e", width=1)
+    draw.line((253, 97, 257, 97), fill="#c77b5e", width=1)
+    pixel_specks(draw, (24, 49, 64, 116), ["#c77b5e", "#d6b075", "#6f957c"], 18, 31)
     return image
 
 
@@ -205,6 +243,8 @@ def draw_light():
     draw.rectangle((279, 118, 289, 126), fill=(255, 224, 160, 42))
     for x, y in ((89, 126), (108, 144), (139, 132), (176, 157), (205, 126), (244, 148), (260, 168)):
         draw.rectangle((x, y, x + 2, y + 2), fill=(255, 224, 160, 120))
+    for x, y in ((116, 128), (128, 153), (153, 143), (184, 132), (232, 159), (273, 139)):
+        draw.rectangle((x, y, x + 1, y + 1), fill=(255, 224, 160, 86))
     return image
 
 
@@ -224,6 +264,8 @@ def draw_foreground():
     for box in ((9, 126, 24, 143), (17, 119, 31, 141), (27, 128, 42, 146), (4, 136, 18, 148), (32, 116, 47, 140)):
         draw.ellipse(box, fill=PALETTE["green"])
     draw.line((25, 143, 25, 119), fill="#7e8069", width=2)
+    for x, y in ((15, 128), (22, 123), (31, 132), (11, 141), (36, 120)):
+        draw.line((25, 143, x + 6, y + 8), fill="#7e8069", width=1)
     # chair edge
     draw.rectangle((147, 143, 177, 165), fill="#2d2943")
     draw.rectangle((153, 138, 171, 145), fill="#5f5064")
@@ -236,6 +278,9 @@ def draw_foreground():
         draw.rectangle((x, y, x + 1, y + 1), fill=PALETTE["gold"])
     draw.rectangle((132, 169, 139, 171), fill="#6f5364")
     draw.rectangle((136, 166, 143, 169), fill="#a26c54")
+    draw.line((45, 168, 72, 168), fill="#a26c54", width=1)
+    draw.line((180, 174, 201, 174), fill="#40374f", width=1)
+    pixel_specks(draw, (0, 168, WIDTH, 180), ["#2d2943", "#51466b", "#805b4f"], 18, 47)
     return image
 
 
