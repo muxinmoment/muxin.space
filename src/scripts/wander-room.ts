@@ -53,13 +53,12 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       scene.background = background;
       scene.fog = new THREE.Fog(sceneColor.fog.clone(), 8, 18);
       const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 40);
-      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false });
+      renderer.setPixelRatio(1);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.15;
+      renderer.toneMapping = THREE.NoToneMapping;
       renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.shadowMap.type = THREE.BasicShadowMap;
       const hemisphereLight = new THREE.HemisphereLight(sceneColor.hemisphere, "#21152e", 2.2);
       scene.add(hemisphereLight);
       const keyLight = new THREE.DirectionalLight(sceneColor.key, 3.2);
@@ -73,7 +72,7 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       pinkGlow.position.set(2.7, 1.2, 0.8);
       scene.add(pinkGlow);
 
-      const material = (color: string) => new THREE.MeshStandardMaterial({ color, roughness: 0.8, metalness: 0.05 });
+      const material = (color: string) => new THREE.MeshStandardMaterial({ color, roughness: 1, metalness: 0, flatShading: true });
       const addBox = (name: string, size: [number, number, number], position: [number, number, number], color: string, parent: THREE.Object3D = scene) => {
         const mesh = new THREE.Mesh(new THREE.BoxGeometry(...size), material(color));
         mesh.name = name;
@@ -146,7 +145,7 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
         dustPositions[index + 2] = (Math.random() - 0.5) * 6;
       }
       dustGeometry.setAttribute("position", new THREE.BufferAttribute(dustPositions, 3));
-      const dustMaterial = new THREE.PointsMaterial({ color: sceneColor.dust, size: 0.035, transparent: true, opacity: 0.55 });
+      const dustMaterial = new THREE.PointsMaterial({ color: sceneColor.dust, size: 0.06, transparent: true, opacity: 0.55 });
       const dust = new THREE.Points(dustGeometry, dustMaterial);
       scene.add(dust);
 
@@ -200,8 +199,11 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       let cameraTarget = new THREE.Vector3(...current.target);
       const resize = () => {
         const rect = canvas.getBoundingClientRect();
-        renderer.setSize(rect.width, rect.height, false);
-        camera.aspect = rect.width / rect.height;
+        const pixelScale = window.matchMedia("(max-width: 639px)").matches ? 1.5 : 2;
+        const renderWidth = Math.max(160, Math.round(rect.width / pixelScale));
+        const renderHeight = Math.max(120, Math.round(rect.height / pixelScale));
+        renderer.setSize(renderWidth, renderHeight, false);
+        camera.aspect = renderWidth / renderHeight;
         camera.updateProjectionMatrix();
       };
       const choose = (key: string, remember = true) => {
@@ -252,7 +254,7 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
         raycaster.setFromCamera(pointer, camera);
         const key = findHotspot(raycaster.intersectObjects(hotspots, true)[0]?.object);
         canvas.style.cursor = key ? "pointer" : "grab";
-        if (hint) hint.textContent = key ? `${views[key].label} · 点击进入` : "点击房间里的物件探索";
+        if (hint) hint.textContent = key ? `${views[key].label} · 点击进入` : "拖动看看 · 点击物件开始漫游";
       };
       canvas.addEventListener("pointermove", updatePointer, cleanupOptions);
       canvas.addEventListener("pointerdown", (event) => {
@@ -270,7 +272,7 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
         orbit.y = THREE.MathUtils.clamp(orbit.y - deltaY * 0.004, -0.45, 0.45);
         lastPointer = { x: event.clientX, y: event.clientY };
       }, cleanupOptions);
-      canvas.addEventListener("pointerleave", () => { canvas.style.cursor = "grab"; if (hint) hint.textContent = "点击房间里的物件探索"; }, cleanupOptions);
+      canvas.addEventListener("pointerleave", () => { canvas.style.cursor = "grab"; if (hint) hint.textContent = "拖动看看 · 点击物件开始漫游"; }, cleanupOptions);
       canvas.addEventListener("pointerup", (event) => {
         dragging = false;
         updatePointer(event);

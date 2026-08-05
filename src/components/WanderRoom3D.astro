@@ -1,7 +1,7 @@
 <section class="wander-3d-shell" data-wander-3d>
   <div class="wander-3d-copy">
-    <p class="eyebrow">A room in motion · interactive space</p>
-    <h2>欢迎来到会变化的工作室。</h2>
+    <p class="eyebrow">Pixel wander room · interactive space</p>
+    <h2>欢迎来到会变化的像素工作室。</h2>
     <p>这里没有导航栏。拖动镜头看看，靠近一件物品，选择你想先发现的那条支线。</p>
   </div>
   <div class="wander-3d-stage">
@@ -25,21 +25,21 @@
 </section>
 
 <style>
-  .wander-3d-shell { margin-top: 2rem; overflow: hidden; border: 1px solid rgba(139, 92, 246, .28); border-radius: 2rem; background: #120e19; color: #f5f3ff; }
+  .wander-3d-shell { margin-top: 2rem; overflow: hidden; border: 3px solid #332449; border-radius: 1.25rem; background: #1c1830; color: #fff7ed; box-shadow: 0 1.25rem 0 #0f0d1a, 0 2rem 3rem rgba(31, 21, 55, .22); }
   .wander-3d-copy { padding: 1.5rem 1.5rem 0; }
   .wander-3d-copy h2 { margin-top: .5rem; font-family: var(--font-serif); font-size: 1.8rem; letter-spacing: -.03em; }
   .wander-3d-copy p:last-child { max-width: 38rem; margin-top: .65rem; color: #b9adcf; font-size: .875rem; line-height: 1.75rem; }
   .wander-3d-stage { position: relative; min-height: 500px; }
-  .wander-3d-stage canvas { display: block; width: 100%; height: 500px; cursor: grab; touch-action: none; }
+  .wander-3d-stage canvas { display: block; width: 100%; height: 500px; cursor: grab; touch-action: none; image-rendering: pixelated; image-rendering: crisp-edges; }
   .wander-3d-stage canvas:active { cursor: grabbing; }
   .wander-3d-controls { position: absolute; left: 1rem; bottom: 1rem; display: flex; flex-wrap: wrap; gap: .45rem; }
-  .wander-3d-controls button, .wander-3d-skip { border: 1px solid rgba(196, 181, 253, .3); border-radius: 999px; background: rgba(23, 19, 31, .78); padding: .45rem .75rem; color: #ddd6fe; font-size: .72rem; backdrop-filter: blur(10px); transition: background .2s, border-color .2s, transform .2s; }
-  .wander-3d-controls button:hover, .wander-3d-controls button[data-active="true"] { border-color: #a78bfa; background: #7c3aed; color: white; transform: translateY(-1px); }
-  .wander-3d-enter { position: absolute; right: 6.5rem; bottom: 1rem; border-radius: 999px; background: #f5f3ff; padding: .45rem .75rem; color: #4c1d95; font-size: .72rem; font-weight: 600; transition: transform .2s, background .2s; }
-  .wander-3d-enter:hover { transform: translateY(-1px); background: white; }
+  .wander-3d-controls button, .wander-3d-skip { border: 2px solid #5b4378; border-radius: .45rem; background: #211a35; padding: .45rem .75rem; color: #f4d8ff; font-size: .72rem; box-shadow: 2px 2px 0 #0f0d1a; transition: background .2s, border-color .2s, transform .2s; }
+  .wander-3d-controls button:hover, .wander-3d-controls button[data-active="true"] { border-color: #ffd166; background: #704c9e; color: white; transform: translate(-1px, -1px); }
+  .wander-3d-enter { position: absolute; right: 6.5rem; bottom: 1rem; border: 2px solid #fff0c2; border-radius: .45rem; background: #ffd166; padding: .45rem .75rem; color: #38254f; font-size: .72rem; font-weight: 700; box-shadow: 2px 2px 0 #0f0d1a; transition: transform .2s, background .2s; }
+  .wander-3d-enter:hover { transform: translate(-1px, -1px); background: #ffe29a; }
   .wander-3d-skip { position: absolute; right: 1rem; bottom: 1rem; color: #a8a29e; }
-  .wander-3d-hint { position: absolute; top: 1rem; left: 1rem; border: 1px solid rgba(196,181,253,.2); border-radius: 999px; background: rgba(23,19,31,.55); padding: .4rem .7rem; color: rgba(237,233,254,.7); font-size: .68rem; backdrop-filter: blur(10px); transition: opacity .2s; }
-  .wander-3d-memory { position: absolute; top: 1rem; right: 1rem; display: grid; gap: .15rem; max-width: 13rem; border: 1px solid rgba(196,181,253,.16); border-radius: .8rem; background: rgba(23,19,31,.45); padding: .45rem .7rem; color: rgba(237,233,254,.58); font-size: .68rem; text-align: right; backdrop-filter: blur(10px); }
+  .wander-3d-hint { position: absolute; top: 1rem; left: 1rem; border: 2px solid #5b4378; border-radius: .45rem; background: #211a35; padding: .4rem .7rem; color: #f4d8ff; font-size: .68rem; box-shadow: 2px 2px 0 #0f0d1a; transition: opacity .2s; }
+  .wander-3d-memory { position: absolute; top: 1rem; right: 1rem; display: grid; gap: .15rem; max-width: 13rem; border: 2px solid #5b4378; border-radius: .45rem; background: #211a35; padding: .45rem .7rem; color: #f0dff7; font-size: .68rem; text-align: right; box-shadow: 2px 2px 0 #0f0d1a; }
   .wander-3d-memory span:empty { display: none; }
   .wander-3d-memory span:last-child { color: rgba(196,181,253,.8); }
   .wander-3d-fallback { position: absolute; inset: 0; display: none; place-items: center; gap: .75rem; color: #c4b5fd; font-size: .875rem; }
