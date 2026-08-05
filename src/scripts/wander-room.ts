@@ -50,9 +50,11 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       scene.fog = new THREE.Fog(sceneColor.fog.clone(), 8, 18);
       const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 40);
       const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
-      const narrow = window.matchMedia("(max-width: 639px)").matches;
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, narrow ? 1 : 1.5));
-      renderer.shadowMap.enabled = !narrow;
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.15;
+      renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       const hemisphereLight = new THREE.HemisphereLight(sceneColor.hemisphere, "#21152e", 2.2);
       scene.add(hemisphereLight);
@@ -60,6 +62,12 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       keyLight.position.set(-4, 7, 3);
       keyLight.castShadow = true;
       scene.add(keyLight);
+      const violetGlow = new THREE.PointLight("#8b5cf6", 2.2, 6, 2);
+      violetGlow.position.set(-1.7, 1.6, -2.2);
+      scene.add(violetGlow);
+      const pinkGlow = new THREE.PointLight("#ec4899", 1.5, 5, 2);
+      pinkGlow.position.set(2.7, 1.2, 0.8);
+      scene.add(pinkGlow);
 
       const material = (color: string) => new THREE.MeshStandardMaterial({ color, roughness: 0.8, metalness: 0.05 });
       const addBox = (name: string, size: [number, number, number], position: [number, number, number], color: string, parent: THREE.Object3D = scene) => {
@@ -75,6 +83,16 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       addBox("floor", [10, 0.2, 8], [0, -0.2, 0], "#292037");
       addBox("back-wall", [10, 5, 0.2], [0, 2.4, -3.8], "#20182b");
       addBox("left-wall", [0.2, 5, 8], [-4.8, 2.4, 0], "#20182b");
+      addBox("rug", [5.4, 0.035, 3.2], [0, -0.08, 0.7], "#3b245f");
+      addBox("rug-inlay", [4.9, 0.04, 2.7], [0, -0.055, 0.7], "#4c2d75");
+
+      const window = new THREE.Group();
+      window.position.set(1.1, 2.55, -3.68);
+      addBox("window-frame", [2.25, 1.55, 0.12], [0, 0, 0], "#31234c", window);
+      addBox("window-glass", [1.95, 1.25, 0.14], [0, 0, 0.08], "#312e81", window);
+      addBox("window-cross-v", [0.08, 1.25, 0.16], [0, 0, 0.16], "#8b5cf6", window);
+      addBox("window-cross-h", [1.95, 0.08, 0.16], [0, 0, 0.16], "#8b5cf6", window);
+      scene.add(window);
 
       const shelf = new THREE.Group();
       shelf.userData.roomKey = "anime";
@@ -112,7 +130,7 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       addBox("radio-knob", [0.14, 0.14, 0.08], [0.36, 0.25, -0.34], "#fbbf24", radio);
 
       const dustGeometry = new THREE.BufferGeometry();
-      const dustPositions = new Float32Array((narrow ? 0 : 72) * 3);
+      const dustPositions = new Float32Array(72 * 3);
       for (let index = 0; index < dustPositions.length; index += 3) {
         dustPositions[index] = (Math.random() - 0.5) * 8;
         dustPositions[index + 1] = Math.random() * 4;
@@ -121,7 +139,6 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       dustGeometry.setAttribute("position", new THREE.BufferAttribute(dustPositions, 3));
       const dustMaterial = new THREE.PointsMaterial({ color: sceneColor.dust, size: 0.035, transparent: true, opacity: 0.55 });
       const dust = new THREE.Points(dustGeometry, dustMaterial);
-      dust.visible = !narrow;
       scene.add(dust);
 
       let activeScene: keyof typeof sceneColors = initialState.scene;

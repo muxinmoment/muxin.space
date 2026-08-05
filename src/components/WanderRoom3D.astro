@@ -1,26 +1,26 @@
 <section class="wander-3d-shell" data-wander-3d>
   <div class="wander-3d-copy">
-    <p class="eyebrow">Interactive room</p>
-    <h2>进入房间，选择一条支线。</h2>
-    <p>这是一个轻量低多边形原型。点击入口，镜头会移动到对应区域。</p>
+    <p class="eyebrow">Muxin after dark · interactive space</p>
+    <h2>欢迎来到夜间工作室。</h2>
+    <p>这里没有导航栏。拖动镜头看看，靠近一件物品，选择你想先发现的那条支线。</p>
   </div>
   <div class="wander-3d-stage">
     <canvas data-wander-canvas aria-label="漫游房间 3D 场景"></canvas>
-    <div class="wander-3d-hint" data-room-hint>点击房间里的物件探索</div>
+    <div class="wander-3d-hint" data-room-hint>拖动看看 · 点击物件开始漫游</div>
     <div class="wander-3d-memory" aria-live="polite"><span data-room-memory></span><span data-room-progress></span></div>
     <div class="wander-3d-fallback" data-wander-fallback>
       <span>3D 场景加载失败</span>
       <a href="/wander/" class="underline">继续使用房间入口</a>
     </div>
     <div class="wander-3d-controls" aria-label="房间入口">
-      <button type="button" data-room-camera="center" aria-pressed="true">房间</button>
+      <button type="button" data-room-camera="center" aria-pressed="true">回到房间</button>
       <button type="button" data-room-camera="anime" aria-pressed="false">番剧书架</button>
       <button type="button" data-room-camera="photo" aria-pressed="false">照片墙</button>
       <button type="button" data-room-camera="notes" aria-pressed="false">支线随笔</button>
       <button type="button" data-room-camera="memo" aria-pressed="false">小木电台</button>
     </div>
     <a href="/wander/" class="wander-3d-enter" data-room-enter>逛一圈 →</a>
-    <button type="button" class="wander-3d-skip" data-wander-3d-skip>关闭 3D</button>
+    <button type="button" class="wander-3d-skip" data-wander-3d-skip>使用文字目录</button>
   </div>
 </section>
 
@@ -29,8 +29,8 @@
   .wander-3d-copy { padding: 1.5rem 1.5rem 0; }
   .wander-3d-copy h2 { margin-top: .5rem; font-family: var(--font-serif); font-size: 1.8rem; letter-spacing: -.03em; }
   .wander-3d-copy p:last-child { max-width: 38rem; margin-top: .65rem; color: #b9adcf; font-size: .875rem; line-height: 1.75rem; }
-  .wander-3d-stage { position: relative; min-height: 360px; }
-  .wander-3d-stage canvas { display: block; width: 100%; height: 360px; cursor: grab; touch-action: none; }
+  .wander-3d-stage { position: relative; min-height: 500px; }
+  .wander-3d-stage canvas { display: block; width: 100%; height: 500px; cursor: grab; touch-action: none; }
   .wander-3d-stage canvas:active { cursor: grabbing; }
   .wander-3d-controls { position: absolute; left: 1rem; bottom: 1rem; display: flex; flex-wrap: wrap; gap: .45rem; }
   .wander-3d-controls button, .wander-3d-skip { border: 1px solid rgba(196, 181, 253, .3); border-radius: 999px; background: rgba(23, 19, 31, .78); padding: .45rem .75rem; color: #ddd6fe; font-size: .72rem; backdrop-filter: blur(10px); transition: background .2s, border-color .2s, transform .2s; }
@@ -46,7 +46,7 @@
   .wander-3d-shell.is-disabled .wander-3d-stage { display: none; }
   .wander-3d-shell.is-disabled .wander-3d-copy { padding-bottom: 1.5rem; }
   .wander-3d-shell.is-failed .wander-3d-fallback { display: grid; }
-  @media (max-width: 639px) { .wander-3d-controls { right: 1rem; bottom: 3.6rem; } .wander-3d-enter { right: auto; left: 1rem; } }
+  @media (max-width: 639px) { .wander-3d-stage, .wander-3d-stage canvas { min-height: 430px; height: 430px; } .wander-3d-controls { right: 1rem; bottom: 3.6rem; } .wander-3d-enter { right: auto; left: 1rem; } }
   @media (prefers-reduced-motion: reduce) { .wander-3d-controls button, .wander-3d-enter, .wander-3d-hint { transition: none; } }
   @media (min-width: 640px) { .wander-3d-copy { padding: 2rem 2rem 0; } }
 </style>
