@@ -13,20 +13,23 @@ const counts = {
 ---
 
 <BaseLayout title="漫游 | muxin.space" description="番剧、摄影和不太正经的个人支线。">
-  <div class="mx-auto max-w-6xl" data-wander-room data-scene="night">
+  <div class="mx-auto max-w-6xl" data-wander-room data-scene="dusk">
     <WanderRoom3D />
 
     <section class="relative overflow-hidden rounded-[2rem] border border-violet-300/30 bg-[#17131f] p-6 text-white shadow-2xl shadow-violet-950/10 transition-colors duration-500 sm:p-10">
       <div class="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(167,139,250,.2)_0,transparent_25%),radial-gradient(circle_at_80%_10%,rgba(244,114,182,.14)_0,transparent_22%),radial-gradient(circle_at_70%_90%,rgba(251,191,36,.12)_0,transparent_25%)]"></div>
       <div class="relative flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <div class="flex items-center gap-3"><span class="h-2 w-2 animate-pulse rounded-full bg-violet-400"></span><p class="eyebrow text-violet-300">Wander room · personal space</p></div>
+          <div class="flex items-center gap-3"><span class="h-2 w-2 animate-pulse rounded-full bg-amber-300"></span><p class="eyebrow text-amber-200">Wander room · personal space</p></div>
           <h1 class="mt-5 max-w-3xl font-serif text-5xl leading-[1.04] tracking-tight sm:text-7xl">欢迎来到我的<br /><span class="text-violet-300">私人支线。</span></h1>
           <p class="mt-5 max-w-xl text-sm leading-8 text-violet-100/70">这里不负责证明我会什么，只负责留下我喜欢什么。番剧、摄影、游戏和一些没有 KPI 的念头，都可以在这里找到位置。</p>
         </div>
-        <div class="flex shrink-0 items-center gap-2 rounded-full border border-white/15 bg-white/5 p-1 text-xs">
-          <button type="button" data-scene-button="night" aria-pressed="true" class="rounded-full bg-violet-500 px-3 py-1.5 font-medium text-white">夜航</button>
-          <button type="button" data-scene-button="day" aria-pressed="false" class="rounded-full px-3 py-1.5 text-violet-200/60 transition hover:text-white">晴空</button>
+          <div class="flex max-w-full shrink-0 flex-wrap items-center gap-1 rounded-2xl border border-white/15 bg-white/5 p-1 text-xs">
+          <button type="button" data-scene-button="auto" aria-pressed="true" class="rounded-xl bg-amber-400 px-2.5 py-1.5 font-medium text-white">跟随时间</button>
+          <button type="button" data-scene-button="dawn" aria-pressed="false" class="rounded-xl px-2.5 py-1.5 text-amber-100/60 transition hover:text-white">清晨</button>
+          <button type="button" data-scene-button="day" aria-pressed="false" class="rounded-xl px-2.5 py-1.5 text-amber-100/60 transition hover:text-white">午后</button>
+          <button type="button" data-scene-button="dusk" aria-pressed="false" class="rounded-xl px-2.5 py-1.5 text-amber-100/60 transition hover:text-white">黄昏</button>
+          <button type="button" data-scene-button="night" aria-pressed="false" class="rounded-xl px-2.5 py-1.5 text-amber-100/60 transition hover:text-white">夜晚</button>
         </div>
       </div>
 
@@ -34,7 +37,7 @@ const counts = {
         <div class="min-h-[250px] rounded-3xl border border-white/10 bg-white/[0.06] p-5 sm:p-7">
           <div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-[0.18em] text-violet-300">Room status</p><span class="text-xs text-violet-100/50">currently online</span></div>
           <div class="mt-8 grid gap-5 sm:grid-cols-2">
-            <div><p class="text-xs text-violet-100/50">窗外天气</p><p data-scene-text class="mt-2 font-serif text-3xl">深夜，有星星</p></div>
+            <div><p class="text-xs text-violet-100/50">窗外天气</p><p data-scene-text class="mt-2 font-serif text-3xl">黄昏，光线正好</p></div>
             <div><p class="text-xs text-violet-100/50">桌面上</p><p class="mt-2 font-serif text-3xl">一台相机</p></div>
           </div>
           <div class="mt-10 flex flex-wrap items-center gap-2 text-xs text-violet-100/60"><span data-room-status class="rounded-full bg-emerald-400/20 px-2.5 py-1 text-emerald-300">开放参观</span><span data-room-status-copy>从一个入口开始逛</span></div>
@@ -98,7 +101,7 @@ const counts = {
 </BaseLayout>
 
 <script>
-  import { formatWanderFootprintTime, getWanderDirectoryState, getWanderStorage, normalizeWanderScene, readRecentProgress, readVisitedProgress, readStorageValue, shouldInitializeWander, writeStorageValue, writeVisitedProgress } from "../../utils/wander-storage";
+  import { formatWanderFootprintTime, getWanderDirectoryState, getWanderStorage, getWanderTimeScene, normalizeWanderScene, normalizeWanderScenePreference, readRecentProgress, readVisitedProgress, readStorageValue, shouldInitializeWander, writeStorageValue, writeVisitedProgress } from "../../utils/wander-storage";
 
   function initSceneSwitch() {
     const room = document.querySelector<HTMLElement>("[data-wander-room]");
@@ -106,25 +109,25 @@ const counts = {
     const text = document.querySelector<HTMLElement>("[data-scene-text]");
     if (!room || !buttons.length || !shouldInitializeWander(room.dataset.ready)) return;
     const setScene = (scene: string) => {
-      const normalizedScene = normalizeWanderScene(scene);
+      const preference = normalizeWanderScenePreference(scene);
+      const normalizedScene = preference === "auto" ? getWanderTimeScene() : normalizeWanderScene(preference);
       room.dataset.scene = normalizedScene;
-      if (text) text.textContent = normalizedScene === "day" ? "晴天，风很轻" : "深夜，有星星";
+      if (text) text.textContent = ({ dawn: "清晨，光线很软", day: "午后，风很轻", dusk: "黄昏，光线正好", night: "夜晚，星星亮着" } as Record<string, string>)[normalizedScene];
       buttons.forEach((button) => {
-        const active = button.dataset.sceneButton === normalizedScene;
-        button.classList.toggle("bg-violet-500", active && normalizedScene === "night");
-        button.classList.toggle("bg-amber-400", active && normalizedScene === "day");
+        const active = button.dataset.sceneButton === preference;
+        button.classList.toggle("bg-amber-400", active);
         button.classList.toggle("text-white", active);
-        button.classList.toggle("text-violet-200/60", !active);
+        button.classList.toggle("text-amber-100/60", !active);
         button.setAttribute("aria-pressed", String(active));
       });
       const storage = getWanderStorage();
-      if (readStorageValue(storage, "muxin-wander-scene") !== normalizedScene) writeStorageValue(storage, "muxin-wander-scene", normalizedScene);
-      window.dispatchEvent(new CustomEvent("muxin-wander-scene", { detail: { scene: normalizedScene } }));
+      if (readStorageValue(storage, "muxin-wander-scene") !== preference) writeStorageValue(storage, "muxin-wander-scene", preference);
+      window.dispatchEvent(new CustomEvent("muxin-wander-scene", { detail: { scene: normalizedScene, preference } }));
     };
     buttons.forEach((button) => button.addEventListener("click", () => setScene(button.dataset.sceneButton ?? "night")));
-    setScene(readStorageValue(getWanderStorage(), "muxin-wander-scene") ?? "night");
+    setScene(readStorageValue(getWanderStorage(), "muxin-wander-scene") ?? "auto");
     window.addEventListener("storage", (event) => {
-      if (event.key === "muxin-wander-scene") setScene(event.newValue ?? "night");
+      if (event.key === "muxin-wander-scene") setScene(event.newValue ?? "auto");
     });
     room.dataset.ready = "true";
   }
@@ -205,9 +208,10 @@ const counts = {
 
 <style>
   .wander-deferred-section { content-visibility: auto; contain-intrinsic-size: 0 560px; }
-  [data-wander-room][data-scene="day"] > section:first-child { background: linear-gradient(135deg, #713f12 0%, #1f2937 70%); }
-  [data-wander-room][data-scene="day"] [data-scene-button="night"] { background: transparent; color: rgba(224, 231, 255, .6); }
-  [data-wander-room][data-scene="day"] [data-scene-button="day"] { background: #f59e0b; color: white; }
+  [data-wander-room][data-scene="dawn"] > section:first-child { background: linear-gradient(135deg, #64748b 0%, #9a6a5c 70%); }
+  [data-wander-room][data-scene="day"] > section:first-child { background: linear-gradient(135deg, #3f6b78 0%, #82715f 70%); }
+  [data-wander-room][data-scene="dusk"] > section:first-child { background: linear-gradient(135deg, #9a4f46 0%, #292b43 70%); }
+  [data-wander-room][data-scene="night"] > section:first-child { background: linear-gradient(135deg, #3d3157 0%, #17131f 70%); }
   [data-wander-link][data-visited="true"] { box-shadow: inset 0 0 0 1px rgba(82, 82, 91, .12); }
   [data-wander-directory][data-complete="true"] { border-color: rgba(167, 139, 250, .45); box-shadow: 0 1.5rem 4rem rgba(124, 58, 237, .08); }
   [data-wander-directory][data-complete="true"] [data-wander-complete] { color: rgb(124 58 237); }

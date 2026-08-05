@@ -10,14 +10,26 @@ export type WanderDetailState = {
 
 export type StorageLike = Pick<Storage, "getItem" | "setItem">;
 export type SiteMode = "career" | "wander";
-export type WanderScene = "night" | "day";
+export type WanderScene = "dawn" | "day" | "dusk" | "night";
+export type WanderScenePreference = WanderScene | "auto";
 
 export type WanderRoomState = {
   scene: WanderScene;
   resumeKey: string;
 };
 
-export const normalizeWanderScene = (value: unknown): WanderScene => value === "day" ? "day" : "night";
+export const getWanderTimeScene = (date = new Date()): WanderScene => {
+  const hour = date.getHours() + date.getMinutes() / 60;
+  if (hour < 6) return "night";
+  if (hour < 9) return "dawn";
+  if (hour < 17) return "day";
+  if (hour < 20) return "dusk";
+  return "night";
+};
+
+export const normalizeWanderScene = (value: unknown): WanderScene => value === "dawn" || value === "day" || value === "dusk" || value === "night" ? value : "night";
+
+export const normalizeWanderScenePreference = (value: unknown): WanderScenePreference => value === "auto" ? "auto" : normalizeWanderScene(value);
 
 export const normalizeSiteMode = (value: unknown): SiteMode => value === "wander" ? "wander" : "career";
 

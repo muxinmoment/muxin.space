@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { getSiteModeSyncState, isSiteModeStorageKey, resolveSiteMode, syncSiteModeButtons } from "../src/utils/site-mode.ts";
-import { formatWanderFootprintTime, getWanderDetailState, getWanderDirectoryState, getWanderResumeKey, getWanderRoomState, normalizeSiteMode, normalizeWanderScene, parseRecentProgress, parseVisitedProgress, readRecentProgress, readStorageValue, readVisitedProgress, recordRecentProgress, shouldInitializeWander, writeRecentProgress, writeStorageValue, writeVisitedProgress } from "../src/utils/wander-storage.ts";
+import { formatWanderFootprintTime, getWanderDetailState, getWanderDirectoryState, getWanderResumeKey, getWanderRoomState, getWanderTimeScene, normalizeSiteMode, normalizeWanderScene, normalizeWanderScenePreference, parseRecentProgress, parseVisitedProgress, readRecentProgress, readStorageValue, readVisitedProgress, recordRecentProgress, shouldInitializeWander, writeRecentProgress, writeStorageValue, writeVisitedProgress } from "../src/utils/wander-storage.ts";
 
 test("normalizes persisted mode and scene values before syncing the UI", () => {
   assert.equal(normalizeSiteMode("wander"), "wander");
@@ -9,6 +9,11 @@ test("normalizes persisted mode and scene values before syncing the UI", () => {
   assert.equal(normalizeWanderScene("day"), "day");
   assert.equal(normalizeWanderScene("storm"), "night");
   assert.equal(normalizeWanderScene(null), "night");
+  assert.equal(normalizeWanderScenePreference("auto"), "auto");
+  assert.equal(getWanderTimeScene(new Date(2026, 0, 1, 7)), "dawn");
+  assert.equal(getWanderTimeScene(new Date(2026, 0, 1, 13)), "day");
+  assert.equal(getWanderTimeScene(new Date(2026, 0, 1, 18)), "dusk");
+  assert.equal(getWanderTimeScene(new Date(2026, 0, 1, 23)), "night");
 });
 
 test("keeps homepage and global navigation mode state synchronized", () => {

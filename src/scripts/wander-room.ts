@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { getWanderRoomState, getWanderStorage, normalizeWanderScene, readStorageValue, readVisitedProgress, recordRecentProgress, shouldInitializeWander, writeStorageValue, writeVisitedProgress } from "../utils/wander-storage";
+import { getWanderRoomState, getWanderStorage, getWanderTimeScene, normalizeWanderScene, normalizeWanderScenePreference, readStorageValue, readVisitedProgress, recordRecentProgress, shouldInitializeWander, writeStorageValue, writeVisitedProgress } from "../utils/wander-storage";
 
 const root = document.querySelector<HTMLElement>("[data-wander-3d]");
 if (root && shouldInitializeWander(root.dataset.ready)) {
@@ -21,11 +21,13 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
     notes: { position: [2.8, 2.2, 2.3], target: [2.1, 1.2, -0.6], href: "/wander/notes/", label: "打开支线随笔" },
     memo: { position: [3.8, 2.4, 3.3], target: [2.5, 1.1, 0.2], href: "/memo/", label: "打开小木电台" },
   };
+  const storedScene = readStorageValue(storage, "muxin-wander-scene");
   const initialState = getWanderRoomState(
-    readStorageValue(storage, "muxin-wander-scene"),
+    storedScene === "auto" ? null : storedScene,
     readStorageValue(storage, "muxin-wander-last-room"),
     Object.keys(views),
   );
+  const initialScene = storedScene && storedScene !== "auto" ? initialState.scene : getWanderTimeScene();
   const disable = () => root.classList.add("is-disabled");
   if (readStorageValue(storage, "muxin-wander-3d") === "off") disable();
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -41,10 +43,12 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       const cleanupOptions = { signal: cleanupController.signal };
       const scene = new THREE.Scene();
       const sceneColors = {
-        night: { background: new THREE.Color("#120e19"), fog: new THREE.Color("#120e19"), hemisphere: new THREE.Color("#c4b5fd"), key: new THREE.Color("#fde68a"), dust: new THREE.Color("#fef3c7") },
-        day: { background: new THREE.Color("#24344a"), fog: new THREE.Color("#24344a"), hemisphere: new THREE.Color("#bae6fd"), key: new THREE.Color("#fff7ed"), dust: new THREE.Color("#fef3c7") },
+        dawn: { background: new THREE.Color("#b9c9d9"), fog: new THREE.Color("#b9c9d9"), hemisphere: new THREE.Color("#ffe0c2"), key: new THREE.Color("#fff1d6"), dust: new THREE.Color("#fff7ed"), violet: new THREE.Color("#8b7bb8"), pink: new THREE.Color("#c8797d") },
+        day: { background: new THREE.Color("#b8d4dc"), fog: new THREE.Color("#b8d4dc"), hemisphere: new THREE.Color("#e0f2fe"), key: new THREE.Color("#fffaf0"), dust: new THREE.Color("#fff7ed"), violet: new THREE.Color("#6d9ca3"), pink: new THREE.Color("#d98b83") },
+        dusk: { background: new THREE.Color("#a85f58"), fog: new THREE.Color("#a85f58"), hemisphere: new THREE.Color("#fed7aa"), key: new THREE.Color("#fdba74"), dust: new THREE.Color("#ffedd5"), violet: new THREE.Color("#9b5bb0"), pink: new THREE.Color("#eb766c") },
+        night: { background: new THREE.Color("#211a2d"), fog: new THREE.Color("#211a2d"), hemisphere: new THREE.Color("#c4b5fd"), key: new THREE.Color("#fde68a"), dust: new THREE.Color("#fef3c7"), violet: new THREE.Color("#8b5cf6"), pink: new THREE.Color("#ec4899") },
       };
-      const sceneColor = sceneColors.night;
+      const sceneColor = sceneColors[initialScene];
       const background = sceneColor.background.clone();
       scene.background = background;
       scene.fog = new THREE.Fog(sceneColor.fog.clone(), 8, 18);
@@ -92,6 +96,7 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       addBox("window-glass", [1.95, 1.25, 0.14], [0, 0, 0.08], "#312e81", windowFrame);
       addBox("window-cross-v", [0.08, 1.25, 0.16], [0, 0, 0.16], "#8b5cf6", windowFrame);
       addBox("window-cross-h", [1.95, 0.08, 0.16], [0, 0, 0.16], "#8b5cf6", windowFrame);
+      addBox("window-sun", [0.42, 0.42, 0.04], [0.55, 0.35, 0.17], "#fbbf24", windowFrame);
       scene.add(windowFrame);
 
       const shelf = new THREE.Group();
@@ -120,6 +125,9 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       addBox("desk-leg", [0.2, 1.25, 0.2], [1.05, 0.55, 0], "#4c1d95", desk);
       addBox("screen", [1.25, 0.8, 0.12], [0, 2.05, -0.18], "#312e81", desk);
       addBox("screen-glow", [0.98, 0.52, 0.13], [0, 2.05, -0.25], "#c4b5fd", desk);
+      addBox("keyboard", [0.9, 0.07, 0.3], [0, 1.48, -0.36], "#d8b4fe", desk);
+      addBox("notebook", [0.48, 0.04, 0.34], [-0.72, 1.47, 0.12], "#f5d0fe", desk);
+      addBox("mug", [0.2, 0.24, 0.2], [0.83, 1.58, 0.12], "#fb7185", desk);
 
       const radio = new THREE.Group();
       radio.userData.roomKey = "memo";
@@ -128,6 +136,7 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       addBox("radio-body", [1.15, 0.7, 0.6], [0, 0.45, 0], "#be185d", radio);
       addBox("radio-panel", [0.72, 0.2, 0.08], [0, 0.62, -0.32], "#fbcfe8", radio);
       addBox("radio-knob", [0.14, 0.14, 0.08], [0.36, 0.25, -0.34], "#fbbf24", radio);
+      addBox("radio-antenna", [0.04, 0.52, 0.04], [-0.38, 1.04, 0], "#fbbf24", radio);
 
       const dustGeometry = new THREE.BufferGeometry();
       const dustPositions = new Float32Array(72 * 3);
@@ -141,12 +150,15 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       const dust = new THREE.Points(dustGeometry, dustMaterial);
       scene.add(dust);
 
-      let activeScene: keyof typeof sceneColors = initialState.scene;
+      let activeScene: keyof typeof sceneColors = initialScene;
       const targetBackground = sceneColor.background.clone();
       const targetFog = sceneColor.fog.clone();
       const targetHemisphere = sceneColor.hemisphere.clone();
       const targetKey = sceneColor.key.clone();
       const targetDust = sceneColor.dust.clone();
+      const targetViolet = sceneColor.violet.clone();
+      const targetPink = sceneColor.pink.clone();
+      let automaticScene = normalizeWanderScenePreference(storedScene) === "auto" || !storedScene;
       const syncScene = (sceneKey: string, immediate = false) => {
         activeScene = normalizeWanderScene(sceneKey);
         const colors = sceneColors[activeScene];
@@ -155,17 +167,23 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
         targetHemisphere.copy(colors.hemisphere);
         targetKey.copy(colors.key);
         targetDust.copy(colors.dust);
+        targetViolet.copy(colors.violet);
+        targetPink.copy(colors.pink);
         if (immediate) {
           background.copy(targetBackground);
           scene.fog?.color.copy(targetFog);
           hemisphereLight.color.copy(targetHemisphere);
           keyLight.color.copy(targetKey);
           dustMaterial.color.copy(targetDust);
+          violetGlow.color.copy(targetViolet);
+          pinkGlow.color.copy(targetPink);
         }
       };
       syncScene(activeScene, true);
       const handleSceneChange = (event: Event) => {
-        const sceneKey = (event as CustomEvent<{ scene?: string }>).detail?.scene;
+        const detail = (event as CustomEvent<{ scene?: string; preference?: string }>).detail;
+        automaticScene = detail.preference === "auto";
+        const sceneKey = detail.scene;
         if (sceneKey) syncScene(sceneKey);
       };
       const handleStorageChange = (event: StorageEvent) => {
@@ -173,6 +191,10 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       };
       window.addEventListener("muxin-wander-scene", handleSceneChange, cleanupOptions);
       window.addEventListener("storage", handleStorageChange, cleanupOptions);
+      const timeSceneTimer = window.setInterval(() => {
+        if (automaticScene) syncScene(getWanderTimeScene());
+      }, 60_000);
+      cleanupController.signal.addEventListener("abort", () => window.clearInterval(timeSceneTimer), { once: true });
 
       let current = views.center;
       let cameraTarget = new THREE.Vector3(...current.target);
@@ -285,6 +307,8 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
         hemisphereLight.color.lerp(targetHemisphere, blend);
         keyLight.color.lerp(targetKey, blend);
         dustMaterial.color.lerp(targetDust, blend);
+        violetGlow.color.lerp(targetViolet, blend);
+        pinkGlow.color.lerp(targetPink, blend);
         dustMaterial.opacity = activeScene === "day" ? 0.32 : 0.55;
         radio.position.y = 0.15 + (reduce ? 0 : Math.sin(time * 1.4) * 0.025);
         keyLight.position.x = -4 + (reduce ? 0 : Math.sin(time * 0.35) * 0.35);
