@@ -113,6 +113,44 @@ godot --headless --path tools/Pixelorama --export-release "Linux 64-bit" <output
 不依赖桌面显示器。当前服务器尚未安装 Godot，因此这条链路保留为下一步实验，不把 GUI
 可用性误认为自动化能力。
 
+### ✅ 已验证的 headless 工作流（2026-08-05）
+
+服务器上的 Godot 4.6.3 与 Pixelorama v1.2 正式版源码均已就位并验证：
+
+- 工具目录：`tools/godot-4.6.3/Godot_v4.6.3-stable_linux.x86_64`
+- Pixelorama 源码：`tools/Pixelorama-1.2/`（v1.2 正式版，与 Godot 4.6.3 匹配；
+  `tools/Pixelorama/` 是 master 开发分支，语法超前于 4.6.3，不能直接用于导入）
+- 自动化入口：`tools/Pixelorama-1.2/wander_build_export.{gd,tscn}`
+  （加载 6 层资产 → 构建多图层工程 → 逐层导出 PNG → 生成 .pxo 供手工编辑）
+
+已验证命令：
+
+```bash
+# 1. 首次导入（建立资源缓存）
+Godot_v4.6.3-stable_linux.x86_64 --headless --path ../Pixelorama-1.2 --import
+
+# 2. CLI 版本/导出（单图）
+Godot_v4.6.3-stable_linux.x86_64 --headless --path ../Pixelorama-1.2 --quit -- \
+  input.png --export --output out.png
+
+# 3. 多层工程构建 + 逐层导出 + 生成 .pxo
+Godot_v4.6.3-stable_linux.x86_64 --headless --path ../Pixelorama-1.2 \
+  res://wander_build_export.tscn
+```
+
+验证结果：
+
+- 6 层资产全部加载为命名图层（sky/outside/room/objects/light/foreground），
+  index 正确（需手动设置 `layer.index`，否则 `BaseLayer.serialize()` 的 assert 会失败）；
+- 逐层导出 PNG 全部成功（2048×1152 RGBA）；
+- 生成的 `.pxo` 可被 Pixelorama CLI 重新打开（`--size` 输出正确），并能重新导出混合图；
+- 注意：`save_pxo_file` 在 headless 下返回 `false` 但文件完整可用（UI 相关返回值问题）；
+- 注意：Pixelorama 内置 `--split-layers` 导出循环在 headless 下会在首层后中断
+  （UI 空引用），所以逐层导出走 automation 脚本直接保存 cel 图像，更可靠。
+
+下载经验：GitHub/SourceForge 直连限速严重（几十 KB/s），用 GitHub 代理镜像
+（如 `ghfast.top`、`gh-proxy.com` 前缀）可满速下载 Godot 与 Pixelorama 发布包。
+
 ## 4. 来源记录
 
 每个被接受的主视觉或图层必须附带来源记录：
