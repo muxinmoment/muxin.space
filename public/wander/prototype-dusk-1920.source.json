@@ -1,0 +1,10 @@
+{
+  "canvas": "1920x1080",
+  "runtimeSize": "2048x1152",
+  "scene": "dusk",
+  "source": "procedural-prototype",
+  "palette": ["#1d2038", "#51466b", "#e17b58", "#ffb45f", "#ffe0a0"],
+  "layers": ["sky", "outside", "room", "objects", "light", "foreground"],
+  "generator": "scripts/generate-wander-prototype.py",
+  "review": "pending"
+}
