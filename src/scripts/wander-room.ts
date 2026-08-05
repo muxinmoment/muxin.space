@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { getWanderRoomState, getWanderStorage, getWanderTimeScene, normalizeWanderScene, normalizeWanderScenePreference, readStorageValue, readVisitedProgress, recordRecentProgress, shouldInitializeWander, writeStorageValue, writeVisitedProgress } from "../utils/wander-storage";
+import { getWanderRoomState, getWanderStorage, getWanderTimeScene, normalizeWanderScene, normalizeWanderScenePreference, readStorageValue, readVisitedProgress, readWanderGameProgress, recordRecentProgress, shouldInitializeWander, writeStorageValue, writeVisitedProgress } from "../utils/wander-storage";
 
 const root = document.querySelector<HTMLElement>("[data-wander-3d]");
 if (root && shouldInitializeWander(root.dataset.ready)) {
@@ -278,7 +278,15 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
         updatePointer(event);
         raycaster.setFromCamera(pointer, camera);
         const key = findHotspot(raycaster.intersectObjects(hotspots, true)[0]?.object);
-        if (key && !dragged) choose(key);
+        if (key && !dragged) {
+          const gameProgress = readWanderGameProgress(storage, "muxin-wander-games");
+          if (key === "anime" && !gameProgress.completed.includes("anime")) {
+            window.dispatchEvent(new CustomEvent("wander-game-open", { detail: { key: "anime" } }));
+            choose("anime");
+          } else {
+            choose(key);
+          }
+        }
       }, cleanupOptions);
       const resumeKey = initialState.resumeKey;
       if (resumeKey !== "center") {

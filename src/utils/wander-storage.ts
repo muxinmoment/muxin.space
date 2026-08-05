@@ -12,6 +12,13 @@ export type StorageLike = Pick<Storage, "getItem" | "setItem">;
 export type SiteMode = "career" | "wander";
 export type WanderScene = "dawn" | "day" | "dusk" | "night";
 export type WanderScenePreference = WanderScene | "auto";
+export type WanderGameKey = "anime" | "photo" | "notes" | "memo";
+
+export type WanderGameProgress = {
+  version: 1;
+  completed: WanderGameKey[];
+  completedAt: Partial<Record<WanderGameKey, number>>;
+};
 
 export type WanderRoomState = {
   scene: WanderScene;
@@ -30,6 +37,45 @@ export const getWanderTimeScene = (date = new Date()): WanderScene => {
 export const normalizeWanderScene = (value: unknown): WanderScene => value === "dawn" || value === "day" || value === "dusk" || value === "night" ? value : "night";
 
 export const normalizeWanderScenePreference = (value: unknown): WanderScenePreference => value === "auto" ? "auto" : normalizeWanderScene(value);
+
+const WANDER_GAME_KEYS: WanderGameKey[] = ["anime", "photo", "notes", "memo"];
+
+export const parseWanderGameProgress = (raw: string | null): WanderGameProgress => {
+  const stored = parseJson(raw);
+  if (!stored || typeof stored !== "object" || Array.isArray(stored)) return { version: 1, completed: [], completedAt: {} };
+  const value = stored as { completed?: unknown; completedAt?: unknown };
+  const completed = Array.isArray(value.completed)
+    ? [...new Set(value.completed.filter((key): key is WanderGameKey => typeof key === "string" && WANDER_GAME_KEYS.includes(key as WanderGameKey)))]
+    : [];
+  const completedAt: Partial<Record<WanderGameKey, number>> = {};
+  if (value.completedAt && typeof value.completedAt === "object" && !Array.isArray(value.completedAt)) {
+    for (const key of completed) {
+      const timestamp = (value.completedAt as Record<string, unknown>)[key];
+      if (isValidTimestamp(timestamp)) completedAt[key] = timestamp;
+    }
+  }
+  return { version: 1, completed, completedAt };
+};
+
+export const readWanderGameProgress = (storage: StorageLike | null, key: string): WanderGameProgress => parseWanderGameProgress(readStorageValue(storage, key));
+
+export const writeWanderGameProgress = (storage: StorageLike | null, key: string, progress: WanderGameProgress): boolean => {
+  const completed = [...new Set(progress.completed)].filter((value): value is WanderGameKey => WANDER_GAME_KEYS.includes(value));
+  const completedAt: Partial<Record<WanderGameKey, number>> = {};
+  completed.forEach((gameKey) => {
+    const timestamp = progress.completedAt[gameKey];
+    if (isValidTimestamp(timestamp)) completedAt[gameKey] = timestamp;
+  });
+  return writeStorageValue(storage, key, JSON.stringify({ version: 1, completed, completedAt }));
+};
+
+export const completeWanderGame = (storage: StorageLike | null, storageKey: string, gameKey: WanderGameKey, now = Date.now()): WanderGameProgress => {
+  const progress = readWanderGameProgress(storage, storageKey);
+  if (!progress.completed.includes(gameKey)) progress.completed.push(gameKey);
+  if (isValidTimestamp(now)) progress.completedAt[gameKey] = now;
+  writeWanderGameProgress(storage, storageKey, progress);
+  return progress;
+};
 
 export const normalizeSiteMode = (value: unknown): SiteMode => value === "wander" ? "wander" : "career";
 
