@@ -6,6 +6,14 @@
   </div>
   <div class="wander-diorama-stage" data-diorama-stage>
     <div class="wander-diorama-art" data-diorama-art>
+      <div class="wander-pixel-layers" aria-hidden="true">
+        <img class="wander-pixel-layer pixel-layer-sky" data-diorama-layer="sky" data-layer-depth="0.1" style="--layer-depth: .1" src="/wander/dusk/sky.webp" alt="" width="320" height="180" />
+        <img class="wander-pixel-layer pixel-layer-outside" data-diorama-layer="outside" data-layer-depth="0.18" style="--layer-depth: .18" src="/wander/dusk/outside.webp" alt="" width="320" height="180" />
+        <img class="wander-pixel-layer pixel-layer-room" data-diorama-layer="room" data-layer-depth="0.3" style="--layer-depth: .3" src="/wander/dusk/room.webp" alt="" width="320" height="180" />
+        <img class="wander-pixel-layer pixel-layer-objects" data-diorama-layer="objects" data-layer-depth="0.55" style="--layer-depth: .55" src="/wander/dusk/objects.webp" alt="" width="320" height="180" />
+        <img class="wander-pixel-layer pixel-layer-light" data-diorama-layer="light" data-layer-depth="0.72" style="--layer-depth: .72" src="/wander/dusk/light.webp" alt="" width="320" height="180" />
+        <img class="wander-pixel-layer pixel-layer-foreground" data-diorama-layer="foreground" data-layer-depth="0.9" style="--layer-depth: .9" src="/wander/dusk/foreground.webp" alt="" width="320" height="180" />
+      </div>
       <svg class="wander-diorama-svg" viewBox="0 0 960 540" role="img" aria-label="夕阳中的像素工作室">
         <defs>
           <linearGradient id="diorama-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b96b75"/><stop offset="1" stop-color="#ffd17d"/></linearGradient>
@@ -65,6 +73,7 @@
         <button type="button" data-room-camera="photo" class="diorama-hotspot hotspot-photo">照片墙</button>
         <button type="button" data-room-camera="notes" class="diorama-hotspot hotspot-notes">书桌</button>
         <button type="button" data-room-camera="memo" class="diorama-hotspot hotspot-memo">收音机</button>
+        <button type="button" class="wander-easter-egg" data-wander-easter-egg aria-label="发现窗边的小彩蛋">✦</button>
       </div>
     </div>
     <div class="wander-3d-hint" data-room-hint>拖动看看 · 点击物件开始漫游</div>
@@ -91,20 +100,36 @@
 </section>
 
 <style>
-  .wander-diorama-shell { margin-top: 2rem; overflow: hidden; border: 3px solid #2d1e3e; border-radius: 1rem; background: #211a35; color: #fff7ed; box-shadow: 5px 5px 0 #171225, 0 1.5rem 3rem rgba(45, 30, 62, .2); }
+  .wander-diorama-shell { position: relative; margin-top: 2rem; overflow: hidden; border: 3px solid #2d1e3e; border-radius: 1rem; background: #211a35; color: #fff7ed; box-shadow: 5px 5px 0 #171225, 0 1.5rem 3rem rgba(45, 30, 62, .2); }
   .wander-diorama-copy { padding: 1.5rem 1.5rem 0; }
   .wander-diorama-copy h2 { margin-top: .5rem; font-family: var(--font-serif); font-size: 1.8rem; letter-spacing: -.03em; text-shadow: 3px 3px 0 #2d1e3e; }
   .wander-diorama-copy p:last-child { max-width: 38rem; margin-top: .65rem; color: #e6d6e6; font-size: .875rem; line-height: 1.75rem; }
   .wander-diorama-stage { position: relative; min-height: 500px; overflow: hidden; background: #3a2e45; }
-  .wander-diorama-art { position: absolute; inset: 0; transform: translate3d(var(--parallax-x, 0px), var(--parallax-y, 0px), 0); transition: transform .18s ease-out; }
-  .wander-diorama-svg { display: block; width: 100%; height: 100%; shape-rendering: crispEdges; image-rendering: pixelated; }
+  .wander-diorama-art { position: absolute; inset: 0; }
+  .wander-pixel-layers { position: absolute; inset: 0; overflow: hidden; background: #34304b; }
+  .wander-pixel-layer { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; transition: transform .45s cubic-bezier(.22,.8,.28,1), opacity .3s, filter .5s; transform: translate3d(calc(var(--parallax-x, 0px) * var(--layer-depth, 1) + var(--focus-x, 0px) * var(--layer-depth, 1)), calc(var(--parallax-y, 0px) * var(--layer-depth, 1) + var(--focus-y, 0px) * var(--layer-depth, 1)), 0); transform-origin: center; }
+  .wander-diorama-svg { display: none; }
   .diorama-layer { transition: transform .45s cubic-bezier(.22,.8,.28,1), opacity .3s; transform-origin: center; }
-  .wander-diorama-art[data-focus="anime"] [data-diorama-layer="shelf"], .wander-diorama-art[data-focus="photo"] [data-diorama-layer="photos"], .wander-diorama-art[data-focus="notes"] [data-diorama-layer="desk"], .wander-diorama-art[data-focus="memo"] [data-diorama-layer="radio"] { transform: scale(1.08); }
-  .wander-diorama-art[data-focus="anime"] [data-diorama-layer="photos"], .wander-diorama-art[data-focus="anime"] [data-diorama-layer="desk"], .wander-diorama-art[data-focus="anime"] [data-diorama-layer="radio"], .wander-diorama-art[data-focus="photo"] [data-diorama-layer="shelf"], .wander-diorama-art[data-focus="photo"] [data-diorama-layer="desk"], .wander-diorama-art[data-focus="photo"] [data-diorama-layer="radio"], .wander-diorama-art[data-focus="notes"] [data-diorama-layer="shelf"], .wander-diorama-art[data-focus="notes"] [data-diorama-layer="photos"], .wander-diorama-art[data-focus="notes"] [data-diorama-layer="radio"], .wander-diorama-art[data-focus="memo"] [data-diorama-layer="shelf"], .wander-diorama-art[data-focus="memo"] [data-diorama-layer="photos"], .wander-diorama-art[data-focus="memo"] [data-diorama-layer="desk"] { opacity: .55; }
+  .wander-pixel-layer[data-diorama-layer="sky"] { z-index: 1; }
+  .wander-pixel-layer[data-diorama-layer="outside"] { z-index: 2; }
+  .wander-pixel-layer[data-diorama-layer="room"] { z-index: 3; }
+  .wander-pixel-layer[data-diorama-layer="objects"] { z-index: 4; }
+  .wander-pixel-layer[data-diorama-layer="light"] { z-index: 5; pointer-events: none; mix-blend-mode: screen; opacity: .78; animation: wander-light-breathe 10s ease-in-out infinite; }
+  .wander-pixel-layer[data-diorama-layer="foreground"] { z-index: 6; }
+  .wander-diorama-shell[data-scene="night"] .wander-pixel-layer[data-diorama-layer="light"] { opacity: .5; }
+  @keyframes wander-light-breathe { 0%, 100% { opacity: .68; } 50% { opacity: .82; } }
+  @keyframes wander-dust-drift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(5px, -3px, 0); } }
+  .wander-diorama-shell::after { content: ""; position: absolute; inset: auto 0 0; height: 2px; background: #ffb45f; opacity: .3; pointer-events: none; }
+  .wander-pixel-layer[data-diorama-layer="outside"] { animation: wander-dust-drift 18s ease-in-out alternate infinite; }
+  .wander-pixel-layer[data-diorama-layer="sky"], .wander-pixel-layer[data-diorama-layer="outside"] { will-change: transform; }
+  .wander-diorama-art[data-focus="anime"] .wander-pixel-layer, .wander-diorama-art[data-focus="photo"] .wander-pixel-layer, .wander-diorama-art[data-focus="notes"] .wander-pixel-layer, .wander-diorama-art[data-focus="memo"] .wander-pixel-layer { transform: translate3d(calc(var(--focus-x, 0px) * var(--layer-depth, 0)), calc(var(--focus-y, 0px) * var(--layer-depth, 0)), 0); }
+  .wander-diorama-art[data-focus="anime"] .wander-pixel-layer[data-diorama-layer="objects"], .wander-diorama-art[data-focus="photo"] .wander-pixel-layer[data-diorama-layer="objects"], .wander-diorama-art[data-focus="notes"] .wander-pixel-layer[data-diorama-layer="objects"], .wander-diorama-art[data-focus="memo"] .wander-pixel-layer[data-diorama-layer="objects"] { transform: translate3d(calc(var(--parallax-x, 0px) * var(--layer-depth, 1) + var(--focus-x, 0px) * var(--layer-depth, 1)), calc(var(--parallax-y, 0px) * var(--layer-depth, 1) + var(--focus-y, 0px) * var(--layer-depth, 1)), 0) scale(1.08); }
+  .wander-diorama-art[data-focus="anime"] .wander-pixel-layer[data-diorama-layer="light"], .wander-diorama-art[data-focus="photo"] .wander-pixel-layer[data-diorama-layer="light"], .wander-diorama-art[data-focus="notes"] .wander-pixel-layer[data-diorama-layer="light"], .wander-diorama-art[data-focus="memo"] .wander-pixel-layer[data-diorama-layer="light"] { opacity: .72; }
   .wander-diorama-hotspots { position: absolute; inset: 0; }
   .diorama-hotspot { position: absolute; border: 2px solid #ffd166; border-radius: .35rem; background: rgba(45, 30, 62, .82); padding: .45rem .65rem; color: #fff1bd; font-size: .72rem; box-shadow: 3px 3px 0 #171225; transition: transform .18s, background .18s; }
   .diorama-hotspot:hover, .diorama-hotspot[data-active="true"] { transform: translate(-2px, -2px); background: #704c9e; }
   .hotspot-anime { left: 12%; top: 48%; }.hotspot-photo { left: 43%; top: 45%; }.hotspot-notes { left: 72%; top: 54%; }.hotspot-memo { right: 7%; top: 72%; }
+  .wander-easter-egg { position: absolute; left: 57%; top: 34%; width: 1.5rem; height: 1.5rem; border: 0; border-radius: 50%; background: transparent; color: #ffe0a0; font-size: .9rem; opacity: .6; transition: transform .2s, opacity .2s, text-shadow .2s; }.wander-easter-egg:hover, .wander-easter-egg:focus-visible { opacity: 1; transform: scale(1.2); text-shadow: 0 0 8px #ffb45f; outline: none; }.wander-easter-egg[data-found="true"] { color: #ffb45f; opacity: 1; }
   .wander-3d-hint { position: absolute; top: 1rem; left: 1rem; border: 2px solid #5b4378; border-radius: .35rem; background: #211a35; padding: .4rem .7rem; color: #f4d8ff; font-size: .68rem; box-shadow: 2px 2px 0 #171225; }
   .wander-3d-memory { position: absolute; top: 1rem; right: 1rem; display: grid; gap: .15rem; max-width: 13rem; border: 2px solid #5b4378; border-radius: .35rem; background: #211a35; padding: .45rem .7rem; color: #f0dff7; font-size: .68rem; text-align: right; box-shadow: 2px 2px 0 #171225; }
   .wander-3d-memory span:empty { display: none; }.wander-3d-memory span:last-child { color: #ffd166; }
@@ -117,6 +142,9 @@
   .wander-game-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }.wander-game-kicker { color: #ffd166; font-size: .65rem; letter-spacing: .16em; }.wander-game-heading h3 { margin-top: .35rem; font-family: var(--font-serif); font-size: 1.35rem; }.wander-game-close { border: 2px solid #5b4378; border-radius: .4rem; padding: .15rem .55rem; color: #f4d8ff; font-size: 1.25rem; line-height: 1; }.wander-game-copy { margin-top: .5rem; color: #d9c8e5; font-size: .8rem; line-height: 1.5rem; }
   .wander-book-slots, .wander-book-tray { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }.wander-book-slots { margin-top: 1rem; }.wander-book-tray { margin-top: .75rem; min-height: 3.5rem; }.wander-book-slot, .wander-book { min-height: 3.5rem; border: 2px solid #76568a; border-radius: .35rem; padding: .55rem .45rem; font-size: .75rem; box-shadow: 3px 3px 0 #0f0d1a; transition: transform .15s, border-color .15s, background .15s; }.wander-book-slot { background: #302146; color: #cdb8dc; }.wander-book-slot[data-selected="true"], .wander-book[data-selected="true"] { border-color: #ffd166; transform: translate(-1px, -1px); }.wander-book { background: #704c9e; color: #fff7ed; cursor: pointer; }.wander-book:hover, .wander-book-slot:hover { border-color: #ffd166; transform: translate(-1px, -1px); }.wander-game-status { min-height: 1.25rem; margin-top: .8rem; color: #e7c6ff; font-size: .75rem; }.wander-game-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-top: .5rem; font-size: .72rem; }.wander-game-actions button, .wander-game-actions a, .wander-game-complete a { border: 2px solid #5b4378; border-radius: .35rem; padding: .4rem .65rem; color: #f4d8ff; }.wander-game-actions button:hover, .wander-game-actions a:hover, .wander-game-complete a:hover { border-color: #ffd166; color: #fff7ed; }.wander-game-complete { display: grid; gap: .3rem; margin-top: 1rem; border: 2px solid #d59b37; border-radius: .4rem; background: #4d3a30; padding: .8rem; color: #fff1bd; font-size: .78rem; }.wander-game-complete span { color: #f7dfac; }.wander-game-complete a { width: fit-content; margin-top: .3rem; border-color: #d59b37; color: #fff1bd; }
   .wander-diorama-shell[data-scene="dawn"] .wander-diorama-svg { filter: saturate(.8) brightness(.85); }.wander-diorama-shell[data-scene="day"] .wander-diorama-svg { filter: saturate(.9) brightness(1.05); }.wander-diorama-shell[data-scene="night"] .wander-diorama-svg { filter: saturate(.8) brightness(.7); }
+  .wander-diorama-shell[data-scene="dawn"] .wander-pixel-layers { filter: saturate(.78) brightness(.88) hue-rotate(8deg); }.wander-diorama-shell[data-scene="day"] .wander-pixel-layers { filter: saturate(.86) brightness(1.08); }.wander-diorama-shell[data-scene="night"] .wander-pixel-layers { filter: saturate(.72) brightness(.62) hue-rotate(12deg); }
+  .wander-diorama-shell[data-revealed~="anime"] .pixel-layer-objects { filter: saturate(1.1) brightness(1.04); }.wander-diorama-shell[data-revealed~="photo"] .pixel-layer-objects { filter: saturate(1.05) brightness(1.03); }.wander-diorama-shell[data-revealed~="notes"] .pixel-layer-light { opacity: .9; }.wander-diorama-shell[data-revealed~="memo"] .pixel-layer-objects { filter: contrast(1.04) saturate(1.08); }
+  @media (prefers-reduced-motion: reduce) { .wander-pixel-layer[data-diorama-layer="light"], .wander-pixel-layer[data-diorama-layer="outside"] { animation: none; } .wander-diorama-art, .wander-pixel-layer { transition: none; } }
   @media (max-width: 639px) { .wander-diorama-copy { padding: 1rem 1rem 0; }.wander-diorama-copy h2 { font-size: 1.5rem; }.wander-diorama-stage { min-height: 390px; }.wander-3d-controls { right: 1rem; bottom: 3.8rem; }.wander-3d-enter { left: 1rem; right: auto; }.hotspot-anime { left: 8%; }.hotspot-notes { left: 68%; }.wander-book-slots, .wander-book-tray { gap: .4rem; }.wander-book-slot, .wander-book { min-height: 3.25rem; font-size: .68rem; } }
 </style>
 

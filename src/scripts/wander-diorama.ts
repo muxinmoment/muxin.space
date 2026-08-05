@@ -11,8 +11,16 @@ if (root && root.dataset.dioramaReady !== "true") {
   const progress = root.querySelector<HTMLElement>("[data-room-progress]");
   const enter = root.querySelector<HTMLAnchorElement>("[data-room-enter]");
   const skip = root.querySelector<HTMLButtonElement>("[data-wander-3d-skip]");
+  const easterEgg = root.querySelector<HTMLButtonElement>("[data-wander-easter-egg]");
   const controls = [...root.querySelectorAll<HTMLButtonElement>("[data-room-camera]")];
   const hotspots = [...root.querySelectorAll<HTMLButtonElement>(".diorama-hotspot")];
+  const focusOffsets: Record<string, [number, number]> = {
+    center: [0, 0],
+    anime: [12, -4],
+    photo: [-2, -5],
+    notes: [-10, 4],
+    memo: [-16, 8],
+  };
   const views: Record<string, { href: string; label: string }> = {
     center: { href: "/wander/", label: "逛一圈" },
     anime: { href: "/wander/anime/", label: "进入番剧书架" },
@@ -28,6 +36,7 @@ if (root && root.dataset.dioramaReady !== "true") {
   const updateProgress = () => {
     const visited = readVisitedProgress(storage, visitedKey);
     if (progress) progress.textContent = `已探索 ${visited.size} / 4`;
+    root.dataset.revealed = [...visited].join(" ");
   };
 
   const updateScene = (scene: string) => {
@@ -36,6 +45,9 @@ if (root && root.dataset.dioramaReady !== "true") {
 
   const focus = (key: string, remember = true) => {
     const view = views[key] ?? views.center;
+    const [focusX, focusY] = focusOffsets[key] ?? focusOffsets.center;
+    art?.style.setProperty("--focus-x", `${focusX}px`);
+    art?.style.setProperty("--focus-y", `${focusY}px`);
     art?.setAttribute("data-focus", key === "center" ? "" : key);
     controls.forEach((button) => {
       const active = button.dataset.roomCamera === key;
@@ -79,6 +91,11 @@ if (root && root.dataset.dioramaReady !== "true") {
   window.addEventListener("wander-game-complete", () => {
     if (hint) hint.textContent = "书架已点亮 · 继续发现下一条支线";
     updateProgress();
+  });
+  easterEgg?.addEventListener("click", () => {
+    easterEgg.dataset.found = "true";
+    if (memory) memory.textContent = "窗边彩蛋：今天的光刚好落在这里";
+    if (hint) hint.textContent = "你发现了一枚藏在窗边的小星星";
   });
   window.addEventListener("muxin-wander-scene", (event) => {
     const detail = (event as CustomEvent<{ scene?: string }>).detail;
