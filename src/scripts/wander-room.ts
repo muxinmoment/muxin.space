@@ -86,13 +86,13 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       addBox("rug", [5.4, 0.035, 3.2], [0, -0.08, 0.7], "#3b245f");
       addBox("rug-inlay", [4.9, 0.04, 2.7], [0, -0.055, 0.7], "#4c2d75");
 
-      const window = new THREE.Group();
-      window.position.set(1.1, 2.55, -3.68);
-      addBox("window-frame", [2.25, 1.55, 0.12], [0, 0, 0], "#31234c", window);
-      addBox("window-glass", [1.95, 1.25, 0.14], [0, 0, 0.08], "#312e81", window);
-      addBox("window-cross-v", [0.08, 1.25, 0.16], [0, 0, 0.16], "#8b5cf6", window);
-      addBox("window-cross-h", [1.95, 0.08, 0.16], [0, 0, 0.16], "#8b5cf6", window);
-      scene.add(window);
+      const windowFrame = new THREE.Group();
+      windowFrame.position.set(1.1, 2.55, -3.68);
+      addBox("window-frame", [2.25, 1.55, 0.12], [0, 0, 0], "#31234c", windowFrame);
+      addBox("window-glass", [1.95, 1.25, 0.14], [0, 0, 0.08], "#312e81", windowFrame);
+      addBox("window-cross-v", [0.08, 1.25, 0.16], [0, 0, 0.16], "#8b5cf6", windowFrame);
+      addBox("window-cross-h", [1.95, 0.08, 0.16], [0, 0, 0.16], "#8b5cf6", windowFrame);
+      scene.add(windowFrame);
 
       const shelf = new THREE.Group();
       shelf.userData.roomKey = "anime";
