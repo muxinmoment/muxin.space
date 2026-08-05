@@ -99,6 +99,20 @@ public/wander/<scene>/
 - 导出运行时 WebP 前保留原始工程文件；
 - Pixelorama 源码和工程目录放在工作区工具目录，不复制进博客仓库。
 
+Pixelorama 当前没有独立的图片导出 CLI，但仓库自己的 CI 已验证 Godot headless
+导入和项目导出路径：
+
+```bash
+godot --headless --path tools/Pixelorama --import
+godot --headless --path tools/Pixelorama --export-release "Linux 64-bit" <output>
+```
+
+这条命令导出的是 Pixelorama 应用本身，不等于自动打开一个 `.pxo` 并导出 WebP。
+要实现 Wander 的批处理，需要在 Pixelorama 工程中增加一个只负责加载工程、合成指定图层、
+导出 PNG/WebP 的 Godot automation entrypoint；运行时使用 Godot 4.6.3 headless，
+不依赖桌面显示器。当前服务器尚未安装 Godot，因此这条链路保留为下一步实验，不把 GUI
+可用性误认为自动化能力。
+
 ## 4. 来源记录
 
 每个被接受的主视觉或图层必须附带来源记录：
