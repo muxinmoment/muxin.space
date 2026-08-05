@@ -43,10 +43,10 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       const cleanupOptions = { signal: cleanupController.signal };
       const scene = new THREE.Scene();
       const sceneColors = {
-        dawn: { background: new THREE.Color("#6e7f94"), fog: new THREE.Color("#6e7f94"), hemisphere: new THREE.Color("#d4c5b0"), key: new THREE.Color("#e8e0d5"), dust: new THREE.Color("#d5cbb8"), violet: new THREE.Color("#8b7bb8"), pink: new THREE.Color("#c8797d") },
-        day: { background: new THREE.Color("#87aec8"), fog: new THREE.Color("#87aec8"), hemisphere: new THREE.Color("#e8eae4"), key: new THREE.Color("#f5f0e5"), dust: new THREE.Color("#e8e6da"), violet: new THREE.Color("#7f9ea3"), pink: new THREE.Color("#cf9594") },
-        dusk: { background: new THREE.Color("#3a2e45"), fog: new THREE.Color("#3a2e45"), hemisphere: new THREE.Color("#fed7aa"), key: new THREE.Color("#ffb347"), dust: new THREE.Color("#ffe2a3"), violet: new THREE.Color("#9b5bb0"), pink: new THREE.Color("#eb766c") },
-        night: { background: new THREE.Color("#1c1935"), fog: new THREE.Color("#1c1935"), hemisphere: new THREE.Color("#6b8cce"), key: new THREE.Color("#bcc7e8"), dust: new THREE.Color("#c8cee4"), violet: new THREE.Color("#8b5cf6"), pink: new THREE.Color("#ec4899") },
+        dawn: { background: new THREE.Color("#6e7f94"), fog: new THREE.Color("#6e7f94"), hemisphere: new THREE.Color("#d4c5b0"), key: new THREE.Color("#e8e0d5"), dust: new THREE.Color("#d5cbb8"), violet: new THREE.Color("#8b7bb8"), pink: new THREE.Color("#c8797d"), window: new THREE.Color("#d7e4f0"), windowIntensity: 0.7 },
+        day: { background: new THREE.Color("#87aec8"), fog: new THREE.Color("#87aec8"), hemisphere: new THREE.Color("#e8eae4"), key: new THREE.Color("#f5f0e5"), dust: new THREE.Color("#e8e6da"), violet: new THREE.Color("#7f9ea3"), pink: new THREE.Color("#cf9594"), window: new THREE.Color("#fff7df"), windowIntensity: 0.9 },
+        dusk: { background: new THREE.Color("#3a2e45"), fog: new THREE.Color("#3a2e45"), hemisphere: new THREE.Color("#fed7aa"), key: new THREE.Color("#ffb347"), dust: new THREE.Color("#ffe2a3"), violet: new THREE.Color("#9b5bb0"), pink: new THREE.Color("#eb766c"), window: new THREE.Color("#ffb347"), windowIntensity: 1.4 },
+        night: { background: new THREE.Color("#1c1935"), fog: new THREE.Color("#1c1935"), hemisphere: new THREE.Color("#6b8cce"), key: new THREE.Color("#bcc7e8"), dust: new THREE.Color("#c8cee4"), violet: new THREE.Color("#8b5cf6"), pink: new THREE.Color("#ec4899"), window: new THREE.Color("#7184c0"), windowIntensity: 0.35 },
       };
       const sceneColor = sceneColors[initialScene];
       const background = sceneColor.background.clone();
@@ -65,10 +65,15 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       const hemisphereLight = new THREE.HemisphereLight(sceneColor.hemisphere, "#2a1e33", 1.6);
       scene.add(hemisphereLight);
       const keyLight = new THREE.DirectionalLight(sceneColor.key, 3.5);
-      keyLight.position.set(1.5, 4.5, 2);
+      keyLight.position.set(1.1, 4.5, -1.1);
+      keyLight.target.position.set(0.8, 0.2, 0.9);
       keyLight.castShadow = true;
       keyLight.shadow.mapSize.set(512, 512);
       scene.add(keyLight);
+      scene.add(keyLight.target);
+      const windowGlow = new THREE.PointLight("#ffb347", 1.4, 5, 2);
+      windowGlow.position.set(1.1, 2.3, -2.2);
+      scene.add(windowGlow);
       const violetGlow = new THREE.PointLight("#8b5cf6", 1.2, 5, 2);
       violetGlow.position.set(-2, 1.2, -2.5);
       scene.add(violetGlow);
@@ -110,6 +115,10 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       skyPlane.position.set(1.1, 2.3, -2.92);
       skyPlane.name = "sky";
       scene.add(skyPlane);
+      const sunPatch = new THREE.Mesh(new THREE.PlaneGeometry(1.7, 1.1), new THREE.MeshBasicMaterial({ color: "#ffcf76", transparent: true, opacity: 0.18, depthWrite: false }));
+      sunPatch.rotation.x = -Math.PI / 2;
+      sunPatch.position.set(0.9, 0.055, 0.25);
+      scene.add(sunPatch);
       // Tree silhouettes outside
       [[-0.5, 0.7], [0.8, 0.9], [-1.2, 0.55]].forEach(([tx, th]) => {
         addObj("tree", 0.3, th, 0.25, 1.1 + tx, 2.05 + th / 2, -2.88, "#2a1e33");
@@ -223,6 +232,8 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
       const targetDust = sceneColor.dust.clone();
       const targetViolet = sceneColor.violet.clone();
       const targetPink = sceneColor.pink.clone();
+      const targetWindow = sceneColor.window.clone();
+      let targetWindowIntensity = sceneColor.windowIntensity;
       let automaticScene = normalizeWanderScenePreference(storedScene) === "auto" || !storedScene;
       const syncScene = (sceneKey: string, immediate = false) => {
         activeScene = normalizeWanderScene(sceneKey);
@@ -234,6 +245,8 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
         targetDust.copy(colors.dust);
         targetViolet.copy(colors.violet);
         targetPink.copy(colors.pink);
+        targetWindow.copy(colors.window);
+        targetWindowIntensity = colors.windowIntensity;
         if (immediate) {
           background.copy(targetBackground);
           scene.fog?.color.copy(targetFog);
@@ -242,6 +255,9 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
           dustMaterial.color.copy(targetDust);
           violetGlow.color.copy(targetViolet);
           pinkGlow.color.copy(targetPink);
+          windowGlow.color.copy(targetWindow);
+          windowGlow.intensity = targetWindowIntensity;
+          (sunPatch.material as THREE.MeshBasicMaterial).opacity = activeScene === "dusk" ? 0.18 : activeScene === "night" ? 0.04 : 0.1;
         }
       };
       syncScene(activeScene, true);
@@ -385,6 +401,9 @@ if (root && shouldInitializeWander(root.dataset.ready)) {
         dustMaterial.color.lerp(targetDust, blend);
         violetGlow.color.lerp(targetViolet, blend);
         pinkGlow.color.lerp(targetPink, blend);
+        windowGlow.color.lerp(targetWindow, blend);
+        windowGlow.intensity = THREE.MathUtils.lerp(windowGlow.intensity, targetWindowIntensity, blend);
+        (sunPatch.material as THREE.MeshBasicMaterial).opacity = THREE.MathUtils.lerp((sunPatch.material as THREE.MeshBasicMaterial).opacity, activeScene === "dusk" ? 0.18 : activeScene === "night" ? 0.04 : 0.1, blend);
         dustMaterial.opacity = activeScene === "day" ? 0.32 : 0.55;
         radio.position.y = 0.15 + (reduce ? 0 : Math.sin(time * 1.4) * 0.025);
         keyLight.position.x = -4 + (reduce ? 0 : Math.sin(time * 0.35) * 0.35);
