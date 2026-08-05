@@ -13,10 +13,10 @@ const counts = {
 ---
 
 <BaseLayout title="漫游 | muxin.space" description="番剧、摄影和不太正经的个人支线。">
-  <div class="mx-auto max-w-6xl" data-wander-room data-scene="dusk">
+  <div class="wander-pixel-ui mx-auto max-w-6xl" data-wander-room data-scene="dusk">
     <WanderRoom3D />
 
-    <section class="relative overflow-hidden rounded-[2rem] border border-violet-300/30 bg-[#17131f] p-6 text-white shadow-2xl shadow-violet-950/10 transition-colors duration-500 sm:p-10">
+    <section class="wander-pixel-panel relative overflow-hidden rounded-[2rem] border border-violet-300/30 bg-[#17131f] p-6 text-white shadow-2xl shadow-violet-950/10 transition-colors duration-500 sm:p-10">
       <div class="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(167,139,250,.2)_0,transparent_25%),radial-gradient(circle_at_80%_10%,rgba(244,114,182,.14)_0,transparent_22%),radial-gradient(circle_at_70%_90%,rgba(251,191,36,.12)_0,transparent_25%)]"></div>
       <div class="relative flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
         <div>
@@ -34,7 +34,7 @@ const counts = {
       </div>
 
       <div class="relative mt-10 grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
-        <div class="min-h-[250px] rounded-3xl border border-white/10 bg-white/[0.06] p-5 sm:p-7">
+        <div class="wander-pixel-status min-h-[250px] rounded-3xl border border-white/10 bg-white/[0.06] p-5 sm:p-7">
           <div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-[0.18em] text-violet-300">Room status</p><span class="text-xs text-violet-100/50">currently online</span></div>
           <div class="mt-8 grid gap-5 sm:grid-cols-2">
             <div><p class="text-xs text-violet-100/50">窗外天气</p><p data-scene-text class="mt-2 font-serif text-3xl">黄昏，光线正好</p></div>
@@ -47,15 +47,15 @@ const counts = {
           </div>
         </div>
         <div class="grid grid-cols-2 gap-4">
-          <a href="/wander/anime/" class="group flex min-h-[116px] flex-col justify-between rounded-3xl border border-violet-300/20 bg-violet-400/10 p-5 transition duration-300 hover:-translate-y-1 hover:bg-violet-400/20"><span class="text-3xl">📺</span><span><span class="block text-xs text-violet-200/50">{counts.anime} records</span><strong class="mt-1 block font-serif text-xl text-white group-hover:text-violet-200">番剧书架</strong></span></a>
-          <a href="/wander/photos/" class="group flex min-h-[116px] flex-col justify-between rounded-3xl border border-rose-300/20 bg-rose-400/10 p-5 transition duration-300 hover:-translate-y-1 hover:bg-rose-400/20"><span class="text-3xl">📷</span><span><span class="block text-xs text-rose-100/50">{counts.photo} albums</span><strong class="mt-1 block font-serif text-xl text-white group-hover:text-rose-200">照片墙</strong></span></a>
-          <a href="/wander/notes/" class="group flex min-h-[116px] flex-col justify-between rounded-3xl border border-amber-300/20 bg-amber-400/10 p-5 transition duration-300 hover:-translate-y-1 hover:bg-amber-400/20"><span class="text-3xl">✦</span><span><span class="block text-xs text-amber-100/50">{counts.essay} notes</span><strong class="mt-1 block font-serif text-xl text-white group-hover:text-amber-200">支线随笔</strong></span></a>
-          <a href="/memo/" class="group flex min-h-[116px] flex-col justify-between rounded-3xl border border-emerald-300/20 bg-emerald-400/10 p-5 transition duration-300 hover:-translate-y-1 hover:bg-emerald-400/20"><span class="text-3xl">🪵</span><span><span class="block text-xs text-emerald-100/50">小木广播</span><strong class="mt-1 block font-serif text-xl text-white group-hover:text-emerald-200">电台</strong></span></a>
+          <a href="/wander/anime/" class="wander-pixel-portal group flex min-h-[116px] flex-col justify-between rounded-3xl border border-violet-300/20 bg-violet-400/10 p-5 transition duration-300 hover:-translate-y-1 hover:bg-violet-400/20"><span class="text-3xl">📺</span><span><span class="block text-xs text-violet-200/50">{counts.anime} records</span><strong class="mt-1 block font-serif text-xl text-white group-hover:text-violet-200">番剧书架</strong></span></a>
+          <a href="/wander/photos/" class="wander-pixel-portal group flex min-h-[116px] flex-col justify-between rounded-3xl border border-rose-300/20 bg-rose-400/10 p-5 transition duration-300 hover:-translate-y-1 hover:bg-rose-400/20"><span class="text-3xl">📷</span><span><span class="block text-xs text-rose-100/50">{counts.photo} albums</span><strong class="mt-1 block font-serif text-xl text-white group-hover:text-rose-200">照片墙</strong></span></a>
+          <a href="/wander/notes/" class="wander-pixel-portal group flex min-h-[116px] flex-col justify-between rounded-3xl border border-amber-300/20 bg-amber-400/10 p-5 transition duration-300 hover:-translate-y-1 hover:bg-amber-400/20"><span class="text-3xl">✦</span><span><span class="block text-xs text-amber-100/50">{counts.essay} notes</span><strong class="mt-1 block font-serif text-xl text-white group-hover:text-amber-200">支线随笔</strong></span></a>
+          <a href="/memo/" class="wander-pixel-portal group flex min-h-[116px] flex-col justify-between rounded-3xl border border-emerald-300/20 bg-emerald-400/10 p-5 transition duration-300 hover:-translate-y-1 hover:bg-emerald-400/20"><span class="text-3xl">🪵</span><span><span class="block text-xs text-emerald-100/50">小木广播</span><strong class="mt-1 block font-serif text-xl text-white group-hover:text-emerald-200">电台</strong></span></a>
         </div>
       </div>
     </section>
 
-    <section class="wander-deferred-section mt-8 rounded-3xl border border-zinc-200 bg-white p-6 sm:p-8" data-wander-directory aria-labelledby="wander-directory-title">
+    <section class="wander-pixel-directory wander-deferred-section mt-8 rounded-3xl border border-zinc-200 bg-white p-6 sm:p-8" data-wander-directory aria-labelledby="wander-directory-title">
       <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p class="eyebrow">Room directory</p>
@@ -208,6 +208,21 @@ const counts = {
 
 <style>
   .wander-deferred-section { content-visibility: auto; contain-intrinsic-size: 0 560px; }
+  .wander-pixel-ui { --pixel-ink: #2d1e3e; --pixel-deep: #171225; --pixel-panel: #251b37; --pixel-gold: #ffd166; --pixel-lilac: #e7c6ff; }
+  .wander-pixel-ui .wander-pixel-panel { border: 3px solid var(--pixel-ink); border-radius: 1rem; box-shadow: 5px 5px 0 var(--pixel-deep), 0 1.5rem 3rem rgba(45, 30, 62, .16); }
+  .wander-pixel-ui .wander-pixel-panel h1 { text-shadow: 3px 3px 0 var(--pixel-ink); }
+  .wander-pixel-ui .wander-pixel-panel > div:first-child { opacity: .8; }
+  .wander-pixel-ui .wander-pixel-status { border: 2px solid #76568a; border-radius: .55rem; background: rgba(37, 27, 55, .7); box-shadow: 3px 3px 0 var(--pixel-deep); }
+  .wander-pixel-ui .wander-pixel-portal { border: 2px solid currentColor; border-radius: .55rem; box-shadow: 3px 3px 0 var(--pixel-deep); }
+  .wander-pixel-ui .wander-pixel-portal:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--pixel-deep); }
+  .wander-pixel-ui .wander-pixel-directory { border: 3px solid #3c2c4b; border-radius: 1rem; background: #fffaf0; box-shadow: 5px 5px 0 #c9b8d0; }
+  .wander-pixel-ui .wander-pixel-directory [data-wander-link] { border-width: 2px; border-radius: .5rem; box-shadow: 2px 2px 0 #c9b8d0; }
+  .wander-pixel-ui .wander-pixel-directory [data-wander-link]:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 #c9b8d0; }
+  .wander-pixel-ui .wander-pixel-directory [data-wander-link][data-visited="true"] { background: #fff1bd; border-color: #d59b37; }
+  .wander-pixel-ui > section:last-child article { border-width: 2px; border-radius: .75rem; box-shadow: 3px 3px 0 #c9b8d0; }
+  .wander-pixel-ui > section:last-child article > div > div { border-radius: .45rem; border-width: 2px; }
+  .wander-pixel-ui [data-scene-button] { box-shadow: 2px 2px 0 var(--pixel-deep); }
+  .wander-pixel-ui [data-scene-button]:active, .wander-pixel-ui [data-wander-link]:active, .wander-pixel-ui .wander-pixel-portal:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--pixel-deep); }
   [data-wander-room][data-scene="dawn"] > section:first-child { background: linear-gradient(135deg, #64748b 0%, #9a6a5c 70%); }
   [data-wander-room][data-scene="day"] > section:first-child { background: linear-gradient(135deg, #3f6b78 0%, #82715f 70%); }
   [data-wander-room][data-scene="dusk"] > section:first-child { background: linear-gradient(135deg, #9a4f46 0%, #292b43 70%); }
@@ -215,4 +230,9 @@ const counts = {
   [data-wander-link][data-visited="true"] { box-shadow: inset 0 0 0 1px rgba(82, 82, 91, .12); }
   [data-wander-directory][data-complete="true"] { border-color: rgba(167, 139, 250, .45); box-shadow: 0 1.5rem 4rem rgba(124, 58, 237, .08); }
   [data-wander-directory][data-complete="true"] [data-wander-complete] { color: rgb(124 58 237); }
+  @media (max-width: 639px) {
+    .wander-pixel-ui .wander-pixel-panel h1 { font-size: 2.75rem; }
+    .wander-pixel-ui .wander-pixel-status { min-height: 220px; }
+    .wander-pixel-ui .wander-pixel-portal { min-height: 104px; padding: 1rem; }
+  }
 </style>
