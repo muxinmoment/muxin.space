@@ -4,6 +4,7 @@ from PIL import Image, ImageDraw, ImageEnhance
 
 
 WIDTH, HEIGHT = 320, 180
+OUTPUT_WIDTH, OUTPUT_HEIGHT = 2048, 1152
 OUT = Path(__file__).resolve().parents[1] / "public" / "wander" / "dusk"
 NIGHT_OUT = Path(__file__).resolve().parents[1] / "public" / "wander" / "night"
 
@@ -30,18 +31,25 @@ def new_layer(color=(0, 0, 0, 0)):
 
 def save(layer, name):
     OUT.mkdir(parents=True, exist_ok=True)
-    layer.save(OUT / f"{name}.webp", "WEBP", lossless=True, method=6)
+    export = layer.resize((OUTPUT_WIDTH, OUTPUT_HEIGHT), Image.Resampling.NEAREST)
+    export.save(OUT / f"{name}.webp", "WEBP", lossless=True, method=6)
 
 
 def save_night(layer, name):
     NIGHT_OUT.mkdir(parents=True, exist_ok=True)
-    layer.save(NIGHT_OUT / f"{name}.webp", "WEBP", lossless=True, method=6)
+    export = layer.resize((OUTPUT_WIDTH, OUTPUT_HEIGHT), Image.Resampling.NEAREST)
+    export.save(NIGHT_OUT / f"{name}.webp", "WEBP", lossless=True, method=6)
 
 
 def save_variant(layer, scene, name):
     target = Path(__file__).resolve().parents[1] / "public" / "wander" / scene
     target.mkdir(parents=True, exist_ok=True)
-    layer.save(target / f"{name}.webp", "WEBP", lossless=True, method=6)
+    export = layer.resize((OUTPUT_WIDTH, OUTPUT_HEIGHT), Image.Resampling.NEAREST)
+    export.save(target / f"{name}.webp", "WEBP", lossless=True, method=6)
+
+
+def load_base(path):
+    return Image.open(path).convert("RGBA").resize((WIDTH, HEIGHT), Image.Resampling.NEAREST)
 
 
 def pixel_specks(draw, box, colors, count, seed):
@@ -288,7 +296,7 @@ def make_night_layers():
     """Derive a genuinely separate night palette, then add local light sources."""
     NIGHT_OUT.mkdir(parents=True, exist_ok=True)
     for source in sorted(OUT.glob("*.webp")):
-        image = Image.open(source).convert("RGBA")
+        image = load_base(source)
         pixels = image.load()
         for y in range(HEIGHT):
             for x in range(WIDTH):
@@ -299,7 +307,7 @@ def make_night_layers():
                 pixels[x, y] = (int(r * .34 + b * .16), int(g * .38 + b * .12), int(b * .72 + r * .08), a)
         image = ImageEnhance.Contrast(image).enhance(1.08)
         save_night(image, source.stem)
-    sky = Image.open(NIGHT_OUT / "sky.webp").convert("RGBA")
+    sky = load_base(NIGHT_OUT / "sky.webp")
     draw = ImageDraw.Draw(sky)
     draw.rectangle((244, 34, 263, 53), fill="#d8e8ed")
     draw.rectangle((248, 30, 259, 57), fill="#b8d9e3")
@@ -307,14 +315,14 @@ def make_night_layers():
     for x, y in ((38, 35), (71, 52), (106, 27), (151, 41), (212, 30), (286, 48)):
         draw.rectangle((x, y, x + 1, y + 1), fill="#d8e8ed")
     save_night(sky, "sky")
-    outside = Image.open(NIGHT_OUT / "outside.webp").convert("RGBA")
+    outside = load_base(NIGHT_OUT / "outside.webp")
     draw = ImageDraw.Draw(outside)
     for x, y in ((13, 88), (37, 96), (59, 79), (116, 87), (166, 80), (216, 73), (246, 90), (276, 81), (301, 96)):
         draw.rectangle((x, y, x + 3, y + 2), fill="#ffc36f")
     draw.rectangle((201, 117, 210, 119), fill="#f07c64")
     draw.rectangle((214, 117, 223, 119), fill="#f6b85e")
     save_night(outside, "outside")
-    light = Image.open(NIGHT_OUT / "light.webp").convert("RGBA")
+    light = load_base(NIGHT_OUT / "light.webp")
     draw = ImageDraw.Draw(light)
     draw.rectangle((265, 59, 287, 74), fill=(255, 184, 95, 38))
     draw.rectangle((294, 119, 299, 124), fill=(255, 190, 95, 180))
@@ -326,7 +334,7 @@ def make_day_variants():
     """Make real dawn/day assets so time states are not only CSS filters."""
     for scene in ("dawn", "day"):
         for source in sorted(OUT.glob("*.webp")):
-            image = Image.open(source).convert("RGBA")
+            image = load_base(source)
             if scene == "dawn":
                 image = ImageEnhance.Color(image).enhance(.82)
                 image = ImageEnhance.Brightness(image).enhance(.92)
@@ -338,7 +346,7 @@ def make_day_variants():
             image = Image.alpha_composite(image, overlay)
             save_variant(image, scene, source.stem)
         sky_path = Path(__file__).resolve().parents[1] / "public" / "wander" / scene / "sky.webp"
-        sky = Image.open(sky_path).convert("RGBA")
+        sky = load_base(sky_path)
         draw = ImageDraw.Draw(sky)
         if scene == "dawn":
             draw.rectangle((245, 36, 261, 52), fill="#ffd19b")
