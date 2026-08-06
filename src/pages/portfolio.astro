@@ -11,6 +11,10 @@ const projects = [
     summary:
       "一个面向个人用户的 AI 效能管理产品。它不只回答问题，而是把目标拆解、排期、执行反馈和偏好记忆串成一个可以持续工作的系统。",
     result: "把 Planner 从 LangGraph 迁移到自研 Harness，并用真实实验数据决定架构取舍。",
+    metricValue: "−82–89%",
+    metricLabel: "context token（三轮实验量化）",
+    image: "/images/portfolio-aido.png",
+    imageAlt: "Aido 今日视图界面截图",
     stack: ["Agent Harness", "FastAPI", "Vue3", "PostgreSQL"],
     points: [
       "设计 AgentLoop、ToolRegistry 与 LoopBudget，覆盖循环控制、工具注册和预算熔断。",
@@ -32,6 +36,10 @@ const projects = [
     summary:
       "一个本地优先的 TRPG AI 工具箱，先从规则书问答切入，再逐步扩展到模组管理、时间线整理和 NPC / 线索摘要。",
     result: "从零搭建可替换的 RAG 流水线，并把每一步实现沉淀成独立文档。",
+    metricValue: "1500+",
+    metricLabel: "行核心 RAG 代码（MVP → V1.2）",
+    image: "/images/portfolio-keeperkit-qa.png",
+    imageAlt: "KeeperKit 规则问答界面截图",
     stack: ["FastAPI", "ChromaDB", "BGE", "LangGraph"],
     points: [
       "完成文档加载、切块、向量化、检索、精排与生成的完整链路，持续迭代 MVP → V1.0 → V1.2。",
@@ -40,7 +48,7 @@ const projects = [
     ],
     links: [
       { label: "查看项目主线", href: "/projects/#project-keeperkit" },
-      { label: "项目页面", href: "/notes/" },
+      { label: "GitHub 源码", href: "https://github.com/muxinmoment/keeperkit" },
     ],
     tone: "violet",
   },
@@ -53,13 +61,15 @@ const projects = [
     summary:
       "基于公开语音助手数据集完成的一次端侧语义匹配实训，重点探索模型轻量化、对比学习和推理效率之间的平衡。",
     result: "在保持匹配效果的同时，将模型压缩到更适合低延迟推理的规模。",
+    metricValue: "0.93",
+    metricLabel: "自测 AUC（对齐榜单最高分）",
     stack: ["PyTorch", "RoBERTa", "SimCSE", "ONNX"],
     points: [
       "处理 45 万条脱敏对话数据，完成数据清洗、训练、评估和端侧推理验证。",
       "将 12 层 BERT 压缩为 RoBERTa-4Layers，参数量降低 65%，推理速度提升约 3 倍。",
       "结合 SimCSE 对比学习与 FGM 对抗训练，自测 AUC 达到 0.93。",
     ],
-    links: [{ label: "返回项目总览", href: "/projects/" }],
+    links: [{ label: "GitHub 源码", href: "https://github.com/muxinmoment/NLP-race" }],
     tone: "amber",
   },
 ];
@@ -161,12 +171,23 @@ const toneClasses = {
                 <h2 class="mt-12 font-serif text-4xl tracking-tight text-zinc-900">{project.name}</h2>
                 <p class="mt-2 text-sm font-medium text-zinc-500">{project.subtitle}</p>
                 <p class="mt-6 text-sm leading-7 text-zinc-600">{project.role}</p>
+                {project.metricValue && (
+                  <div class="mt-6 rounded-2xl border border-zinc-200 bg-white px-4 py-3">
+                    <p class="font-serif text-3xl tracking-tight text-zinc-900">{project.metricValue}</p>
+                    <p class="mt-1 text-xs leading-5 text-zinc-500">{project.metricLabel}</p>
+                  </div>
+                )}
                 <div class="mt-8 flex flex-wrap gap-1.5">
                   {project.stack.map((tech) => <span class="tag">{tech}</span>)}
                 </div>
               </div>
               <div class="p-6 sm:p-8 lg:p-10">
                 <p class="max-w-2xl text-lg leading-8 text-zinc-700">{project.summary}</p>
+                {project.image && (
+                  <div class="mt-7 overflow-hidden rounded-2xl border border-zinc-200">
+                    <img src={project.image} alt={project.imageAlt} class="w-full" loading="lazy" />
+                  </div>
+                )}
                 <div class="mt-7 rounded-2xl border border-zinc-100 bg-zinc-50 px-5 py-4">
                   <p class="eyebrow">What changed</p>
                   <p class="mt-2 text-sm font-medium leading-7 text-zinc-900">{project.result}</p>
