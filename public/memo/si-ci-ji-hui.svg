@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420" font-family="system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1c1917"/>
+      <stop offset="100%" stop-color="#292524"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="900" height="420" rx="24" fill="url(#bg)"/>
+
+  <!-- 标题 -->
+  <text x="450" y="52" text-anchor="middle" font-size="20" font-weight="bold" fill="#e7e5e4">字节跳动 · 校招投递额度</text>
+  <text x="450" y="80" text-anchor="middle" font-size="14" fill="#a8a29e">一个账号，四次机会</text>
+
+  <!-- 大数字 0/4 -->
+  <text x="450" y="128" text-anchor="middle" font-size="40" font-weight="bold" fill="url(#amber)">0 / 4</text>
+  <text x="450" y="150" text-anchor="middle" font-size="13" fill="#78716c">已使用 · 剩余全部</text>
+
+  <!-- 四个槽位 -->
+  <g>
+    <!-- 1：高亮（正在确认） -->
+    <rect x="90" y="180" width="150" height="110" rx="14" fill="#1c1917" stroke="url(#amber)" stroke-width="3"/>
+    <text x="165" y="228" text-anchor="middle" font-size="30" font-weight="bold" fill="#fbbf24">1</text>
+    <text x="165" y="258" text-anchor="middle" font-size="13" fill="#fde68a">确认中…</text>
+
+    <!-- 2-4：未使用 -->
+    <rect x="280" y="180" width="150" height="110" rx="14" fill="none" stroke="#57534e" stroke-width="2" stroke-dasharray="8 6"/>
+    <text x="355" y="228" text-anchor="middle" font-size="30" font-weight="bold" fill="#78716c">2</text>
+    <text x="355" y="258" text-anchor="middle" font-size="13" fill="#78716c">未使用</text>
+
+    <rect x="470" y="180" width="150" height="110" rx="14" fill="none" stroke="#57534e" stroke-width="2" stroke-dasharray="8 6"/>
+    <text x="545" y="228" text-anchor="middle" font-size="30" font-weight="bold" fill="#78716c">3</text>
+    <text x="545" y="258" text-anchor="middle" font-size="13" fill="#78716c">未使用</text>
+
+    <rect x="660" y="180" width="150" height="110" rx="14" fill="none" stroke="#57534e" stroke-width="2" stroke-dasharray="8 6"/>
+    <text x="735" y="228" text-anchor="middle" font-size="30" font-weight="bold" fill="#78716c">4</text>
+    <text x="735" y="258" text-anchor="middle" font-size="13" fill="#78716c">未使用</text>
+  </g>
+
+  <!-- 放大镜：先确认再使用 -->
+  <circle cx="165" cy="205" r="30" fill="none" stroke="#fbbf24" stroke-width="7"/>
+  <line x1="188" y1="228" x2="216" y2="256" stroke="#fbbf24" stroke-width="9" stroke-linecap="round"/>
+
+  <!-- 底部 -->
+  <text x="450" y="352" text-anchor="middle" font-size="16" fill="#d6d3d1">机会有限 → 先确认，再使用</text>
+  <text x="450" y="380" text-anchor="middle" font-size="13" fill="#78716c">宁可慢一点，不要错一发</text>
+</svg>
