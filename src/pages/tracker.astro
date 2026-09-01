@@ -1,0 +1,266 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  companies,
+  deadline,
+  milestones,
+  trackerUpdated,
+  type Company,
+} from "../data/tracker";
+
+const live = companies.filter((c) => c.state === "live" || c.state === "act");
+const todo = companies.filter((c) => c.state === "todo");
+const closed = companies.filter((c) => c.state === "dead" || c.state === "quit");
+const dead = companies.filter((c) => c.state === "dead");
+
+// 岗位数：占位的 "—" 不计入
+const countRoles = (list: Company[]) =>
+  list.reduce((sum, c) => sum + c.roles.filter((r) => r.title !== "—").length, 0);
+
+const applied = companies.filter(
+  (c) => ["live", "act", "dead"].includes(c.state) && c.date !== "—"
+);
+
+const appliedRoles = countRoles(applied);
+
+const stats = [
+  { value: applied.length, label: "已投公司", tone: "rose" },
+  { value: appliedRoles, label: "已投岗位", tone: "rose" },
+  { value: live.length, label: "进行中", tone: "emerald" },
+  { value: todo.length, label: "待投递", tone: "amber" },
+  { value: closed.length, label: "已结束", tone: "zinc" },
+];
+
+const statTone: Record<string, string> = {
+  rose: "text-rose-600",
+  emerald: "text-emerald-600",
+  amber: "text-amber-600",
+  zinc: "text-zinc-400",
+};
+
+// 漏斗：网申通过/笔试测评/面试/Offer 目前手工维护，数字变了改这里
+const funnel = [
+  { label: "已投递", value: appliedRoles, color: "bg-zinc-400" },
+  { label: "网申通过", value: 1, color: "bg-emerald-500" },
+  { label: "笔试 / 测评", value: 2, color: "bg-amber-500" },
+  { label: "面试", value: 0, color: "bg-rose-500" },
+  { label: "Offer", value: 0, color: "bg-rose-500" },
+  { label: "被筛 / 放弃", value: countRoles(closed), color: "bg-zinc-300" },
+];
+const funnelMax = Math.max(...funnel.map((f) => f.value), 1);
+
+// 方向分布
+const dirColor: Record<string, string> = {
+  Agent工程: "bg-rose-500",
+  AI应用: "bg-violet-500",
+  质量效能: "bg-emerald-500",
+  混合: "bg-amber-500",
+};
+const dirCount = new Map<string, number>();
+for (const c of applied) {
+  if (!c.dir) continue;
+  const n = c.roles.filter((r) => r.title !== "—").length;
+  dirCount.set(c.dir, (dirCount.get(c.dir) ?? 0) + n);
+}
+const dirs = Array.from(dirCount, ([name, count]) => ({ name, count })).sort(
+  (a, b) => b.count - a.count
+);
+const dirTotal = dirs.reduce((s, d) => s + d.count, 0) || 1;
+
+// 卡片配色
+const cardStyle: Record<string, { bar: string; tag: string }> = {
+  live: { bar: "border-l-emerald-400", tag: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+  act: { bar: "border-l-amber-400", tag: "bg-amber-50 text-amber-700 border-amber-200" },
+  todo: { bar: "border-l-violet-400", tag: "bg-violet-50 text-violet-700 border-violet-200" },
+  dead: { bar: "border-l-zinc-300", tag: "bg-zinc-100 text-zinc-500 border-zinc-200" },
+  quit: { bar: "border-l-zinc-300", tag: "bg-zinc-100 text-zinc-500 border-zinc-200" },
+};
+
+const dotStyle: Record<string, string> = {
+  good: "border-emerald-500",
+  bad: "border-rose-500",
+  warn: "border-amber-500",
+  plain: "border-zinc-300",
+};
+---
+
+<BaseLayout
+  title="秋招看板 | muxin.space"
+  description="2027 届秋招投递进展的私有跟踪面板。"
+  noindex={true}
+>
+  <div class="mx-auto max-w-5xl">
+    <div class="reveal flex flex-wrap items-center gap-3">
+      <span class="rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-medium text-rose-600">
+        🔒 私有页面 · 不收录、不进导航
+      </span>
+      <p class="text-xs text-zinc-400">更新于 {trackerUpdated}</p>
+    </div>
+
+    <h1 class="reveal mt-4 font-serif text-4xl tracking-tight text-zinc-900 sm:text-5xl">
+      秋招看板 <span class="text-rose-500">2027 届</span>
+    </h1>
+    <p class="reveal mt-3 text-base leading-8 text-zinc-500">
+      已投 {applied.length} 家 / {appliedRoles} 个岗位 · 进行中 {live.length} 家。
+    </p>
+
+    <!-- 概览数字 -->
+    <section class="reveal mt-8 grid grid-cols-2 gap-3 sm:grid-cols-5">
+      {
+        stats.map((s) => (
+          <div class="rounded-2xl border border-zinc-200 bg-white p-4">
+            <p class={`font-serif text-3xl tracking-tight ${statTone[s.tone]}`}>{s.value}</p>
+            <p class="mt-1 text-xs text-zinc-400">{s.label}</p>
+          </div>
+        ))
+      }
+    </section>
+
+    <!-- 最近截止 -->
+    {
+      deadline && (
+        <section class="reveal mt-4 rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-50 to-white p-5 sm:p-6">
+          <p class="text-sm font-medium text-amber-700">⏰ {deadline.title}</p>
+          <p class="mt-2 text-sm leading-7 text-zinc-600">{deadline.desc}</p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            {deadline.dates.map((d) => (
+              <span class="rounded-full border border-amber-200 bg-white px-2.5 py-1 text-xs tabular-nums text-amber-700">
+                {d}
+              </span>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- 漏斗 -->
+    <section class="reveal mt-12">
+      <h2 class="font-serif text-xl tracking-tight text-zinc-900">投递漏斗</h2>
+      <p class="mt-1 text-xs text-zinc-400">按岗位数统计</p>
+      <div class="mt-5 space-y-2">
+        {
+          funnel.map((f) => (
+            <div class="grid grid-cols-[84px_1fr_32px] items-center gap-3 sm:grid-cols-[110px_1fr_40px] sm:gap-4">
+              <span class="text-right text-xs text-zinc-500 sm:text-sm">{f.label}</span>
+              <div class="h-6 overflow-hidden rounded-md bg-zinc-100">
+                <div
+                  class={`h-full rounded-md ${f.color}`}
+                  style={`width:${(f.value / funnelMax) * 100}%`}
+                >
+                </div>
+              </div>
+              <span
+                class:list={[
+                  "text-sm tabular-nums",
+                  f.value ? "font-medium text-zinc-900" : "text-zinc-300",
+                ]}
+              >
+                {f.value}
+              </span>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- 公司分组 -->
+    {
+      [
+        { title: "进行中", hint: "还有戏的", list: live },
+        { title: "待投递", hint: "岗位已确认，还没提交", list: todo },
+        { title: "已结束", hint: "被筛 / 放弃", list: closed },
+      ].map((group) => (
+        <section class="reveal mt-12">
+          <h2 class="font-serif text-xl tracking-tight text-zinc-900">
+            {group.title}
+            <span class="ml-2 align-middle text-xs font-normal text-zinc-400">{group.hint}</span>
+          </h2>
+          <div class="mt-5 grid gap-3 sm:grid-cols-2">
+            {group.list.map((c) => (
+              <article
+                class:list={[
+                  "rounded-2xl border border-l-[3px] border-zinc-200 bg-white p-5",
+                  cardStyle[c.state].bar,
+                  c.state === "dead" || c.state === "quit" ? "opacity-70" : "",
+                ]}
+              >
+                <div class="flex items-baseline justify-between gap-3">
+                  <h3 class="font-medium text-zinc-900">{c.name}</h3>
+                  <time class="shrink-0 text-xs tabular-nums text-zinc-400">{c.date}</time>
+                </div>
+                <span
+                  class={`mt-2 inline-block rounded-md border px-2 py-0.5 text-[11px] ${cardStyle[c.state].tag}`}
+                >
+                  {c.label}
+                </span>
+                <ul class="mt-3 space-y-1.5">
+                  {c.roles.map((r) => (
+                    <li class="text-[13px] leading-6 text-zinc-500">
+                      <span class="text-zinc-700">{r.title}</span>
+                      {r.loc && <span class="text-zinc-400"> · {r.loc}</span>}
+                      {r.status && <span class="block text-xs text-zinc-400">{r.status}</span>}
+                    </li>
+                  ))}
+                </ul>
+                {c.note && (
+                  <p class="mt-3 border-t border-zinc-100 pt-3 text-xs leading-6 text-zinc-400">
+                    {c.note}
+                  </p>
+                )}
+              </article>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+
+    <!-- 方向分布 -->
+    <section class="reveal mt-12">
+      <h2 class="font-serif text-xl tracking-tight text-zinc-900">方向分布</h2>
+      <p class="mt-1 text-xs text-zinc-400">投出去的岗位怎么分的</p>
+      <div class="mt-5 space-y-3">
+        {
+          dirs.map((d) => (
+            <div class="grid items-center gap-2 sm:grid-cols-[150px_1fr] sm:gap-4">
+              <p class="text-xs text-zinc-500 sm:text-sm">
+                {d.name}
+                <span class="ml-2 font-medium text-zinc-900">{d.count}</span>
+              </p>
+              <div class="flex h-6 overflow-hidden rounded-md bg-zinc-100">
+                <div
+                  class={`flex items-center justify-center text-[11px] font-medium text-white ${dirColor[d.name]}`}
+                  style={`width:${(d.count / dirTotal) * 100}%`}
+                >
+                  {Math.round((d.count / dirTotal) * 100)}%
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- 时间线 -->
+    <section class="reveal mt-12">
+      <h2 class="font-serif text-xl tracking-tight text-zinc-900">关键节点</h2>
+      <div class="mt-5 border-l border-zinc-200 pl-5">
+        {
+          milestones.map((m) => (
+            <div class="relative pb-5">
+              <span
+                class={`absolute -left-[27px] top-1.5 h-2.5 w-2.5 rounded-full border-2 bg-white ${dotStyle[m.kind]}`}
+              ></span>
+              <time class="block text-xs tabular-nums text-zinc-400">{m.date}</time>
+              <p class="mt-0.5 text-sm leading-7 text-zinc-600">{m.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <p class="reveal mt-12 border-t border-zinc-200 pt-5 text-xs leading-6 text-zinc-400">
+      这个页面加了 noindex、不在 sitemap 里、也不在导航栏中，搜索引擎不会收录。<br />
+      更新方式：改 <code class="text-zinc-500">src/data/tracker.ts</code>，push 后自动部署。
+    </p>
+  </div>
+</BaseLayout>

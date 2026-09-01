@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://muxin.space/sitemap-index.xml
+# 注意：私有页面（如 /tracker）靠页面内的 noindex meta 标签阻止收录，
+# 不要在这里加 Disallow —— 一旦禁止爬取，爬虫就读不到 noindex 标签，
+# 反而可能因外链被收录且无法撤销。
+
+Sitemap: https://muxin-space.top/sitemap-index.xml

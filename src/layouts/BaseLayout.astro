@@ -6,6 +6,8 @@ interface Props {
   description?: string;
   image?: string;
   type?: "website" | "article";
+  /** 私有页面：阻止搜索引擎收录（配合 astro.config 的 sitemap filter 使用） */
+  noindex?: boolean;
 }
 
 const {
@@ -13,6 +15,7 @@ const {
   description = "分享项目实践、技术整理与真实成长的个人内容主站。",
   image = "/og-cover.svg",
   type = "website",
+  noindex = false,
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
@@ -39,6 +42,7 @@ const isActive = (href: string) =>
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#fbfbfa" />
+    {noindex && <meta name="robots" content="noindex, nofollow, noarchive" />}
     <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />

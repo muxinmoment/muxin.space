@@ -12,7 +12,13 @@ export default defineConfig({
   markdown: {
     syntaxHighlight: false,
   },
-  integrations: [sitemap(), pagefind()],
+  integrations: [
+    sitemap({
+      // 私有页面不进 sitemap（/tracker 秋招看板）
+      filter: (page) => !page.includes("/tracker"),
+    }),
+    pagefind(),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },
