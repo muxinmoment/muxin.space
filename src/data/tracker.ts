@@ -28,7 +28,7 @@ export type Company = {
   note?: string;
 };
 
-export const trackerUpdated = "2026-09-01";
+export const trackerUpdated = "2026-09-04";
 
 /** 顶部那条最紧急的事，没有就设成 null */
 export const deadline: {
@@ -73,18 +73,23 @@ export const companies: Company[] = [
   },
   {
     name: "拼多多",
-    date: "08-09",
-    state: "act",
-    label: "笔试已考",
-    dir: "Agent工程",
+    date: "09-04",
+    state: "live",
+    label: "待处理",
+    dir: "混合",
     roles: [
       {
-        title: "AI Agent研发工程师 → 转服务端",
+        title: "服务端研发工程师",
         loc: "上海",
-        status: "提前批 · 综合测评 + 笔试均已完成",
+        status: "正式批志愿一 · 待处理",
+      },
+      {
+        title: "Web前端研发工程师",
+        loc: "上海",
+        status: "正式批志愿二",
       },
     ],
-    note: "AI Infra 志愿当天被筛；AI Agent 志愿被建议转服务端，接受转岗后才拿到测评与笔试。08-23 笔试已考，结果未出。提前批与正式批可分开投，机会 +1。",
+    note: "提前批两条均应聘终止。正式批 09-04 投出，简历评估未结束前还能改岗。同一时间只能走一个面试。",
   },
   {
     name: "DeepSeek 幻方",
@@ -129,7 +134,11 @@ export const companies: Company[] = [
     state: "live",
     label: "流程中",
     dir: "AI应用",
-    roles: [{ title: "AI应用开发工程师", loc: "杭州", status: "常规批" }],
+    roles: [
+      { title: "AI应用开发工程师", loc: "杭州", status: "常规批（原投）" },
+      { title: "AI 全栈开发工程师", loc: "北京/杭州", status: "09-04 加投 · 急招" },
+    ],
+    note: "09-04 加投 AI 全栈（急招）。与旧岗是变更职位还是另起流程待确认；快手限投 1 岗。",
   },
   {
     name: "哔哩哔哩",
@@ -179,21 +188,47 @@ export const companies: Company[] = [
     ],
     note: "最早投的一家，秋招起点。",
   },
-
-  // ---------- 待投递 ----------
   {
     name: "腾讯",
-    date: "—",
-    state: "todo",
-    label: "待筛岗位",
+    date: "09-04",
+    state: "live",
+    label: "简历筛选中",
+    dir: "Agent工程",
     roles: [
       {
-        title: "27届常规校招 · AI 团队普通应届岗",
-        status: "8/11 已启动，截止约 9/30",
+        title: "Agent开发工程师",
+        loc: "深圳",
+        status: "PCG 应用效能 · 简历筛选中",
       },
     ],
-    note: "青云计划偏硕博不投，走常规批。",
+    note: "常规批应届生。意向城市深圳总部+广州；部门提交后 5 个工作日才能改。进度页已出测评链接。",
   },
+  {
+    name: "途游",
+    date: "09-04",
+    state: "live",
+    label: "已提交",
+    dir: "Agent工程",
+    roles: [
+      {
+        title: "AI游戏开发",
+        loc: "北京",
+        status: "已提交推荐申请",
+      },
+    ],
+    note: "mokahr 直投。3 个月内限投 2 岗，这是第 1 个。官网感谢页已显示成功。",
+  },
+  {
+    name: "4399",
+    date: "09-04",
+    state: "live",
+    label: "已提交",
+    dir: "Agent工程",
+    roles: [{ title: "AI Agent 技术开发岗", loc: "广州" }],
+    note: "JD 覆盖 Agent 中台 / 工具 Skill 调用 / 记忆 / 工作流 / 异常降级 / Agent 评测，与华为 Skill 体系 + Aido Harness 高度匹配。",
+  },
+
+  // ---------- 待投递 ----------
   {
     name: "深信服",
     date: "—",
@@ -310,6 +345,8 @@ export const milestones: {
   kind: "good" | "bad" | "warn" | "plain";
   text: string;
 }[] = [
+  { date: "09-04", kind: "good", text: "拼多多正式批服务端研发工程师已投，状态待处理" },
+  { date: "09-04", kind: "good", text: "4399 / 腾讯 PCG / 快手 AI 全栈 / 途游 同日投出" },
   { date: "09-01", kind: "good", text: "美团三志愿全部提交，志愿一 AI测试开发工程师网申成功" },
   { date: "08-28", kind: "warn", text: "主动降档休息 —— 连续被筛叠加实习占满，进入疲劳期" },
   { date: "08-27", kind: "good", text: "小米 / 联想 / DeepSeek 一天投出三家" },
