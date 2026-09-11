@@ -238,6 +238,18 @@ export const companies: Company[] = [
     ],
     note: "无独立 Agent 岗。测开对口华为 JSAPI 测试平台。AI系统工程师偏游戏 RL/Unreal，未投。",
   },
+  {
+    name: "米哈游",
+    date: "09-11",
+    state: "live",
+    label: "HR初筛",
+    dir: "质量效能",
+    roles: [
+      { title: "游戏研发-游戏测试开发", loc: "上海", status: "邀请直链 · HR初筛" },
+      { title: "平台研发 · Agent全栈开发工程师", loc: "上海", status: "08-06 已投 · 08-10 暂不匹配" },
+    ],
+    note: "R酱邀请直链补投，不占官网次数，邀请池仅 5 岗且无 Agent 岗。08-06 Agent全栈仍是暂不匹配。",
+  },
 
   // ---------- 待投递 ----------
   {
@@ -323,21 +335,6 @@ export const companies: Company[] = [
     note: "账号级 4 次机会已用 2 次，剩 2 次要等次年 1 月刷新。",
   },
   {
-    name: "米哈游",
-    date: "08-06",
-    state: "dead",
-    label: "拒信",
-    dir: "Agent工程",
-    roles: [
-      {
-        title: "平台研发 · Agent全栈开发工程师",
-        loc: "上海",
-        status: "08-10 收到拒信",
-      },
-    ],
-    note: "提前批与正式批合并限投 1 次，唯一机会已用完。",
-  },
-  {
     name: "科大讯飞",
     date: "08-07",
     state: "dead",
@@ -368,6 +365,7 @@ export const milestones: {
   kind: "good" | "bad" | "warn" | "plain";
   text: string;
 }[] = [
+  { date: "09-11", kind: "good", text: "米哈游邀请岗游戏研发-游戏测试开发（上海）已投，HR初筛" },
   { date: "09-11", kind: "good", text: "库洛游戏测试开发工程师（广州）已投" },
   { date: "09-04", kind: "good", text: "拼多多正式批服务端研发工程师已投，状态待处理" },
   { date: "09-04", kind: "good", text: "4399 / 腾讯 PCG / 快手 AI 全栈 / 途游 同日投出" },
