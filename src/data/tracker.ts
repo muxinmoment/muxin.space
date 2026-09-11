@@ -227,6 +227,17 @@ export const companies: Company[] = [
     roles: [{ title: "AI Agent 技术开发岗", loc: "广州" }],
     note: "JD 覆盖 Agent 中台 / 工具 Skill 调用 / 记忆 / 工作流 / 异常降级 / Agent 评测，与华为 Skill 体系 + Aido Harness 高度匹配。",
   },
+  {
+    name: "库洛游戏",
+    date: "09-11",
+    state: "live",
+    label: "已提交",
+    dir: "质量效能",
+    roles: [
+      { title: "测试开发工程师", loc: "广州", status: "2027 秋招 · 已提交" },
+    ],
+    note: "无独立 Agent 岗。测开对口华为 JSAPI 测试平台。AI系统工程师偏游戏 RL/Unreal，未投。",
+  },
 
   // ---------- 待投递 ----------
   {
@@ -357,6 +368,7 @@ export const milestones: {
   kind: "good" | "bad" | "warn" | "plain";
   text: string;
 }[] = [
+  { date: "09-11", kind: "good", text: "库洛游戏测试开发工程师（广州）已投" },
   { date: "09-04", kind: "good", text: "拼多多正式批服务端研发工程师已投，状态待处理" },
   { date: "09-04", kind: "good", text: "4399 / 腾讯 PCG / 快手 AI 全栈 / 途游 同日投出" },
   { date: "09-01", kind: "good", text: "美团三志愿全部提交，志愿一 AI测试开发工程师网申成功" },
