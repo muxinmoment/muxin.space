@@ -28,7 +28,7 @@ export type Company = {
   note?: string;
 };
 
-export const trackerUpdated = "2026-09-04";
+export const trackerUpdated = "2026-09-11";
 
 /** 顶部那条最紧急的事，没有就设成 null */
 export const deadline: {
@@ -38,7 +38,7 @@ export const deadline: {
 } | null = {
   title: "美团集中笔试 9/15 收口",
   desc: "网申写的是 10/17，但笔试窗口比它早整整一个月。志愿一「AI测试开发工程师」已网申成功，等笔试邀请。",
-  dates: ["9/5 周六", "9/8 周二", "9/12 周五", "9/15 周二"],
+  dates: ["9/12 周六", "9/15 周二"],
 };
 
 export const companies: Company[] = [
@@ -270,6 +270,18 @@ export const companies: Company[] = [
       { title: "AI NPC方向算法工程师", loc: "上海", status: "27届提前批已开" },
     ],
     note: "与网易系、米哈游、鹰角同赛道，游戏经历是加分项。",
+  },
+
+  {
+    name: "携程",
+    date: "—",
+    state: "todo",
+    label: "表单已填 · 待提交",
+    dir: "Agent工程",
+    roles: [
+      { title: "Agent开发工程师", loc: "上海", status: "AI&BI 部 · MJ036607" },
+    ],
+    note: "全量排查 56 岗后首选（平台级 Agent 能力 + 评测/记忆体系，三张牌都能接）。秋招每人仅 1 次机会，表单已填好待确认后提交。备选：云原生研发（AI Agent）、大数据平台（AI Agent）。",
   },
 
   // ---------- 已结束 ----------
