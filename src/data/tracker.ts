@@ -28,7 +28,7 @@ export type Company = {
   note?: string;
 };
 
-export const trackerUpdated = "2026-09-11";
+export const trackerUpdated = "2026-09-14";
 
 /** 顶部那条最紧急的事，没有就设成 null */
 export const deadline: {
@@ -36,9 +36,9 @@ export const deadline: {
   desc: string;
   dates: string[];
 } | null = {
-  title: "美团集中笔试 9/15 收口",
-  desc: "网申写的是 10/17，但笔试窗口比它早整整一个月。志愿一「AI测试开发工程师」已网申成功，等笔试邀请。",
-  dates: ["9/12 周六", "9/15 周二"],
+  title: "美团笔试 · 9/15 最后一场",
+  desc: "官方邀请制，收到才算。志愿一「AI测试开发工程师」已网申成功，等笔试邀请。",
+  dates: ["9/15 周二"],
 };
 
 export const companies: Company[] = [
@@ -246,12 +246,37 @@ export const companies: Company[] = [
     dir: "质量效能",
     roles: [
       { title: "游戏研发-游戏测试开发", loc: "上海", status: "邀请直链 · HR初筛" },
+      { title: "面试直通车 · 游戏客户端工具开发", loc: "深圳", status: "问卷星已填 · 待提交" },
       { title: "平台研发 · Agent全栈开发工程师", loc: "上海", status: "08-06 已投 · 08-10 暂不匹配" },
     ],
-    note: "R酱邀请直链补投，不占官网次数，邀请池仅 5 岗且无 Agent 岗。08-06 Agent全栈仍是暂不匹配。",
+    note: "R酱邀请直链补投（不占官网次数，邀请池仅 5 岗且无 Agent 岗）。09-13 另填面试直通车问卷星：深圳专场 9/19，待换专场简历附件后提交。08-06 Agent全栈仍暂不匹配。",
   },
 
   // ---------- 待投递 ----------
+  {
+    name: "小红书",
+    date: "—",
+    state: "todo",
+    label: "正式批 · 等拍板",
+    dir: "Agent工程",
+    roles: [
+      { title: "AI Agent工程师 · 社区工程", loc: "上海", status: "首选 · 27届正式岗" },
+      { title: "Agent Harness工程师 · 企业智能", loc: "上海/杭州", status: "需接受 Infra 子方向" },
+      { title: "PE（AI Coding 基建）- PE Infra", loc: "上海/杭州", status: "质效线" },
+    ],
+    note: "正式批 9/8 已开，招满即止；一次最多 5 岗。无独立测开/质效正式岗；对口岗集中在上海/北京/杭州。",
+  },
+  {
+    name: "华为集团IT",
+    date: "—",
+    state: "todo",
+    label: "定向简历已出 · 未投",
+    dir: "AI应用",
+    roles: [
+      { title: "AI 应用工程师 · 质量与流程IT部", loc: "深圳/东莞/武汉", status: "第一志愿部门已定" },
+    ],
+    note: "官网校招简历已更新（定向版附件）；投完需记录简历编号回给通知人。",
+  },
   {
     name: "深信服",
     date: "—",
@@ -365,6 +390,8 @@ export const milestones: {
   kind: "good" | "bad" | "warn" | "plain";
   text: string;
 }[] = [
+  { date: "09-14", kind: "plain", text: "小红书正式批排查：Agent 对口岗集中在上海，等拍板" },
+  { date: "09-13", kind: "plain", text: "米哈游面试直通车问卷星填毕（深圳专场 9/19），待提交" },
   { date: "09-11", kind: "good", text: "米哈游邀请岗游戏研发-游戏测试开发（上海）已投，HR初筛" },
   { date: "09-11", kind: "good", text: "库洛游戏测试开发工程师（广州）已投" },
   { date: "09-04", kind: "good", text: "拼多多正式批服务端研发工程师已投，状态待处理" },
