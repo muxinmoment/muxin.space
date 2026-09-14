@@ -251,21 +251,23 @@ export const companies: Company[] = [
     ],
     note: "R酱邀请直链补投（不占官网次数，邀请池仅 5 岗且无 Agent 岗）。09-13 另填面试直通车问卷星：深圳专场 9/19，待换专场简历附件后提交。08-06 Agent全栈仍暂不匹配。",
   },
-
-  // ---------- 待投递 ----------
   {
     name: "小红书",
-    date: "—",
-    state: "todo",
-    label: "正式批 · 等拍板",
+    date: "09-14",
+    state: "live",
+    label: "已提交",
     dir: "Agent工程",
     roles: [
-      { title: "AI Agent工程师 · 社区工程", loc: "上海", status: "首选 · 27届正式岗" },
-      { title: "Agent Harness工程师 · 企业智能", loc: "上海/杭州", status: "需接受 Infra 子方向" },
-      { title: "PE（AI Coding 基建）- PE Infra", loc: "上海/杭州", status: "质效线" },
+      {
+        title: "AI Agent工程师（大模型 AI 应用开发）-质效研发",
+        loc: "上海",
+        status: "志愿一 · 投递成功",
+      },
     ],
-    note: "正式批 9/8 已开，招满即止；一次最多 5 岗。无独立测开/质效正式岗；对口岗集中在上海/北京/杭州。",
+    note: "只投 1 岗。官网成功页已核对：研发·产品工程师·上海市·服从调剂。定向简历已上传。",
   },
+
+  // ---------- 待投递 ----------
   {
     name: "华为集团IT",
     date: "—",
@@ -390,7 +392,7 @@ export const milestones: {
   kind: "good" | "bad" | "warn" | "plain";
   text: string;
 }[] = [
-  { date: "09-14", kind: "plain", text: "小红书正式批排查：Agent 对口岗集中在上海，等拍板" },
+  { date: "09-14", kind: "good", text: "小红书质效 AI Agent 工程师（上海）已投，官网显示投递成功" },
   { date: "09-13", kind: "plain", text: "米哈游面试直通车问卷星填毕（深圳专场 9/19），待提交" },
   { date: "09-11", kind: "good", text: "米哈游邀请岗游戏研发-游戏测试开发（上海）已投，HR初筛" },
   { date: "09-11", kind: "good", text: "库洛游戏测试开发工程师（广州）已投" },
