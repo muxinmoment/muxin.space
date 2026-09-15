@@ -28,7 +28,7 @@ export type Company = {
   note?: string;
 };
 
-export const trackerUpdated = "2026-09-14";
+export const trackerUpdated = "2026-09-15";
 
 /** 顶部那条最紧急的事，没有就设成 null */
 export const deadline: {
@@ -175,18 +175,6 @@ export const companies: Company[] = [
       { title: "游戏Harness算法工程师", loc: "杭州" },
       { title: "游戏AI算法工程师 · 用户个性化Agent", loc: "杭州" },
     ],
-  },
-  {
-    name: "网易互娱",
-    date: "08-03",
-    state: "live",
-    label: "已投递",
-    dir: "AI应用",
-    roles: [
-      { title: "AI应用工程师", loc: "广州" },
-      { title: "AI Agent工程师 · 引擎方向", loc: "广州" },
-    ],
-    note: "最早投的一家，秋招起点。",
   },
   {
     name: "腾讯",
@@ -336,6 +324,18 @@ export const companies: Company[] = [
 
   // ---------- 已结束 ----------
   {
+    name: "网易互娱",
+    date: "08-03",
+    state: "dead",
+    label: "筛选不通过",
+    dir: "AI应用",
+    roles: [
+      { title: "AI应用工程师", loc: "广州", status: "第一志愿 · 09-15 筛选不通过" },
+      { title: "AI Agent工程师 · 引擎方向", loc: "广州", status: "第二志愿 · 09-15 筛选不通过" },
+    ],
+    note: "最早投的一家。官网个人中心两岗都在筛选环节挂掉，志愿不能再改。",
+  },
+  {
     name: "阿里巴巴",
     date: "08-10",
     state: "dead",
@@ -392,6 +392,7 @@ export const milestones: {
   kind: "good" | "bad" | "warn" | "plain";
   text: string;
 }[] = [
+  { date: "09-15", kind: "bad", text: "网易互娱两志愿均筛选不通过（AI应用 / Agent引擎）" },
   { date: "09-14", kind: "good", text: "小红书质效 AI Agent 工程师（上海）已投，官网显示投递成功" },
   { date: "09-13", kind: "plain", text: "米哈游面试直通车问卷星填毕（深圳专场 9/19），待提交" },
   { date: "09-11", kind: "good", text: "米哈游邀请岗游戏研发-游戏测试开发（上海）已投，HR初筛" },
