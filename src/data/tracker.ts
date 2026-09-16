@@ -28,7 +28,7 @@ export type Company = {
   note?: string;
 };
 
-export const trackerUpdated = "2026-09-15";
+export const trackerUpdated = "2026-09-16";
 
 /** 顶部那条最紧急的事，没有就设成 null */
 export const deadline: {
@@ -36,9 +36,9 @@ export const deadline: {
   desc: string;
   dates: string[];
 } | null = {
-  title: "美团笔试 · 9/15 最后一场",
-  desc: "官方邀请制，收到才算。志愿一「AI测试开发工程师」已网申成功，等笔试邀请。",
-  dates: ["9/15 周二"],
+  title: "快手 AI全栈一面 · 9/17 19:00",
+  desc: "ViewCoder 视频面：双机位 + AI Coding 实操。对应 09-04 加投的急招岗。",
+  dates: ["9/17 周四 19:00"],
 };
 
 export const companies: Company[] = [
@@ -131,14 +131,14 @@ export const companies: Company[] = [
   {
     name: "快手",
     date: "08-12",
-    state: "live",
-    label: "流程中",
+    state: "act",
+    label: "一面 9/17 19:00",
     dir: "AI应用",
     roles: [
       { title: "AI应用开发工程师", loc: "杭州", status: "常规批（原投）" },
-      { title: "AI 全栈开发工程师", loc: "北京/杭州", status: "09-04 加投 · 急招" },
+      { title: "AI 全栈开发工程师", loc: "北京/杭州", status: "一面 · 9/17 19:00" },
     ],
-    note: "09-04 加投 AI 全栈（急招）。与旧岗是变更职位还是另起流程待确认；快手限投 1 岗。",
+    note: "09-16 收到 AI全栈一面邀请（ViewCoder 双机位 + AI Coding）。",
   },
   {
     name: "哔哩哔哩",
@@ -392,6 +392,7 @@ export const milestones: {
   kind: "good" | "bad" | "warn" | "plain";
   text: string;
 }[] = [
+  { date: "09-16", kind: "good", text: "快手 AI全栈开发工程师一面约在 9/17 19:00" },
   { date: "09-15", kind: "bad", text: "网易互娱两志愿均筛选不通过（AI应用 / Agent引擎）" },
   { date: "09-14", kind: "good", text: "小红书质效 AI Agent 工程师（上海）已投，官网显示投递成功" },
   { date: "09-13", kind: "plain", text: "米哈游面试直通车问卷星填毕（深圳专场 9/19），待提交" },
