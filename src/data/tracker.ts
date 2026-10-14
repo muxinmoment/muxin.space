@@ -75,13 +75,13 @@ export const companies: Company[] = [
     name: "拼多多",
     date: "09-04",
     state: "live",
-    label: "待处理",
+    label: "一面已约",
     dir: "混合",
     roles: [
       {
         title: "服务端研发工程师",
         loc: "上海",
-        status: "正式批志愿一 · 待处理",
+        status: "正式批志愿一 · 周三 09-23 一面",
       },
       {
         title: "Web前端研发工程师",
@@ -89,7 +89,7 @@ export const companies: Company[] = [
         status: "正式批志愿二",
       },
     ],
-    note: "提前批两条均应聘终止。正式批 09-04 投出，简历评估未结束前还能改岗。同一时间只能走一个面试。",
+    note: "提前批两条均应聘终止。正式批 09-04 投出；09-21 确认去周三服务端一面（免笔试直进，不深准备）。同一时间只能走一个面试。",
   },
   {
     name: "DeepSeek 幻方",
@@ -392,6 +392,7 @@ export const milestones: {
   kind: "good" | "bad" | "warn" | "plain";
   text: string;
 }[] = [
+  { date: "09-21", kind: "good", text: "拼多多正式批服务端一面确认去，周三 9/23" },
   { date: "09-16", kind: "good", text: "快手 AI全栈开发工程师一面约在 9/17 19:00" },
   { date: "09-15", kind: "bad", text: "网易互娱两志愿均筛选不通过（AI应用 / Agent引擎）" },
   { date: "09-14", kind: "good", text: "小红书质效 AI Agent 工程师（上海）已投，官网显示投递成功" },
